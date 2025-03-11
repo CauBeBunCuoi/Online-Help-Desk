@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "HOAjBDgmJSdy/xTLjIEonUNX1swMjXJ7k6XrhG3Atx8=",
+  "Source": "OnlineHelpDesk_BE.API",
+  "BasePath": "_content/OnlineHelpDesk_BE.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

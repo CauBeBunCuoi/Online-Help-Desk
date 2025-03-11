@@ -1,0 +1,6 @@
+@OnlineHelpDesk_BE.API_HostAddress = http://localhost:5159
+
+GET {{OnlineHelpDesk_BE.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

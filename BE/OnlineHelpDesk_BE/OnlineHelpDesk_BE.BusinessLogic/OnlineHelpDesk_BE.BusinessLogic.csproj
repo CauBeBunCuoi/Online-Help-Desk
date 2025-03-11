@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineHelpDesk_BE.Common\OnlineHelpDesk_BE.Common.csproj" />
+    <ProjectReference Include="..\OnlineHelpDesk_BE.DataAccess\OnlineHelpDesk_BE.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Services\background_services\interfaces\" />
+    <Folder Include="Services\db_services\interfaces\" />
+  </ItemGroup>
+
+</Project>
