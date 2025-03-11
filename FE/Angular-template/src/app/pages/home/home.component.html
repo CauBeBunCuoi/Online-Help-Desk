@@ -1,0 +1,82 @@
+
+
+<p-button (click)="showDialog()" label="Show" />
+<ag-grid-angular class="ag-theme-alpine" style="width: 100%; height: 500px;" [rowData]="facilityData"
+  [columnDefs]="columnDefs" (gridReady)="onGridReady($event)">
+</ag-grid-angular>
+
+<div class="card flex justify-center">
+  <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-8">Update your information.</span>
+    <div class="flex items-center gap-4 mb-4">
+      <label for="username" class="font-semibold w-24">Username</label>
+      <input pInputText id="username" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex items-center gap-4 mb-8">
+      <label for="email" class="font-semibold w-24">Email</label>
+      <input pInputText id="email" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex justify-end gap-2">
+      <p-button label="Cancel" severity="secondary" (click)="visible = false" />
+      <p-button label="Save" (click)="visible = false" />
+    </div>
+  </p-dialog>
+</div>
+
+<p-dialog [(visible)]="showFacilityPopup" header="Cập nhật Facility">
+  <h3>{{ selectedFacility?.name }}</h3>
+
+  <p-button label="Cập nhật danh sách Floor" (click)="openFloorPopup()"></p-button>
+  <p-button label="Thêm Room" (click)="openRoomPopup()"></p-button>
+  <p-button label="Thêm Area" (click)="openAreaPopup()"></p-button>
+
+  <h4>Danh sách Floor</h4>
+  <ul>
+    @for (floor of selectedFacility?.floors; track floor) {
+    <li>
+      {{ floor.name }} <p-button icon="pi pi-trash" (click)="deleteFloor(floor)"></p-button>
+    </li>
+    }
+  </ul>
+
+  <h4>Danh sách Room</h4>
+  <ul>
+    @for (room of selectedFacility?.rooms; track room) {
+    <li>
+      {{ room.name }} <p-button icon="pi pi-trash" (click)="deleteRoom(room)"></p-button>
+    </li>
+    }
+  </ul>
+
+  <h4>Danh sách Area</h4>
+  <ul>
+    @for (area of selectedFacility?.areas; track area) {
+    <li>
+      {{ area.name }} <p-button icon="pi pi-trash" (click)="deleteArea(area)"></p-button>
+    </li>
+    }
+  </ul>
+</p-dialog>
+
+
+<p-dialog [(visible)]="showFloorPopup" header="Cập nhật danh sách Floor">
+  <input [(ngModel)]="newFloor" placeholder="Nhập tên floor">
+  <p-button label="Thêm Floor" (click)="addFloor()"></p-button>
+
+  <ul>
+    @for (floor of selectedFacility?.floors; track floor) {
+    <li>
+      {{ floor.name }} <p-button icon="pi pi-trash" (click)="deleteFloor(floor)"></p-button>
+    </li>
+    }
+  </ul>
+</p-dialog>
+
+<button pButton type="button" label="Floors" class="p-button-sm p-button-info mr-1"
+            (click)="manageFloors()"></button>
+    <button pButton type="button" label="Rooms" class="p-button-sm p-button-success mr-1"
+            (click)="manageRooms()"></button>
+    <button pButton type="button" label="Areas" class="p-button-sm p-button-warning mr-1"
+            (click)="manageAreas()"></button>
+    <button pButton type="button" icon="pi pi-pencil" class="p-button-sm p-button-secondary"
+            (click)="updateFacility()"></button>
