@@ -1,0 +1,4 @@
+- tạm thời adminApi axiosInstance gọi về "/api" vì dự án có thể chia prefix theo controller và chỉ điểm /admin vào api cụ thể 
+- tạm thời ko làm theo kiểu prefix /admin hoặc /user
+- cho cho chờ await alert hỏi đăng nhập 
+- thêm isAppError vào response_with_mess để ưng tiên thông báo lỗi từ axios sau đó mới đến báo lỗi sau khi api đã chạy xong
