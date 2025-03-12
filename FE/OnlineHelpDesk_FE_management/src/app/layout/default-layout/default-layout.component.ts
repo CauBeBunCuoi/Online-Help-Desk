@@ -12,11 +12,17 @@ import {
   SidebarHeaderComponent,
   SidebarNavComponent,
   SidebarToggleDirective,
-  SidebarTogglerDirective
+  SidebarTogglerDirective,
+  
 } from '@coreui/angular';
+import { IconModule, IconSetService } from '@coreui/icons-angular';
 
 import { DefaultFooterComponent, DefaultHeaderComponent } from './';
 import { navItems } from './_nav';
+import { Store } from '@ngrx/store';
+import { AccountService } from '../../core/service/accounts.service';
+import { selectAuthUser } from '../../store/auth/selectors';
+import { get_roleNav } from './_roleNav';
 
 function isOverflown(element: HTMLElement) {
   return (
@@ -44,9 +50,27 @@ function isOverflown(element: HTMLElement) {
     NgScrollbar,
     RouterOutlet,
     RouterLink,
-    ShadowOnScrollDirective
+    ShadowOnScrollDirective,
   ]
 })
 export class DefaultLayoutComponent {
   public navItems = [...navItems];
+
+  constructor(
+    private accountService: AccountService,
+
+    private store: Store
+
+
+  ) { }
+
+  ngOnInit(): void {
+    this.accountService.checkLogin_MainPage();
+    this.store.select(selectAuthUser).subscribe((user) => {
+      this.navItems = get_roleNav(parseInt(user.role_id));
+
+    }
+    );
+
+  }
 }

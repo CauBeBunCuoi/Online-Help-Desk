@@ -11,51 +11,97 @@ export const routes: Routes = [
     path: '',
     component: DefaultLayoutComponent,
     data: {
-      title: 'Home'
+      title: 'Campus Manager'
     },
     children: [
+      // Campus Manager
+      // {
+      //   path: '',
+      //   redirectTo: 'facility_campus',
+      //   pathMatch: 'full'
+      // },
       {
-        path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/routes').then((m) => m.routes)
+        path: 'accounts_campus',
+        loadChildren: () => import('./views/Campus Manager/account/routes').then((m) => m.routes)
       },
       {
-        path: 'theme',
-        loadChildren: () => import('./views/theme/routes').then((m) => m.routes)
+        path: 'facility_campus',
+        loadChildren: () => import('./views/Campus Manager/facility/routes').then((m) => m.routes)
       },
       {
-        path: 'base',
-        loadChildren: () => import('./views/base/routes').then((m) => m.routes)
+        path: 'majors_campus',  
+        loadChildren: () => import('./views/Campus Manager/major/routes').then((m) => m.routes)
       },
       {
-        path: 'buttons',
-        loadChildren: () => import('./views/buttons/routes').then((m) => m.routes)
+        path: 'faq_campus',  
+        loadChildren: () => import('./views/Campus Manager/faq/routes').then((m) => m.routes)
+      },
+      
+
+      // Facility Major Head
+      {
+        path: 'account_major',
+        loadChildren: () => import('./views/Facility Major Head/account/routes').then((m) => m.routes)
       },
       {
-        path: 'forms',
-        loadChildren: () => import('./views/forms/routes').then((m) => m.routes)
+        path: 'my_majors',
+        loadChildren: () => import('./views/Facility Major Head/major/routes').then((m) => m.routes)
       },
       {
-        path: 'icons',
-        loadChildren: () => import('./views/icons/routes').then((m) => m.routes)
-      },
-      {
-        path: 'notifications',
-        loadChildren: () => import('./views/notifications/routes').then((m) => m.routes)
-      },
-      {
-        path: 'widgets',
-        loadChildren: () => import('./views/widgets/routes').then((m) => m.routes)
-      },
-      {
-        path: 'charts',
-        loadChildren: () => import('./views/charts/routes').then((m) => m.routes)
-      },
-      {
-        path: 'pages',
-        loadChildren: () => import('./views/pages/routes').then((m) => m.routes)
+        path: 'task_major',
+        loadChildren: () => import('./views/Facility Major Head/task/routes').then((m) => m.routes)
       }
     ]
   },
+  // {
+  //   path: '',
+  //   component: DefaultLayoutComponent,
+  //   data: {
+  //     title: 'Homeee'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       loadChildren: () => import('./views/coreUi views/dashboard/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'theme',
+  //       loadChildren: () => import('./views/coreUi views/theme/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'base',
+  //       loadChildren: () => import('./views/coreUi views/base/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'buttons',
+  //       loadChildren: () => import('./views/coreUi views/buttons/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'forms',
+  //       loadChildren: () => import('./views/coreUi views/forms/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'icons',
+  //       loadChildren: () => import('./views/coreUi views/icons/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'notifications',
+  //       loadChildren: () => import('./views/coreUi views/notifications/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'widgets',
+  //       loadChildren: () => import('./views/coreUi views/widgets/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'charts',
+  //       loadChildren: () => import('./views/coreUi views/charts/routes').then((m) => m.routes)
+  //     },
+  //     {
+  //       path: 'pages',
+  //       loadChildren: () => import('./views/pages/routes').then((m) => m.routes)
+  //     }
+  //   ]
+  // },
   {
     path: '404',
     loadComponent: () => import('./views/pages/page404/page404.component').then(m => m.Page404Component),

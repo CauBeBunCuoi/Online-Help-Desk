@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideRouter,
@@ -12,9 +12,17 @@ import {
 import { DropdownModule, SidebarModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
+import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { rootReducers } from './store/rootReducers';
+import { metaReducers } from './store/metaReducers';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(),
+
     provideRouter(routes,
       withRouterConfig({
         onSameUrlNavigation: 'reload'
@@ -29,6 +37,15 @@ export const appConfig: ApplicationConfig = {
     ),
     importProvidersFrom(SidebarModule, DropdownModule),
     IconSetService,
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+
+    provideStore(
+      rootReducers,
+      { metaReducers }
+    ),
+
+    provideEffects(),
+
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
   ]
 };

@@ -93,13 +93,26 @@ import {
   cilUser,
   cilUserFemale,
   cilUserFollow,
-  cilUserUnfollow
+  cilUserUnfollow,
+
+  // Thêm Icon ở đây
+  cilGroup,
+  cilFactory,
+  cilDoubleQuoteSansRight,
+  cilArrowCircleRight,
+  
 } from '@coreui/icons';
 
 import { signet } from './signet';
 import { logo } from './logo';
 
 export const iconSubset = {
+  // map icon ở đây
+  cilGroup,
+  cilFactory,
+  cilDoubleQuoteSansRight,
+  cilArrowCircleRight,
+
   cibCcAmex,
   cibCcApplePay,
   cibCcMastercard,

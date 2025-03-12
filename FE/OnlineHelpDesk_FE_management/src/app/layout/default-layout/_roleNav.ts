@@ -1,254 +1,189 @@
+import { style } from '@angular/animations';
 import { INavData } from '@coreui/angular';
 
 
-export function get_roleNav (role_id : number) : INavData[] {
+export function get_roleNav(role_id: number): INavData[] {
 
   const _roleNav = [
     [],
+
+    // Campus Manager (role_id = 1)
     [
       {
-        name: 'View 0',
-        url: '/nhap_view_0',
-        iconComponent: { name: 'cil-speedometer' },
-        badge: {
-          color: 'info',
-          text: 'NEW'
-        }
+        name: 'Accounts',
+        url: '/accounts_campus',
+        class: 'bg-dark my-2 border border-2 border-primary p-2',
+        iconComponent: { name: 'cil-group' },
+        children: [
+          {
+            name: 'Staffs',
+            url: '/accounts_campus/staffs',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6',
+          },
+          {
+            name: 'Students',
+            url: '/accounts_campus/students',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6',
+
+          },
+        ]
       },
       {
-        name: 'View 1',
-        url: '/nhap_view_1',
-        iconComponent: { name: 'cil-speedometer' },
-        badge: {
-          color: 'info',
-          text: 'NEW'
-        }
+        name: 'Campus Facilities',
+        url: '/facility_campus',
+        class: ' my-2 border border-2 border-primary p-2',
+        iconComponent: { name: 'cil-factory', class: 'fw-bold fs-1 text-danger' },
+        children: [
+          {
+            name: 'Facility List',
+            url: '/facility_campus/facilities',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Facility Items',
+            url: '/facility_campus/facility_items',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          }
+        ]
+      },
+      {
+        name: 'Campus Majors',
+        url: '/majors_campus',
+        class: ' my-2 border border-2 border-primary p-2',
+        iconComponent: { name: 'cil-double-quote-sans-right' },
+        children: [
+          {
+            name: 'Major List',
+            url: '/majors_campus/majors',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Task Assignments',
+            url: '/majors_campus/task_assignments',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Feedbacks',
+            url: '/majors_campus/feedbacks',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Reports',
+            url: '/majors_campus/reports',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+        ]
+      },
+      {
+        name: 'FAQ',
+        url: '/faq_campus',
+        class: ' my-2 bg-info rounded',
+        iconComponent: { name: 'cil-puzzle' }
+      },
+    ],
+
+
+    // Facility Major Head (role_id = 2)
+    [
+      {
+        name: 'Accounts',
+        url: '/account_major',
+        class: ' my-2 border border-2 border-primary rounded',
+        iconComponent: { name: 'cil-group' },
+        children: [
+          {
+            name: 'Staffs',
+            url: '/account_major/staffs',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Requesters',
+            url: '/account_major/requesters',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+        ]
+      },
+      {
+        name: 'My Majors',
+        url: '/my_majors',
+        class: ' my-2 border border-2 border-primary p-2',
+        iconComponent: { name: 'cil-double-quote-sans-right' },
+        children: [
+          {
+            name: 'Main Major List',
+            url: '/my_majors/majors',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Services',
+            url: '/my_majors/services',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Feedbacks',
+            url: '/my_majors/feedbacks',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Reports',
+            url: '/my_majors/reports',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+        ]
+      },
+      {
+        name: 'My Tasks',
+        url: '/task_major',
+        class: ' my-2 border border-2 border-primary p-2',
+        iconComponent: { name: 'cil-task' },
+        children: [
+          {
+            name: 'Service Requests',
+            url: '/task_major/service_requests',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'Task Assignments',
+            url: '/task_major/task_assignments',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          },
+          {
+            name: 'BlackList Requests',
+            url: '/task_major/blacklist_requests',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          }
+        ]
       }
     ],
+
+    // Assignee (role_id = 3)
     [
       {
-        name: 'Table 1',
-        url: '/table_1',
-        iconComponent: { name: 'cil-speedometer' },
-        badge: {
-          color: 'info',
-          text: 'NEW'
-        }
-      },
-      {
-        name: 'Dashboard',
-        url: '/dashboard',
-        iconComponent: { name: 'cil-speedometer' },
-        badge: {
-          color: 'info',
-          text: 'NEW'
-        }
-      },
-      {
-        title: true,
-        name: 'Theme'
-      },
-      {
-        name: 'Colors',
-        url: '/theme/colors',
-        iconComponent: { name: 'cil-drop' }
-      },
-      {
-        name: 'Typography',
-        url: '/theme/typography',
-        linkProps: { fragment: 'headings' },
-        iconComponent: { name: 'cil-pencil' }
-      },
-      {
-        name: 'Components',
-        title: true
-      },
-    ],
-    [
-      {
-        name: 'Base',
-        url: '/base',
+        name: 'My Tasks Management',
+        url: '/task_assignee',
+        class: ' my-2 border border-2 border-primary p-2',
         iconComponent: { name: 'cil-puzzle' },
         children: [
           {
-            name: 'Accordion',
-            url: '/base/accordion',
-            icon: 'nav-icon-bullet'
+            name: 'Service Requests',
+            url: '/task_assignee/service_requests',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
           },
           {
-            name: 'Breadcrumbs',
-            url: '/base/breadcrumbs',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Cards',
-            url: '/base/cards',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Carousel',
-            url: '/base/carousel',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Collapse',
-            url: '/base/collapse',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'List Group',
-            url: '/base/list-group',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Navs & Tabs',
-            url: '/base/navs',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Pagination',
-            url: '/base/pagination',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Placeholder',
-            url: '/base/placeholder',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Popovers',
-            url: '/base/popovers',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Progress',
-            url: '/base/progress',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Spinners',
-            url: '/base/spinners',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Tables',
-            url: '/base/tables',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Tabs',
-            url: '/base/tabs',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Tooltips',
-            url: '/base/tooltips',
-            icon: 'nav-icon-bullet'
+            name: 'BlackList Requests',
+            url: '/task_assignee/blacklist_requests',
+            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
           }
         ]
-      },
-      {
-        name: 'Buttons',
-        url: '/buttons',
-        iconComponent: { name: 'cil-cursor' },
-        children: [
-          {
-            name: 'Buttons',
-            url: '/buttons/buttons',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Button groups',
-            url: '/buttons/button-groups',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Dropdowns',
-            url: '/buttons/dropdowns',
-            icon: 'nav-icon-bullet'
-          }
-        ]
-      },
-      {
-        name: 'Forms',
-        url: '/forms',
-        iconComponent: { name: 'cil-notes' },
-        children: [
-          {
-            name: 'Form Control',
-            url: '/forms/form-control',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Select',
-            url: '/forms/select',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Checks & Radios',
-            url: '/forms/checks-radios',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Range',
-            url: '/forms/range',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Input Group',
-            url: '/forms/input-group',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Floating Labels',
-            url: '/forms/floating-labels',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Layout',
-            url: '/forms/layout',
-            icon: 'nav-icon-bullet'
-          },
-          {
-            name: 'Validation',
-            url: '/forms/validation',
-            icon: 'nav-icon-bullet'
-          }
-        ]
-      },
-      {
-        name: 'Charts',
-        iconComponent: { name: 'cil-chart-pie' },
-        url: '/charts'
-      },
+      }
     ]
-  
+
+
+
+
+
+
   ]
   const roleNav = role_id ? _roleNav[role_id] : _roleNav[0];
   return roleNav;
-}
-
-export function get_thiNav () : INavData[] {
-
-  const _thiNav = [ 
-    {
-      name: 'Transactions',
-      url: '/transactions',
-      iconComponent: { name: 'cil-speedometer' },
-      badge: {
-        color: 'info',
-        text: 'NEW'
-      }
-    },
-    {
-      name: 'Profile',
-      url: '/profile',
-      iconComponent: { name: 'cil-speedometer' },
-      badge: {
-        color: 'info',
-        text: 'NEW'
-      }
-    }
-  ]
-  return _thiNav
 }

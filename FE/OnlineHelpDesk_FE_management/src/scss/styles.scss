@@ -5,6 +5,9 @@
   $enable-deprecation-messages: false
 );
 
+// Import icons styles
+@use "@coreui/icons/css/all.css";
+
 // Import Chart.js custom tooltips styles
 @use "@coreui/chartjs/scss/coreui-chartjs";
 
