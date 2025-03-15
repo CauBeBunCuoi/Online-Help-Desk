@@ -1,34 +1,93 @@
-<section class="user-manual-banner">
+<section class="user-manual-banner mb-3">
     <div class="container">
-        <div class="card flex p-3">
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                laborum.
-            </p>
-            <p-divider layout="vertical" />
-            <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
-                rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-                explicabo. Nemo enim ipsam
-                voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui
-                ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-            </p>
-            <p-divider layout="vertical" />
-            <p>
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-                deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non
-                provident, similique sunt in culpa qui
-                officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et
-                expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                minus.
-            </p>
+        <div id="carouselExampleDark" class="carousel carousel-dark slide p-3" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="10000">
+                    <img src="https://www.topcv.vn/images/default_cover/topcv_cover_4.jpg" class="d-block w-100" style="height: 300px;"
+                        alt="...">
+                    <div class="carousel-caption d-none d-md-block" style="color: aliceblue;">
+                        <h5>First slide label</h5>
+                        <p>Some representative placeholder content for the first slide.</p>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="2000">
+                    <img src="https://www.topcv.vn/images/default_cover/topcv_cover_4.jpg" class="d-block w-100" style="height: 300px;"
+                        alt="...">
+                    <div class="carousel-caption d-none d-md-block" style="color: aliceblue;">
+                        <h5>Second slide label</h5>
+                        <p>Some representative placeholder content for the second slide.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://www.topcv.vn/images/default_cover/topcv_cover_4.jpg" class="d-block w-100" style="height: 300px;"
+                        alt="...">
+                    <div class="carousel-caption d-none d-md-block" style="color: aliceblue;">
+                        <h5>Third slide label</h5>
+                        <p>Some representative placeholder content for the third slide.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
 </section>
+
+<!-- lĩnh vực nổi bật -->
+<section class="container major-content">
+    <div class="major-content__header mb-3">
+        <h1 class="title text-center">Danh sách các lĩnh vực nổi bật</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if(isLoading) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (major of facilitiesMajor; track major) {
+            <div class="col-md-4 col-sm-6">
+                <a [routerLink]="['/facility-major-detail', major.id]" class="text-decoration-none">
+                    <p-card class="mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.logo" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.name }}</h6>
+                            </div>
+                        </div>
+
+                        <!-- Hình ảnh lớn -->
+                        <img [src]="major.image" class="w-100 mt-2 rounded" alt="major Image" />
+
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.mainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
 <section class="container-fluid">
     <div class="container py-4">
         <p-tabs value="0">
@@ -81,6 +140,8 @@
         </p-tabs>
     </div>
 </section>
+
+
 <section class="container py-4">
     <div class="card p-4">
         <div class="row">

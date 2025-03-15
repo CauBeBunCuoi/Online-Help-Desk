@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- review.component.html -->
         <div class="review-card p-3 border rounded shadow-sm">
             <div class="text-center">
@@ -98,5 +98,30 @@
         </p-dialog>
 
         <!-- lits feedback relative -->
+        <div class="review-card my-3 border rounded shadow-sm p-3">
+            <div class="text-center mb-3">
+                <h3>Feedback liên quan</h3>
+            </div>
+            @for(feedback of paginatedFeedbacks; track feedback) {
+            <div class="mb-3">
+                <p-card>
+                    <div class="d-flex align-items-center gap-2">
+                        <p-avatar [label]="feedback.name[0]" shape="circle"
+                            styleClass="bg-primary text-white"></p-avatar>
+                        <div>
+                            <h6 class="mb-0">{{ feedback.name }}</h6>
+                            <small class="text-muted">{{ feedback.date }}</small>
+                        </div>
+                    </div>
+                    <p-rating [(ngModel)]="feedback.rating" [readonly]="true" [disabled]="true" class="mt-2"></p-rating>
+                    <p class="mt-2">{{ feedback.comment }}</p>
+                </p-card>
+            </div>
+            }
+            <!-- Phân trang -->
+            <p-paginator [rows]="pageSize" [totalRecords]="feedbacks.length" (onPageChange)="onPageChange($event)">
+            </p-paginator>
+        </div>
+
     </div>
 </section>
