@@ -1,42 +1,41 @@
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card p-4 shadow-lg" style="width: 420px;">
-      <h2 class="text-center text-primary mb-3">Đăng nhập</h2>
-  
-      <!-- Hiển thị thông báo lỗi -->
-      @if (errorMessage) {
-        <p-message severity="error" text="{{ errorMessage }}"></p-message>
-      }
-  
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="row g-3">
-        <!-- Email -->
-        <div class="col-12">
-          <label for="email" class="form-label fw-bold">Email</label>
-          <input id="email" formControlName="email" type="email" class="form-control" pInputText />
-          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <small class="text-danger">Email không hợp lệ!</small>
-          }
-        </div>
-  
-        <!-- Mật khẩu -->
-        <div class="col-12">
-          <label for="password" class="form-label fw-bold">Mật khẩu</label>
-          <input id="password" formControlName="password" type="password" class="form-control" pPassword />
-          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <small class="text-danger">Mật khẩu không được để trống!</small>
-          }
-        </div>
-  
-        <!-- Submit button -->
-        <div class="col-12">
-          <button pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary" [disabled]="loginForm.invalid"></button>
-        </div>
-  
-        <!-- Link đăng ký -->
-        <div class="col-12 text-center">
-          <span>Chưa có tài khoản? </span>
-          <a [routerLink]="['/register']" class="text-primary fw-bold">Đăng ký</a>
-        </div>
-      </form>
-    </div>
+  <div class="card p-4 shadow-lg" style="width: 420px;">
+    <h2 class="text-center text-primary mb-3">Đăng nhập</h2>
+
+    <!-- Hiển thị thông báo lỗi -->
+    @if (errorMessage) {
+    <p-message severity="error" text="{{ errorMessage }}"></p-message>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="row g-3">
+      <!-- Email -->
+      <div class="col-12">
+        <label for="email" class="form-label fw-bold">Email</label>
+        <input id="email" formControlName="email" type="email" class="form-control" pInputText />
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+        <small class="text-danger">Email không hợp lệ!</small>
+        }
+      </div>
+      <!-- Mật khẩu -->
+      <div class="col-12">
+        <label for="password" class="form-label fw-bold">Mật khẩu</label>
+        <input id="password" formControlName="password" type="password" class="form-control" pPassword />
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+        <small class="text-danger">Mật khẩu không được để trống!</small>
+        }
+      </div>
+
+      <!-- Submit button -->
+      <div class="col-12">
+        <button pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"
+          [disabled]="loginForm.invalid"></button>
+      </div>
+
+      <!-- Link đăng ký -->
+      <div class="col-12 text-center">
+        <span>Chưa có tài khoản? </span>
+        <a [routerLink]="['/register']" class="text-primary fw-bold">Đăng ký</a>
+      </div>
+    </form>
   </div>
-  
+</div>

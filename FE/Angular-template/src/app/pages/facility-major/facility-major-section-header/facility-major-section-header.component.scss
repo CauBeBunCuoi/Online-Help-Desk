@@ -1,0 +1,28 @@
+.major-header {
+    background: transparent linear-gradient(6deg, #fff, #c4ffdd 100%, rgba(195, 255, 221, .702) 0) 0 0 no-repeat padding-box;
+    margin-bottom: 0;
+    min-height: 260px;
+    padding-top: 24px;
+
+    .header-content {
+
+        .header-content__search {
+
+            .header-content__title {
+
+                .title {
+                    color: #00b14f;
+                    font-size: 24px;
+                    letter-spacing: 0;
+                    padding-bottom: 12px;
+                    text-align: left;
+                    font-weight: 500;
+                    line-height: 1.2;
+                    margin-bottom: .5rem;
+                    margin-top: 0;
+                }
+            }
+        }
+
+    }
+}

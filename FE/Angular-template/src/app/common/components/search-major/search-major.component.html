@@ -1,0 +1,16 @@
+<div class="header-content__search">
+    <form [formGroup]="formGroup" (ngSubmit)="save()" class="">
+        <div class="col-md-3">
+            <p-select [options]="majors" placeholder="Major" [editable]="true" optionLabel="name"
+                class="rounded-pill w-100" />
+        </div>
+        <div class="col-md-8">
+            <input type="text" pInputText placeholder="keyword" formControlName="keyword"
+                class="w-100 border-0" />
+        </div>
+        <div class="col-md-1">
+            <p-button icon="pi pi-search" label="Search" class="w-auto" size="small" [rounded]="true"
+                severity="success" />
+        </div>
+    </form>
+</div>

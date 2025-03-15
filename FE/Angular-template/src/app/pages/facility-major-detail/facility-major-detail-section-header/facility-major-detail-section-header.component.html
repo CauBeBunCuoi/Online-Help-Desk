@@ -1,0 +1,36 @@
+<section class="major-detail-header mt-3">
+    <div class="container">
+        <div class="major-cover-inner">
+            <div class="cover-wrapper">
+                <img [src]="image" alt="Cover Image" class="">
+            </div>
+            <div class="major-logo">
+                <div class="major-image-logo">
+                    <img [src]="logo" alt="Major Logo">
+                </div>
+            </div>
+            <div class="major-detail-overview">
+                <div class="title">
+                    <h1>{{ name }}</h1>
+                </div>
+                <button type="button" class="btn btn-danger" (click)="showDialog()">Report</button>
+            </div>
+            <p-dialog header="Report Facility Major" [(visible)]="visible" [modal]="true" [style]="{ width: '400px' }">
+                <div class="text-muted mb-3">Report form</div>
+
+                <div class="mb-3 row align-items-center">
+                    <label for="description" class="col-sm-4 col-form-label fw-bold">Description</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="description" class="form-control" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="visible = false"></p-button>
+                    <p-button label="Save" (click)="visible = false"></p-button>
+                </div>
+            </p-dialog>
+
+        </div>
+    </div>
+</section>

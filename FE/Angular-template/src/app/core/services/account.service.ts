@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
 import { publicApi, loginRequiredApi } from '../../api/instance/axiosInstance';
-import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AccountService {
-    private apiUrl = `${environment.BASE_API_URL}/account`;
 
     constructor() { }
 

@@ -1,0 +1,70 @@
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">Danh sách các lĩnh vực nổi bật</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if(isLoading) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (major of facilitiesMajor; track major) {
+            <div class="col-md-4 col-sm-6">
+                <a [routerLink]="['/facility-major-detail', major.id]" class="text-decoration-none">
+                    <p-card class="mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.logo" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.name }}</h6>
+                            </div>
+                        </div>
+
+                        <!-- Hình ảnh lớn -->
+                        <img [src]="major.image" class="w-100 mt-2 rounded" alt="major Image" />
+
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.mainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">Danh sách các lĩnh vực</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @for (major of facilitiesMajor; track major) {
+            <div class="col-md-4 col-sm-6">
+                <p-card class="mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Logo Công Ty -->
+                        <p-avatar shape="square" [image]="major.logo" size="large"></p-avatar>
+                        <div>
+                            <h6 class="mb-0">{{ major.name }}</h6>
+                        </div>
+                    </div>
+
+                    <!-- Hình ảnh lớn -->
+                    <img [src]="major.image" class="w-100 mt-2 rounded" alt="major Image" />
+
+                    <!-- Mô tả -->
+                    <p>
+                        {{ major.mainDescription }}
+                    </p>
+                </p-card>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<app-facility-major-top-feedback></app-facility-major-top-feedback>

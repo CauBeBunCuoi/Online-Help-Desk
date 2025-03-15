@@ -1,0 +1,36 @@
+section {
+
+    .container {
+
+        .row {
+
+            div {
+
+                .section-introduce {
+                    border-radius: 10px;
+
+                    .title {
+                        padding: 12px 20px;
+                        background: linear-gradient(90deg, #1c4742, #22c96d);
+                        color: #fff;
+                        font-size: 18px;
+                        font-weight: 600;
+                        line-height: 26px;
+                        margin: 0;
+                    }
+
+                    .content {
+                        background-color: #fff;
+
+                        .description {
+                            max-height: 550px;
+                            overflow: hidden;
+                            position: relative;
+                            transition: height .2s ease-in-out;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

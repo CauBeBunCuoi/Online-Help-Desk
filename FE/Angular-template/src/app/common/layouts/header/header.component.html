@@ -1,28 +1,71 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" [routerLink]="['/home']">BINANCE</a>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <img src="https://static.topcv.vn/v4/image/logo/topcv-logo-6.png" alt="">
+      </a>
+    </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" [routerLink]="['/home']">Home</a>
+      <ul class="navbar-nav navbar-left me-auto mb-2 mb-lg-0">
+        <li class="nav-item me-2">
+          <a class="nav-link active" aria-current="page" [routerLink]="['/']">Home</a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" [routerLink]="['/facility-major']">Facility Major</a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" [routerLink]="['/#']">Service</a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" [routerLink]="['/#']">Q & A</a>
         </li>
       </ul>
-      <div class="btn-group ms-2">
-        <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          @if(username) {
-          {{username}}
-          }
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" [routerLink]="['/profile']">Profile</a></li>
-          <li><a class="dropdown-item" (click)="logout()">Log Out</a></li>
-        </ul>
-      </div>
+      @if(user) {
+      <ul class="navbar-nav navbar-right mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page">
+            <div class="block-for-employee">
+              <p>Welcome</p>
+              <span>Mr Bean</span>
+            </div>
+          </a>
+        </li>
+        <li class="nav-item">
+          <div class="column-divider"></div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link icon" href="#">
+            <i class="pi pi-bell" style="font-size: 1.5rem; color: green;"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <p-select [options]="userOptions" optionLabel="label" class="rounded-pill">
+              <ng-template let-item pTemplate="item">
+                <div class="select-item">
+                  <i [class]="item.icon"></i>
+                  <span>{{ item.label }}</span>
+                </div>
+              </ng-template>
+            </p-select>
+          </a>
+        </li>
+      </ul>
+      }
+      @else {
+      <ul class="navbar-nav navbar-right mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a [routerLink]="['/logon']" class="btn btn-outline-success">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-dark">Register</a>
+        </li>
+      </ul>
+      }
     </div>
   </div>
 </nav>
