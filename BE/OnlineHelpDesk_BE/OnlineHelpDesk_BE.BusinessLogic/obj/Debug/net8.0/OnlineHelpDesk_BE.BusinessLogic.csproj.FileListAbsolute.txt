@@ -17,3 +17,4 @@ D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\Onli
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.BusinessLogic\obj\Debug\net8.0\refint\OnlineHelpDesk_BE.BusinessLogic.dll
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.BusinessLogic\obj\Debug\net8.0\OnlineHelpDesk_BE.BusinessLogic.pdb
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.BusinessLogic\obj\Debug\net8.0\ref\OnlineHelpDesk_BE.BusinessLogic.dll
+D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.BusinessLogic\obj\Debug\net8.0\OnlineHelpDesk_BE.BusinessLogic.sourcelink.json

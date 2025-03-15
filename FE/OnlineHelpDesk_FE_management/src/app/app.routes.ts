@@ -10,9 +10,9 @@ export const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    data: {
-      title: 'Campus Manager'
-    },
+    // data: {
+    //   title: 'Campus Manager'
+    // },
     children: [
       // Campus Manager
       // {
@@ -50,6 +50,12 @@ export const routes: Routes = [
       {
         path: 'task_major',
         loadChildren: () => import('./views/Facility Major Head/task/routes').then((m) => m.routes)
+      },
+
+      // Assignee
+      {
+        path: 'task_assignee',
+        loadChildren: () => import('./views/Assignee/task/routes').then((m) => m.routes)
       }
     ]
   },

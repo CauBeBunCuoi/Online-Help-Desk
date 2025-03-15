@@ -14,8 +14,7 @@
   <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Services\background_services\interfaces\" />
-    <Folder Include="Services\db_services\interfaces\" />
+    <Folder Include="Services\BackgroundServices\interfaces\" />
   </ItemGroup>
 
 </Project>

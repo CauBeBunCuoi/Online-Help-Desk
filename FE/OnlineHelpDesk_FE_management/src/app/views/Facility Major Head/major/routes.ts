@@ -30,7 +30,7 @@ export const routes: Routes = [
         path: 'feedbacks',
         loadComponent: () => import('./feedbacks/feedbacks.component').then(m => m.FeedbacksComponent),
         data: {
-          title: 'SerFeedbacksvices'
+          title: 'Feedbacks'
         }
       },
       {

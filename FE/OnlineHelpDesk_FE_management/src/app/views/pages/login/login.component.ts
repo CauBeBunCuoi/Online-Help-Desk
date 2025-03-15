@@ -127,8 +127,7 @@ export class LoginComponent {
     if (res.success) {
       successAlert(res.message.content ? res.message.content : 'Login success');
       const user = jwtDecode(res.data.token);
-      const role_id = 2;
-
+      const role_id = parseInt(this.email);
       this.accountService.save_login(res.data.token, {
         ...user,
         role_id

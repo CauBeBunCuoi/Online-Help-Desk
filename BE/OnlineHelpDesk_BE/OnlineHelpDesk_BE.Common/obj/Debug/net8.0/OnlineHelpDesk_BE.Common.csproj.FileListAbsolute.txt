@@ -14,3 +14,4 @@ D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\Onli
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.Common\obj\Debug\net8.0\OnlineHelpDesk_BE.Common.pdb
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.Common\obj\Debug\net8.0\OnlineHelpDesk_BE.Common.genruntimeconfig.cache
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.Common\obj\Debug\net8.0\ref\OnlineHelpDesk_BE.Common.dll
+D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.Common\obj\Debug\net8.0\OnlineHelpDesk_BE.Common.sourcelink.json

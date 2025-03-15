@@ -21,8 +21,8 @@ export function get_roleNav(role_id: number): INavData[] {
             icon: 'cil-arrow-circle-right w-25 text-success fs-6',
           },
           {
-            name: 'Students',
-            url: '/accounts_campus/students',
+            name: 'Campus Members',
+            url: '/accounts_campus/campus_members',
             icon: 'cil-arrow-circle-right w-25 text-success fs-6',
 
           },
@@ -159,10 +159,10 @@ export function get_roleNav(role_id: number): INavData[] {
     // Assignee (role_id = 3)
     [
       {
-        name: 'My Tasks Management',
+        name: 'My Tasks',
         url: '/task_assignee',
         class: ' my-2 border border-2 border-primary p-2',
-        iconComponent: { name: 'cil-puzzle' },
+        iconComponent: { name: 'cil-task' },
         children: [
           {
             name: 'Service Requests',

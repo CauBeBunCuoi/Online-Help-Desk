@@ -20,10 +20,10 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'students',
-        loadComponent: () => import('./students/students.component').then(m => m.StudentsComponent),
+        path: 'campus_members',
+        loadComponent: () => import('./campus-members/campus-members.component').then(m => m.CampusMembersComponent),
         data: {
-          title: 'Students'
+          title: 'Campus Members'
         }
       }
     ]

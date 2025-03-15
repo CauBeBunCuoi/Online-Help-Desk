@@ -67,6 +67,7 @@ export class DefaultLayoutComponent {
   ngOnInit(): void {
     this.accountService.checkLogin_MainPage();
     this.store.select(selectAuthUser).subscribe((user) => {
+      console.log(user);  
       this.navItems = get_roleNav(parseInt(user.role_id));
 
     }

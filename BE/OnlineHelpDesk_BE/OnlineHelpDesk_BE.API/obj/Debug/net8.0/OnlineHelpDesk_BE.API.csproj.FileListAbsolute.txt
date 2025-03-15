@@ -175,3 +175,4 @@ D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\Onli
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\OnlineHelpDesk_BE.API.pdb
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\OnlineHelpDesk_BE.API.genruntimeconfig.cache
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\ref\OnlineHelpDesk_BE.API.dll
+D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\OnlineHelpDesk_BE.API.sourcelink.json
