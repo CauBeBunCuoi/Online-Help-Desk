@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { ServiceCardComponent } from '../../../common/components/service-card/service-card.component';
-
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { RatingModule } from 'primeng/rating';
@@ -12,24 +10,28 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { TabsModule } from 'primeng/tabs';
 import { PaginatorModule } from 'primeng/paginator';
+import { BadgeModule } from 'primeng/badge';
+import { ChipModule } from 'primeng/chip';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-facility-major-detail-section-content',
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    ServiceCardComponent,
     ButtonModule,
     CardModule,
     RatingModule,
     AvatarModule,
     TextareaModule,
     DividerModule,
-    ButtonModule,
     InputTextModule,
     TabsModule,
     DialogModule,
     PaginatorModule,
+    BadgeModule,
+    ChipModule,
+    TagModule,
   ],
   templateUrl: './facility-major-detail-section-content.component.html',
   styleUrl: './facility-major-detail-section-content.component.scss'

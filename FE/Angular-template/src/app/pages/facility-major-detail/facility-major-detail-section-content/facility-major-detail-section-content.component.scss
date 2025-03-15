@@ -28,7 +28,79 @@ section {
                             position: relative;
                             transition: height .2s ease-in-out;
                         }
+
+                        p-tabs {
+
+                            p-tabpanels {
+
+                                p-tabpanel {
+
+
+                                    .service-card {
+                                        border-radius: 10px;
+                                        background: #f1faf4;
+                                        padding: 1rem;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;
+
+                                        .major-logo {
+                                            width: 60px;
+                                            height: 60px;
+                                            border-radius: 8px;
+                                            object-fit: contain;
+                                        }
+
+                                        .service-title {
+                                            font-size: 1rem;
+                                            font-weight: bold;
+                                            color: #222;
+                                            margin-bottom: 0.2rem;
+                                        }
+
+                                        .verified-icon {
+                                            color: #1ebd60;
+                                            font-size: 0.9rem;
+                                        }
+
+                                        .major-name {
+                                            font-size: 0.85rem;
+                                            color: #666;
+                                            margin-bottom: 0.5rem;
+                                        }
+
+                                        .location-and-deadline {
+                                            display: flex;
+                                            gap: 5px;
+
+                                            .badge {
+                                                font-size: 0.75rem;
+                                                padding: 5px 8px;
+                                                border-radius: 5px;
+                                            }
+                                        }
+
+                                        .salary {
+                                            color: #1ebd60;
+                                            font-weight: bold;
+                                            font-size: 1rem;
+                                            margin-right: 1rem;
+                                        }
+
+                                        .apply-btn {
+                                            font-size: 0.85rem;
+                                            padding: 6px 12px;
+                                            border-radius: 6px;
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
                     }
+
+
                 }
             }
         }
