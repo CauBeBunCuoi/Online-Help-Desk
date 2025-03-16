@@ -40,8 +40,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
-    public virtual DbSet<Floor> Floors { get; set; }
-
     public virtual DbSet<JobType> JobTypes { get; set; }
 
     public virtual DbSet<Report> Reports { get; set; }
@@ -380,24 +378,6 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK__Feedback__facili__07C12930");
         });
 
-        modelBuilder.Entity<Floor>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Floor__3213E83F2C97E8AE");
-
-            entity.ToTable("Floor");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.FacilityId).HasColumnName("facilityId");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
-
-            entity.HasOne(d => d.Facility).WithMany(p => p.Floors)
-                .HasForeignKey(d => d.FacilityId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Floor__facilityI__59FA5E80");
-        });
-
         modelBuilder.Entity<JobType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__JobType__3213E83FA9BD26DE");
@@ -495,20 +475,20 @@ public partial class AppDbContext : DbContext
             entity.ToTable("Room");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.FacilityId).HasColumnName("facilityId");
             entity.Property(e => e.FacilityMajorId).HasColumnName("facilityMajorId");
-            entity.Property(e => e.FloorId).HasColumnName("floorId");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
 
+            entity.HasOne(d => d.Facility).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.FacilityId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Room__facilityId__45BE5BA9");
+
             entity.HasOne(d => d.FacilityMajor).WithMany(p => p.Rooms)
                 .HasForeignKey(d => d.FacilityMajorId)
                 .HasConstraintName("FK__Room__facilityMa__5DCAEF64");
-
-            entity.HasOne(d => d.Floor).WithMany(p => p.Rooms)
-                .HasForeignKey(d => d.FloorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Room__floorId__5CD6CB2B");
         });
 
         modelBuilder.Entity<Service>(entity =>

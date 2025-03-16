@@ -6,7 +6,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajor;
 
 namespace OnlineHelpDesk_BE.API.Controllers.FacilityMajorControllers
 {
-    [Route("api/Major/[controller]")]
+    [Route("api/Major/assignments")]
     [ApiController]
     public class FacilityMajorAssignmentController : ControllerBase
     {

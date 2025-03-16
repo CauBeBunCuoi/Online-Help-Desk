@@ -7,7 +7,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Request;
 
 namespace OnlineHelpDesk_BE.API.Controllers.RequestControllers
 {
-    [Route("api/Request/[controller]")]
+    [Route("api/Request/blacklist")]
     [ApiController]
     [TypeFilter(typeof(HttpExceptionFilter))]
     public class BlacklistRequestController : ControllerBase

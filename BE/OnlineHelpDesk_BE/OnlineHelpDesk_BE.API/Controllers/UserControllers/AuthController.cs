@@ -4,7 +4,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.User;
 
 namespace OnlineHelpDesk_BE.API.Controllers.UserControllers
 {
-    [Route("api/User/[controller]")]
+    [Route("api/User/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {

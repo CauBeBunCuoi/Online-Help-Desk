@@ -16,7 +16,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.db_services
 
             services.AddScoped<FacilityService>();
             services.AddScoped<FacilityStructureService>();
-            
+            services.AddScoped<FacilityItemService>();
+
             services.AddScoped<MajorService>();
             services.AddScoped<MajorAssignmentService>();
             services.AddScoped<MajorServicesService>();

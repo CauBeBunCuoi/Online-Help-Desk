@@ -4,7 +4,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Facility;
 
 namespace OnlineHelpDesk_BE.API.Controllers.FacilityControllers
 {
-    [Route("api/Facility/[controller]")]
+    [Route("api/Facility/structures")]
     [ApiController]
     public class FacilityStructureController : ControllerBase
     {

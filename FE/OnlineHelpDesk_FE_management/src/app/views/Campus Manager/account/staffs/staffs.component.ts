@@ -1,8 +1,24 @@
 import { Component } from '@angular/core';
 import { AgGridAngular } from "ag-grid-angular";
-import { ColDef } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import { AllCommunityModule, ColDef, ModuleRegistry } from "ag-grid-community";
+
+import {
+  AvatarComponent,
+  ButtonDirective,
+  ButtonGroupComponent,
+  CardBodyComponent,
+  CardComponent,
+  CardFooterComponent,
+  CardHeaderComponent,
+  ColComponent,
+  FormCheckLabelDirective,
+  GutterDirective,
+  ProgressBarDirective,
+  ProgressComponent,
+  RowComponent,
+  TableDirective,
+  TextColorDirective
+} from '@coreui/angular';
 
 interface IRow {
   make: string;
@@ -16,6 +32,10 @@ interface IRow {
   standalone: true,
   imports: [
     AgGridAngular,
+    CardBodyComponent,
+  CardComponent,
+  CardFooterComponent,
+  CardHeaderComponent,
   ],
   templateUrl: './staffs.component.html',
   styleUrl: './staffs.component.scss'
@@ -23,7 +43,7 @@ interface IRow {
 export class StaffsComponent {
   // Row Data: The data to be displayed.
   rowData: IRow[] = [
-    { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+    { make: "Tesla", model: "Model Y", price: 64950, electric: true,  },
     { make: "Ford", model: "F-Series", price: 33850, electric: false },
     { make: "Toyota", model: "Corolla", price: 29600, electric: false },
     { make: "Mercedes", model: "EQA", price: 48890, electric: true },
@@ -40,5 +60,6 @@ export class StaffsComponent {
   ];
   defaultColDef: ColDef = {
     flex: 1,
+    filter: true,
   };
 }

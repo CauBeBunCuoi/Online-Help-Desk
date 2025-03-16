@@ -4,7 +4,7 @@ using OnlineHelpDesk_BE.API.Filters.ExceptionFilters;
 
 namespace OnlineHelpDesk_BE.API.Controllers.RequestControllers
 {
-    [Route("api/Request/[controller]")]
+    [Route("api/Request/service")]
     [ApiController]
     [TypeFilter(typeof(HttpExceptionFilter))]
     public class ServiceRequestController : ControllerBase

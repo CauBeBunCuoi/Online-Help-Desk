@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OnlineHelpDesk_BE.API.Controllers.UserControllers;
-using OnlineHelpDesk_BE.API.Filters.ExceptionFilters;
 using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Facility;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.User;
 
 namespace OnlineHelpDesk_BE.API.Controllers.FacilityControllers
 {
-    [Route("api/Facility/facilities")]
+    [Route("api/Facility/items")]
     [ApiController]
-    [TypeFilter(typeof(HttpExceptionFilter))]
-    public class FacilityController : ControllerBase
+    public class FacilityItemController : ControllerBase
     {
-        private ILogger<FacilityController> _logger;
+        private ILogger<FacilityItemController> _logger;
         private readonly FacilityService _facilityService;
         private readonly FacilityStructureService _facilityStructureService;
 
-        public FacilityController(ILogger<FacilityController> logger, FacilityService facilityService, FacilityStructureService facilityStructureService)
+        public FacilityItemController(ILogger<FacilityItemController> logger, FacilityService facilityService, FacilityStructureService facilityStructureService)
         {
             _logger = logger;
             _facilityService = facilityService;

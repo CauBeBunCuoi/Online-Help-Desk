@@ -9,13 +9,13 @@ public partial class Room
 
     public string Name { get; set; } = null!;
 
-    public int FloorId { get; set; }
-
     public int? FacilityMajorId { get; set; }
+
+    public int FacilityId { get; set; }
+
+    public virtual Facility Facility { get; set; } = null!;
 
     public virtual ICollection<FacilityItemAssignment> FacilityItemAssignments { get; set; } = new List<FacilityItemAssignment>();
 
     public virtual FacilityMajor? FacilityMajor { get; set; }
-
-    public virtual Floor Floor { get; set; } = null!;
 }

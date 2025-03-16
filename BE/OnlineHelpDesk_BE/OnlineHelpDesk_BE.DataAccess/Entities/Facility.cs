@@ -17,5 +17,5 @@ public partial class Facility
 
     public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
 
-    public virtual ICollection<Floor> Floors { get; set; } = new List<Floor>();
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }

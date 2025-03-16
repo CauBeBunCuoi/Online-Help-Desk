@@ -6,7 +6,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.User;
 
 namespace OnlineHelpDesk_BE.API.Controllers.AccountControllers
 {
-    [Route("api/User/[controller]")]
+    [Route("api/User/accounts")]
     [ApiController]
     [TypeFilter(typeof(HttpExceptionFilter))]
     public class AccountController : ControllerBase

@@ -7,7 +7,7 @@ using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Misc;
 
 namespace OnlineHelpDesk_BE.API.Controllers.PublicControllers
 {
-    [Route("api/Public/[controller]")]
+    [Route("api/Public/faq")]
     [ApiController]
     [TypeFilter(typeof(HttpExceptionFilter))]
     public class FAQController : ControllerBase
