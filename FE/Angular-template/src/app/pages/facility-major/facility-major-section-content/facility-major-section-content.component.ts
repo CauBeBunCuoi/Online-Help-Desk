@@ -35,8 +35,8 @@ export class FacilityMajorSectionContentComponent implements OnInit {
         console.log("API Response:", response);
 
         // Kiểm tra nếu response hợp lệ
-        if (response && response.data.facilityMajors) {
-          this.facilitiesMajor = response.data.facilityMajors;
+        if (response && response.facilityMajors) {
+          this.facilitiesMajor = response.facilityMajors;
         } else {
           this.facilitiesMajor = [];
         }

@@ -1,36 +1,52 @@
 import { Injectable } from '@angular/core';
-import { callApi } from '../../api/main/api_call/api';
-import { publicApi } from '../../api/instance/axiosInstance';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FacilityMajorService {
-    private apiUrl = '/facility-major'; // Giữ đường dẫn tương đối để phù hợp với instance
+    private facilityMajors = [
+        {
+            id: 1,
+            name: 'Engineering',
+            mainDescription: 'Engineering department focuses on mechanical and electrical fields.',
+            workShiftDescription: 'Morning and Afternoon shifts available.',
+            isOpen: true,
+            closeScheduleDate: null,
+            openScheduleDate: '2025-03-15',
+            openTime: '08:00:00',
+            closeTime: '18:00:00',
+            logo: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg',
+            image: 'https://www.topcv.vn/images/default_cover/topcv_cover_4.jpg',
+            description: `Công ty Aureole CSD INC chuyên về ứng dụng phần mềm trong lĩnh vực xây dựng.`
+        },
+        {
+            id: 2,
+            name: 'Medical',
+            mainDescription: 'Medical department focuses on healthcare and patient support.',
+            workShiftDescription: 'Night shift available.',
+            isOpen: false,
+            closeScheduleDate: '2025-04-01',
+            openScheduleDate: '2025-05-01',
+            openTime: '07:00:00',
+            closeTime: '17:00:00',
+            logo: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg',
+            image: 'https://www.topcv.vn/images/default_cover/topcv_cover_3.jpg',
+            description: `Bệnh viện đa khoa với nhiều chuyên khoa hiện đại.`
+        }
+    ];
 
-    constructor() {}
+    constructor() { }
 
     async getFacilityMajors(): Promise<any> {
-        const response = await callApi(
-            {
-                instance: publicApi,
-                method: 'get',
-                url: this.apiUrl,
-            },
-            'Lấy danh sách Facility Majors'
-        );
-        return response;
+        return {
+            message: 'Ok',
+            facilityMajors: this.facilityMajors,
+        };
     }
 
-    async getFacilityMajorById(id: string): Promise<any> {
-        const response = await callApi(
-            {
-                instance: publicApi,
-                method: 'get',
-                url: `${this.apiUrl}/${id}`,
-            },
-            `Lấy Facility Major có ID ${id}`
-        );
-        return response;
+    async getFacilityMajorById(id: number): Promise<any> {
+        return {
+            facilityMajor: this.facilityMajors.find(fm => fm.id === id) || null
+        };
     }
 }

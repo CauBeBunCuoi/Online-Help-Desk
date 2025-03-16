@@ -13,6 +13,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { BadgeModule } from 'primeng/badge';
 import { ChipModule } from 'primeng/chip';
 import { TagModule } from 'primeng/tag';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-facility-major-detail-section-content',
@@ -32,6 +33,7 @@ import { TagModule } from 'primeng/tag';
     BadgeModule,
     ChipModule,
     TagModule,
+    RouterLink,
   ],
   templateUrl: './facility-major-detail-section-content.component.html',
   styleUrl: './facility-major-detail-section-content.component.scss'
