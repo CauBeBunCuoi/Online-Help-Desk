@@ -13,7 +13,7 @@ import { publicApi } from '../../../api/instance/axiosInstance';
 import { errorAlert, successAlert } from '../../../core/utils/alert.util';
 import { jwtDecode } from 'jwt-decode';
 import { FormsModule } from '@angular/forms';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../../environments/environment';
 
 export const validateEmail = (email) => {
   return String(email)

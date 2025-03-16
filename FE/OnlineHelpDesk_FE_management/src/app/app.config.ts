@@ -18,6 +18,8 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { rootReducers } from './store/rootReducers';
 import { metaReducers } from './store/metaReducers';
 import { provideHttpClient } from '@angular/common/http';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,6 +40,12 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(SidebarModule, DropdownModule),
     IconSetService,
     provideAnimationsAsync(),
+    // primeng
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    }),
 
     provideStore(
       rootReducers,

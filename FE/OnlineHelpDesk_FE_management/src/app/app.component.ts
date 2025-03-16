@@ -6,15 +6,15 @@ import { delay, filter, map, tap } from 'rxjs/operators';
 
 import { ColorModeService } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
-import AllIcons from '@coreui/icons'; 
+import AllIcons from '@coreui/icons';
 import { iconSubset } from './icons/icon-subset';
 import { AccountService } from './core/service/accounts.service';
 
 
 @Component({
-    selector: 'app-root',
-    template: '<router-outlet />',
-    imports: [RouterOutlet]
+  selector: 'app-root',
+  template: '<router-outlet />',
+  imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
   title = 'CoreUI Angular Admin Template';
@@ -41,8 +41,8 @@ export class AppComponent implements OnInit {
     this.accountService.syncAuthWithLocalStorage();
 
     this.#router.events.pipe(
-        takeUntilDestroyed(this.#destroyRef)
-      ).subscribe((evt) => {
+      takeUntilDestroyed(this.#destroyRef)
+    ).subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
       }
