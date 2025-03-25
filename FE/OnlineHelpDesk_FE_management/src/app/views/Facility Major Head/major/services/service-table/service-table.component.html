@@ -1,0 +1,306 @@
+<p-toast />
+<p-confirmdialog />
+
+<button type="button" class="btn btn-success" (click)="showDialogAdd()">Add</button>
+<div class="card">
+    <p-table #dt2 [value]="services" dataKey="Service.Name" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="Service.Name" [globalFilterFields]="[
+        'Service.Id',
+            'Service.Name',
+            'Service.MainDescription',
+            'Service.WorkShiftsDescription',
+            'Major.Name',
+            'ServiceType.name',
+            'Service.IsOpen'
+        ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+
+        <!-- Thanh tìm kiếm chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-end">
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                        placeholder="Tìm kiếm Service" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Service.Id">Id</th>
+                <th pSortableColumn="Service.Name">Name</th>
+                <th pSortableColumn="Service.MainDescription">Main Description</th>
+                <th pSortableColumn="Service.WorkShiftsDescription">Work Shift</th>
+                <th pSortableColumn="Major.Name">Major</th>
+                <th pSortableColumn="ServiceType.name">Service Type</th>
+                <th pSortableColumn="Service.IsOpen">Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-service>
+            <tr>
+                <td>{{ service.Service.Id }}</td>
+                <td>{{ service.Service.Name }}</td>
+                <td>{{ service.Service.MainDescription }}</td>
+                <td>{{ service.Service.WorkShiftsDescription }}</td>
+                <td>{{ service.Major.Name }}</td>
+                <td>{{ service.ServiceType.name }}</td>
+                <td>
+                    <p-tag [value]="service.Service.IsOpen ? 'Open' : 'Closed'"
+                        [severity]="service.Service.IsOpen ? 'success' : 'danger'">
+                    </p-tag>
+                </td>
+                <td>
+                    <p-button (click)="confirmDelete($event, service.Service.Id)" label="Delete" severity="danger"
+                        [outlined]="true" />
+                    <p-button (click)="showDialogUpdate(service.Service.Id)" label="Update" class="ms-2" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog header="Add Service" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add service information</span>
+
+    <!-- Logo -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-cog" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadLogo mode="basic" accept="image/*" chooseLabel="Choose Logo"
+            (onSelect)="onFileSelectLogo($event)" />
+    </div>
+
+    <form [formGroup]="addServiceForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="Name" class="col-sm-4 col-form-label fw-semibold">Service Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="Name" class="form-control" formControlName="Name" />
+                @if (addServiceForm.controls['Name'].invalid && addServiceForm.controls['Name'].touched) {
+                <small class="text-danger">
+                    Service name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Main Description -->
+        <div class="mb-3 row">
+            <label for="MainDescription" class="col-sm-4 col-form-label fw-semibold">Main Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="MainDescription" class="form-control"
+                    formControlName="MainDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Work Shift Description -->
+        <div class="mb-3 row">
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+                Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Open -->
+        <div class="mb-3 row">
+            <label for="IsOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
+            <div class="col-sm-8">
+                <p-checkbox binary="true" inputId="IsOpen" formControlName="IsOpen"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Close Schedule Date -->
+        <div class="mb-3 row">
+            <label for="CloseScheduleDate" class="col-sm-4 col-form-label fw-semibold">Close Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="CloseScheduleDate" type="date" class="form-control"
+                    formControlName="CloseScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Open Schedule Date -->
+        <div class="mb-3 row">
+            <label for="OpenScheduleDate" class="col-sm-4 col-form-label fw-semibold">Open Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="OpenScheduleDate" type="date" class="form-control"
+                    formControlName="OpenScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Facility Major -->
+        <div class="mb-3 row">
+            <label for="FacilitymajorId" class="col-sm-4 col-form-label fw-semibold">Facility Major</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilityMajorOptions" optionLabel="name" optionValue="id"
+                    formControlName="FacilitymajorId" placeholder="Select Facility Major"></p-select>
+            </div>
+        </div>
+
+        <!-- Service Type -->
+        <div class="mb-3 row">
+            <label for="ServiceTypeId" class="col-sm-4 col-form-label fw-semibold">Service Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="serviceTypes" optionLabel="label" optionValue="value"
+                    formControlName="ServiceTypeId" placeholder="Select Service Type"></p-select>
+            </div>
+        </div>
+
+        <!-- Request Init Description -->
+        <div class="mb-3 row">
+            <label for="RequestInitHintDescription" class="col-sm-4 col-form-label fw-semibold">Request Init
+                Hint</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="RequestInitHintDescription" class="form-control"
+                    formControlName="RequestInitHintDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Init Request Description Required -->
+        <div class="mb-3 row">
+            <label for="IsInitRequestDescriptionRequired" class="col-sm-4 col-form-label fw-semibold">Require Init
+                Request Description</label>
+            <div class="col-sm-8">
+                <p-checkbox binary="true" inputId="IsInitRequestDescriptionRequired"
+                    formControlName="IsInitRequestDescriptionRequired"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Add" (click)="addService()" [disabled]="addServiceForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Service" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update service information</span>
+
+    <!-- Logo -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-cog" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadLogo mode="basic" accept="image/*" chooseLabel="Choose Logo"
+            (onSelect)="onFileSelectLogo($event)" />
+    </div>
+
+    <form [formGroup]="updateServiceForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="Name" class="col-sm-4 col-form-label fw-semibold">Service Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="Name" class="form-control" formControlName="Name" />
+                @if (updateServiceForm.controls['Name'].invalid && updateServiceForm.controls['Name'].touched) {
+                <small class="text-danger">
+                    Service name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Main Description -->
+        <div class="mb-3 row">
+            <label for="MainDescription" class="col-sm-4 col-form-label fw-semibold">Main Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="MainDescription" class="form-control"
+                    formControlName="MainDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Work Shift Description -->
+        <div class="mb-3 row">
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+                Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Open -->
+        <div class="mb-3 row">
+            <label for="IsOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
+            <div class="col-sm-8">
+                <p-checkbox binary="true" inputId="IsOpen" formControlName="IsOpen"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Close Schedule Date -->
+        <div class="mb-3 row">
+            <label for="CloseScheduleDate" class="col-sm-4 col-form-label fw-semibold">Close Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="CloseScheduleDate" type="date" class="form-control"
+                    formControlName="CloseScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Open Schedule Date -->
+        <div class="mb-3 row">
+            <label for="OpenScheduleDate" class="col-sm-4 col-form-label fw-semibold">Open Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="OpenScheduleDate" type="date" class="form-control"
+                    formControlName="OpenScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Facility Major -->
+        <div class="mb-3 row">
+            <label for="FacilitymajorId" class="col-sm-4 col-form-label fw-semibold">Facility Major</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilityMajorOptions" optionLabel="name" optionValue="id"
+                    formControlName="FacilitymajorId" placeholder="Select Facility Major"></p-select>
+            </div>
+        </div>
+
+        <!-- Service Type -->
+        <div class="mb-3 row">
+            <label for="ServiceTypeId" class="col-sm-4 col-form-label fw-semibold">Service Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="serviceTypes" optionLabel="label" optionValue="value"
+                    formControlName="ServiceTypeId" placeholder="Select Service Type"></p-select>
+            </div>
+        </div>
+
+        <!-- Request Init Description -->
+        <div class="mb-3 row">
+            <label for="RequestInitHintDescription" class="col-sm-4 col-form-label fw-semibold">Request Init
+                Hint</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="RequestInitHintDescription" class="form-control"
+                    formControlName="RequestInitHintDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Init Request Description Required -->
+        <div class="mb-3 row">
+            <label for="IsInitRequestDescriptionRequired" class="col-sm-4 col-form-label fw-semibold">Require Init
+                Request Description</label>
+            <div class="col-sm-8">
+                <p-checkbox binary="true" inputId="IsInitRequestDescriptionRequired"
+                    formControlName="IsInitRequestDescriptionRequired"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateService()" [disabled]="updateServiceForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

@@ -1,48 +1,83 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private accounts: any[] = [
     {
-      id: 1,
-      logo: 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
-      email: 'john.doe@example.com',
-      password: 'hashedpassword123', // Chỉ giả lập, thực tế cần mã hóa
-      fullName: 'John Doe',
-      roleId: 2,
-      jobTypeId: 1,
-      dateOfBirth: new Date(1990, 5, 20),
-      address: '123 Main St, New York, NY',
-      phone: '1234567890',
-      isDeactivated: false,
-      createdAt: new Date()
+      Account: {
+        Id: 1,
+        FullName: 'John Doe',
+        Email: 'john.doe@example.com',
+        DateOfBirth: '1990-06-15',
+        Phone: '123456789',
+        Address: '123 Main St, New York, NY',
+        RoleId: 2,
+        JobTypeId: 1,
+        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
+        IsDeactivated: false,
+        CreatedAt: new Date().toISOString(),
+      },
+      Role: {
+        Id: 2,
+        Name: 'Admin',
+      },
+      JobType: {
+        Id: 1,
+        Name: 'Software Engineer',
+      },
     },
     {
-      id: 2,
-      logo: 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
-      email: 'jane.smith@example.com',
-      password: 'hashedpassword456',
-      fullName: 'Jane Smith',
-      roleId: 3,
-      jobTypeId: 2,
-      dateOfBirth: new Date(1995, 8, 15),
-      address: '456 Elm St, Los Angeles, CA',
-      phone: '0987654321',
-      isDeactivated: true,
-      createdAt: new Date()
-    }
+      Account: {
+        Id: 2,
+        FullName: 'Jane Smith',
+        Email: 'jane.smith@example.com',
+        DateOfBirth: '1995-08-22',
+        Phone: '987654321',
+        Address: '456 Elm St, Los Angeles, CA',
+        RoleId: 3,
+        JobTypeId: 2,
+        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
+        IsDeactivated: true,
+        CreatedAt: new Date().toISOString(),
+      },
+      Role: {
+        Id: 3,
+        Name: 'User',
+      },
+      JobType: {
+        Id: 2,
+        Name: 'Mechanical Engineer',
+      },
+    },
   ];
 
-  // ✅ Trả về danh sách tài khoản dưới dạng Promise
-  getAccounts(): Promise<any[]> {
+  // ✅ Lấy danh sách tất cả accounts staff
+  getAccountStaff(): Promise<any[]> {
+    return Promise.resolve(this.accounts);
+  }
+  
+  // ✅ Lấy danh sách tất cả accounts member
+  getAccountMember(): Promise<any[]> {
     return Promise.resolve(this.accounts);
   }
 
+  // ✅ Tìm account theo ID
   findById(id: number): Promise<any | null> {
-    const account = this.accounts.find(acc => acc.id === id);
+    const account = this.accounts.find(acc => acc.Account.Id === id);
     return Promise.resolve(account || null);
   }
-  
+
+  // ✅ Lọc account theo RoleId
+  getAccountsByRole(roleId: number): Promise<any[]> {
+    const filteredAccounts = this.accounts.filter(acc => acc.Account.RoleId === roleId);
+    return Promise.resolve(filteredAccounts);
+  }
+
+  // ✅ Lọc account theo JobTypeId
+  getAccountsByJobType(jobTypeId: number): Promise<any[]> {
+    const filteredAccounts = this.accounts.filter(acc => acc.Account.JobTypeId === jobTypeId);
+    return Promise.resolve(filteredAccounts);
+  }
 }

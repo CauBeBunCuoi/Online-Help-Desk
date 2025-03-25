@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { AuthService } from '../../../../core/service/auth.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -48,6 +47,7 @@ import { FacilityService } from '../../../../core/service/facility.service';
 })
 export class FacilityListComponent {
   facilities!: any[];
+  majors!: any[];
 
   addFacilityForm: FormGroup;
   add: boolean = false;
@@ -67,9 +67,14 @@ export class FacilityListComponent {
     private fb: FormBuilder
   ) {
     this.addFacilityForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required, Validators.minLength(3)]],
-      logo: [''] // Thêm ảnh dưới dạng Base64
+      Name: ['', [Validators.required, Validators.minLength(3)]], // Đúng với JSON (chữ N viết hoa)
+      Description: ['', [Validators.required, Validators.minLength(3)]], // Đúng với JSON
+      Image: [''] // Sử dụng "Image" thay vì "logo" để khớp JSON
+    });
+    this.updateFacilityForm = this.fb.group({
+      Name: ['', [Validators.required, Validators.minLength(3)]], // Đúng với JSON (chữ N viết hoa)
+      Description: ['', [Validators.required, Validators.minLength(3)]], // Đúng với JSON
+      Image: [''] // Sử dụng "Image" thay vì "logo" để khớp JSON
     });
   }
 
@@ -84,7 +89,7 @@ export class FacilityListComponent {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
@@ -121,17 +126,17 @@ export class FacilityListComponent {
     // 🔥 Gọi API lấy thông tin facility
     this.facilityService.findById(id).then(facility => {
       if (facility) {
-        this.addFacilityForm.patchValue({
-          name: facility.name,
-          description: facility.description,
-          logo: facility.logo || null
+        this.updateFacilityForm.patchValue({
+          Name: facility.Facility.Name, // Cập nhật field đúng với JSON
+          Description: facility.Facility.Description,
+          Image: facility.Facility.ImageUrl || null
         });
 
-        this.logoUrl = facility.logo || null; // Cập nhật ảnh đại diện
+        this.majors = facility.Major;
+        this.logoUrl = facility.Facility.ImageUrl || null; // Cập nhật ảnh đại diện
       }
     });
   }
-
 
   hideDialogAdd() {
     this.addFacilityForm.reset();
@@ -146,7 +151,7 @@ export class FacilityListComponent {
   }
 
   hideDialogUpdate() {
-    this.addFacilityForm.reset();
+    this.updateFacilityForm.reset();
     this.logoUrl = null; // X
     // 🔥 Reset PrimeNG FileUpload
     setTimeout(() => {
@@ -163,7 +168,8 @@ export class FacilityListComponent {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.logoUrl = e.target.result; // Hiển thị ảnh trước
-        this.addFacilityForm.patchValue({ logo: e.target.result }); // Gán vào FormGroup
+        this.addFacilityForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.updateFacilityForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }
@@ -180,12 +186,12 @@ export class FacilityListComponent {
   }
 
   updateFacility() {
-    if (this.addFacilityForm.valid) {
-      console.log('Form update Data:', this.addFacilityForm.value); // Gửi lên API
+    if (this.updateFacilityForm.valid) {
+      console.log('Form update Data:', this.updateFacilityForm.value); // Gửi lên API
       this.hideDialogUpdate();
     } else {
       console.log('Form update Invalid');
-      this.addFacilityForm.markAllAsTouched();
+      this.updateFacilityForm.markAllAsTouched();
     }
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { FacilityService } from '../../../../core/service/facility.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -15,7 +16,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { HttpClientModule } from '@angular/common/http';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { CheckboxModule } from 'primeng/checkbox';
+import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -38,6 +39,7 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
     IconFieldModule,
     InputIconModule,
     CheckboxModule,
+    Checkbox,
     MultiSelectModule,
     SelectModule,
     HttpClientModule,
@@ -49,13 +51,12 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 })
 export class MajorListComponent implements OnInit {
   facilityMajors!: any[];
-  facilities = [
-    { label: 'Main Campus', value: 1 },
-    { label: 'North Wing', value: 2 },
-    { label: 'South Block', value: 3 },
-    { label: 'East Hall', value: 4 },
-    { label: 'West Hall', value: 5 }
-  ];
+
+  // gọi service lấy facility và type major
+  facilityOptions: any[] = [];
+  selectedFacilityId: number | null = null;
+
+  // đợi lấy service
   facilityMajorTypes = [
     { label: 'Engineering', value: 1 },
     { label: 'Science', value: 2 },
@@ -63,7 +64,6 @@ export class MajorListComponent implements OnInit {
     { label: 'Medicine', value: 4 },
     { label: 'Business', value: 5 }
   ];
-
 
   addFacilityMajorForm: FormGroup;
   add: boolean = false;
@@ -74,7 +74,7 @@ export class MajorListComponent implements OnInit {
   logoUrl: string | null = null;
   backgroundUrl: string | null = null;
 
-  // updateStaffForm: FormGroup;
+  updateFacilityMajorForm: FormGroup;
   update: boolean = false;
   selectedFacilityMajorId: number | null = null; // Lưu ID của tài  khoản được chọn
 
@@ -82,27 +82,59 @@ export class MajorListComponent implements OnInit {
   activityValues: number[] = [0, 100];
 
   constructor(
+    private facilityService: FacilityService,
     private facilityMajorService: FacilityMajorService,
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private fb: FormBuilder
   ) {
     this.addFacilityMajorForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]], // Tên FacilityMajor
-      mainDescription: [''], // Mô tả chính
-      workShifstDescription: [''], // Mô tả ca làm việc
-      isOpen: [false, Validators.required], // Mở hay đóng
-      closeScheduleDate: [null], // Ngày đóng
-      openScheduleDate: [null], // Ngày mở
-      facilityMajorTypeId: [null, Validators.required], // Loại FacilityMajor (Số)
-      facilityId: [null, Validators.required], // Facility liên kết (Số)
-      logo: [''], // Thêm ảnh dưới dạng Base64
-      background: [''] // Thêm ảnh dưới dạng Base64
+      Name: ['', [Validators.required, Validators.minLength(3)]], // Tên Facility Major
+      MainDescription: [''], // Mô tả chính
+      WorkShifstDescription: [''], // Mô tả ca làm việc
+      FacilityMajorTypeId: [null, Validators.required], // Loại Facility Major
+      FacilityId: [null, Validators.required], // Facility liên kết
+      IsOpen: [false, Validators.required], // Trạng thái mở/đóng
+      CloseScheduleDate: [null], // Ngày đóng
+      OpenScheduleDate: [null], // Ngày mở
+      BackgroundImage: [''], // Ảnh nền (Base64 hoặc URL)
+      Image: [''] // Ảnh chính (Base64 hoặc URL)
+    });
+
+    this.updateFacilityMajorForm = this.fb.group({
+      Name: ['', [Validators.required, Validators.minLength(3)]], // Tên Facility Major
+      MainDescription: [''], // Mô tả chính
+      WorkShifstDescription: [''], // Mô tả ca làm việc
+      FacilityMajorTypeId: [null, Validators.required], // Loại Facility Major
+      FacilityId: [null, Validators.required], // Facility liên kết
+      IsOpen: [false, Validators.required], // Trạng thái mở/đóng
+      CloseScheduleDate: [null], // Ngày đóng
+      OpenScheduleDate: [null], // Ngày mở
+      BackgroundImage: [''], // Ảnh nền (Base64 hoặc URL)
+      Image: [''] // Ảnh chính (Base64 hoặc URL)
     });
   }
 
   ngOnInit() {
+    this.loadFacilityOptions();
     this.facilityMajorService.getFacilityMajors().then((data) => {
       this.facilityMajors = data;
+    });
+  }
+
+  loadFacilityOptions() {
+    this.facilityService.getFacilities().then(facilities => {
+      // Lọc danh sách Major từ facilities và loại bỏ trùng lặp
+      const uniqueFacilities = new Map<number, any>();
+
+      facilities.forEach(facility => {
+        if (!uniqueFacilities.has(facility.Facility.Id)) {
+          uniqueFacilities.set(facility.Facility.Id, {
+            id: facility.Facility.Id,
+            name: facility.Facility.Name
+          });
+        }
+      });
+      this.facilityOptions = Array.from(uniqueFacilities.values());
     });
   }
 
@@ -111,7 +143,7 @@ export class MajorListComponent implements OnInit {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
@@ -148,31 +180,35 @@ export class MajorListComponent implements OnInit {
     // 🔥 Gọi API lấy thông tin FacilityMajor
     this.facilityMajorService.findById(id).then(facilityMajor => {
       if (facilityMajor) {
-        const formattedCloseDate = facilityMajor.closeScheduleDate
-          ? new Date(facilityMajor.closeScheduleDate).toISOString().split('T')[0]
+        // 🔹 Định dạng ngày cho input type="date"
+        const formattedCloseDate = facilityMajor.Major.CloseScheduleDate
+          ? new Date(facilityMajor.Major.CloseScheduleDate).toISOString().split('T')[0]
           : null;
 
-        const formattedOpenDate = facilityMajor.openScheduleDate
-          ? new Date(facilityMajor.openScheduleDate).toISOString().split('T')[0]
+        const formattedOpenDate = facilityMajor.Major.OpenScheduleDate
+          ? new Date(facilityMajor.Major.OpenScheduleDate).toISOString().split('T')[0]
           : null;
 
-        this.addFacilityMajorForm.patchValue({
-          name: facilityMajor.name,
-          mainDescription: facilityMajor.mainDescription,
-          workShifstDescription: facilityMajor.workShifstDescription,
-          isOpen: facilityMajor.isOpen,
-          closeScheduleDate: formattedCloseDate, // Định dạng ngày
-          openScheduleDate: formattedOpenDate, // Định dạng ngày
-          facilityMajorTypeId: facilityMajor.facilityMajorTypeId,
-          facilityId: facilityMajor.facilityId,
-          logo: facilityMajor.logo || null,
-          background: facilityMajor.background || null
+        // 🔹 Cập nhật formControl với dữ liệu chính xác từ API
+        this.updateFacilityMajorForm.patchValue({
+          Name: facilityMajor.Major.Name,
+          MainDescription: facilityMajor.Major.MainDescription,
+          WorkShifstDescription: facilityMajor.Major.WorkShifstDescription,
+          IsOpen: facilityMajor.Major.IsOpen,
+          CloseScheduleDate: formattedCloseDate, // Định dạng ngày
+          OpenScheduleDate: formattedOpenDate, // Định dạng ngày
+          FacilityMajorTypeId: facilityMajor.MajorType.Id,
+          FacilityId: facilityMajor.Facility.Id,
+          Image: facilityMajor.Major.ImageUrl,
+          BackgroundImage: facilityMajor.Major.BackgroundImageUrl
         });
 
-        // Cập nhật hình ảnh hiển thị
-        this.logoUrl = facilityMajor.logo || null;
-        this.backgroundUrl = facilityMajor.background || null;
+        // 🔹 Cập nhật hình ảnh hiển thị
+        this.logoUrl = facilityMajor.Major.ImageUrl;
+        this.backgroundUrl = facilityMajor.Major.BackgroundImageUrl;
       }
+    }).catch(error => {
+      console.error('Error fetching facility major:', error);
     });
   }
 
@@ -189,6 +225,7 @@ export class MajorListComponent implements OnInit {
 
     this.add = false;
   }
+
   hideDialogUpdate() {
     this.addFacilityMajorForm.reset();
     this.logoUrl = null;
@@ -209,7 +246,8 @@ export class MajorListComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.logoUrl = e.target.result; // Hiển thị ảnh trước
-        this.addFacilityMajorForm.patchValue({ logo: e.target.result }); // Gán vào FormGroup
+        this.addFacilityMajorForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.updateFacilityMajorForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }
@@ -221,7 +259,8 @@ export class MajorListComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.backgroundUrl = e.target.result; // Hiển thị ảnh trước
-        this.addFacilityMajorForm.patchValue({ background: e.target.result }); // Gán vào FormGroup
+        this.addFacilityMajorForm.patchValue({ BackgroundImage: e.target.result }); // Gán vào FormGroup
+        this.updateFacilityMajorForm.patchValue({ BackgroundImage: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }

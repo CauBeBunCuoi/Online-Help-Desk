@@ -1,62 +1,68 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FacilityService {
   private facilities: any[] = [
     {
-      id: 1,
-      name: 'Library',
-      description: 'A place to read and study',
-      logo: 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
-      createdAt: new Date(),
-      isDeactivated: false
+      Facility: {
+        Id: 1,
+        Name: 'Main Campus',
+        Description: 'Main facility for all operations',
+        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-co-phan-giao-duc-dao-tao-imap-viet-nam-5da97e1f22484.jpg',
+        IsDeactivated: false,
+        CreatedAt: new Date().toISOString(),
+      },
     },
     {
-      id: 2,
-      name: 'Sports Complex',
-      description: 'Facilities for indoor and outdoor sports',
-      logo: 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
-      createdAt: new Date(),
-      isDeactivated: false
-    }
+      Facility: {
+        Id: 2,
+        Name: 'Engineering Hub',
+        Description: 'Dedicated to engineering projects',
+        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-co-phan-giao-duc-dao-tao-imap-viet-nam-5da97e1f22484.jpg',
+        IsDeactivated: false,
+        CreatedAt: new Date().toISOString(),
+      },
+    },
   ];
 
-  // ✅ Lấy danh sách Facility
+  // ✅ Lấy danh sách tất cả cơ sở
   getFacilities(): Promise<any[]> {
     return Promise.resolve(this.facilities);
   }
 
-  // ✅ Tìm Facility theo ID
+  // ✅ Tìm cơ sở theo ID
   findById(id: number): Promise<any | null> {
-    const facility = this.facilities.find(f => f.id === id);
+    const facility = this.facilities.find(f => f.Facility.Id === id);
     return Promise.resolve(facility || null);
   }
 
-  // ✅ Thêm mới Facility
-  addFacility(facility: any): Promise<void> {
-    const newFacility = { ...facility, id: this.facilities.length + 1, createdAt: new Date(), isDeactivated: false };
+  // ✅ Giả lập thêm cơ sở mới
+  addFacility(newFacility: any): Promise<void> {
+    newFacility.Facility.Id = this.facilities.length + 1; // Tạo ID tự động
+    newFacility.Facility.CreatedAt = new Date().toISOString();
     this.facilities.push(newFacility);
     return Promise.resolve();
   }
 
-  // ✅ Cập nhật Facility
-  updateFacility(id: number, updatedFacility: any): Promise<void> {
-    const index = this.facilities.findIndex(f => f.id === id);
+  // ✅ Giả lập cập nhật cơ sở
+  updateFacility(id: number, updatedData: any): Promise<boolean> {
+    const index = this.facilities.findIndex(f => f.Facility.Id === id);
     if (index !== -1) {
-      this.facilities[index] = { ...this.facilities[index], ...updatedFacility };
+      this.facilities[index].Facility = { ...this.facilities[index].Facility, ...updatedData };
+      return Promise.resolve(true);
     }
-    return Promise.resolve();
+    return Promise.resolve(false);
   }
 
-  // ✅ Deactivate Facility (Xóa mềm)
-  deactivateFacility(id: number): Promise<void> {
-    const facility = this.facilities.find(f => f.id === id);
-    if (facility) {
-      facility.isDeactivated = true;
+  // ✅ Giả lập xóa cơ sở
+  deleteFacility(id: number): Promise<boolean> {
+    const index = this.facilities.findIndex(f => f.Facility.Id === id);
+    if (index !== -1) {
+      this.facilities.splice(index, 1);
+      return Promise.resolve(true);
     }
-    return Promise.resolve();
+    return Promise.resolve(false);
   }
-
 }

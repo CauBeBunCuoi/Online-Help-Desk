@@ -49,10 +49,19 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
   providers: [ConfirmationService, MessageService],
 })
 export class StaffsComponent implements OnInit {
-  accounts!: any[];
+  staffs!: any[];
   roleTypes = [
     { label: 'Facility Major Head', value: 2 },
     { label: 'Nô lệ', value: 3 },
+  ];
+  jobTypes = [
+    { label: 'Đa cấp', value: 1 },
+    { label: 'Nô lệ', value: 2 },
+    { label: 'Bác sĩ', value: 3 },
+    { label: 'Công an', value: 4 },
+    { label: 'Bảo vệ', value: 5 },
+    { label: 'Giáo viên', value: 6 },
+    { label: 'Học sinh', value: 7 },
   ];
 
   selectedAccountId: number | null = null;
@@ -61,6 +70,7 @@ export class StaffsComponent implements OnInit {
   selectedFacilityMajors: any[] = []; // Lưu FacilityMajor được chọn
 
   addStaffForm: FormGroup;
+  updateStaffForm: FormGroup;
   add: boolean = false;
   @ViewChild('fileUploadRef') fileUpload!: FileUpload;
   avatarUrl: string | null = null;
@@ -81,20 +91,28 @@ export class StaffsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.addStaffForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      address: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-      dateOfBirth: ['', Validators.required],
-      roleId: ['', Validators.required],
-      avatar: [''] // Thêm ảnh dưới dạng Base64
+      FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Email: ['', [Validators.required, Validators.email]],
+      Password: ['', [Validators.required, Validators.minLength(6)]],
+      JobTypeId: [null, Validators.required], // Chuyển thành `null` thay vì chuỗi rỗng
+      RoleId: [null, Validators.required],
+      Address: ['', Validators.required],
+      DateOfBirth: ['', Validators.required],
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      Image: [''] // Avatar dưới dạng Base64
     });
+    this.updateStaffForm = this.fb.group({
+      FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      Address: ['', Validators.required],
+      Image: [''] // Ảnh dưới dạng Base64
+    });
+
   }
 
   ngOnInit() {
-    this.authService.getAccounts().then((data) => {
-      this.accounts = data;
+    this.authService.getAccountStaff().then((data) => {
+      this.staffs = data;
     });
     this.facilityMajorService.getFacilityMajors().then(data => {
       this.facilityMajors = data;
@@ -106,7 +124,7 @@ export class StaffsComponent implements OnInit {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
@@ -134,37 +152,29 @@ export class StaffsComponent implements OnInit {
 
   showDialogAdd() {
     this.add = true;
-    this.addStaffForm.get('roleId')?.enable(); // 🔥 Bật lại RoleId để chọn
+    this.addStaffForm.get('RoleId')?.enable(); // 🔥 Bật lại RoleId để chọn
   }
 
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
 
-    // 🔥 Gọi API lấy thông tin tài khoản
-    this.authService.findById(id).then(account => {
-      if (account) {
-        const formattedDate = account.dateOfBirth
-          ? new Date(account.dateOfBirth).toISOString().split('T')[0] // Chuyển sang YYYY-MM-DD
-          : null;
+    this.authService.findById(id).then(staff => {
+      if (staff) {
+        this.avatarUrl = staff.Account.ImageUrl || null; // Cập nhật avatar
 
-        this.addStaffForm.patchValue({
-          fullName: account.fullName,
-          email: account.email,
-          address: account.address,
-          phone: account.phone,
-          password: account.password,
-          dateOfBirth: formattedDate, // Gán ngày đã chuyển đổi
-          avatar: account.logo || null,
-        });
-
-        // ✅ Cập nhật RoleId đúng cách
-        this.addStaffForm.get('roleId')?.setValue(account.roleId);
-        this.addStaffForm.get('roleId')?.disable(); // Không cho phép chỉnh sửa
-
-        this.avatarUrl = account.logo || null; // Cập nhật ảnh đại diện
+        // 🔥 Cập nhật dữ liệu vào form
+        this.updateStaffForm.patchValue({
+          FullName: staff.Account.FullName,
+          Phone: staff.Account.Phone,
+          Address: staff.Account.Address,
+          Image: staff.Account.ImageUrl // Giữ ảnh nếu có
+        }); 
       }
+    }).catch(error => {
+      console.error('Error fetching staff:', error);
     });
   }
+
 
   hideDialogAdd() {
     this.addStaffForm.reset();
@@ -196,7 +206,8 @@ export class StaffsComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.avatarUrl = e.target.result; // Hiển thị ảnh trước
-        this.addStaffForm.patchValue({ avatar: e.target.result }); // Gán vào FormGroup
+        this.addStaffForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.updateStaffForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }
@@ -213,12 +224,12 @@ export class StaffsComponent implements OnInit {
   }
 
   updateStaff() {
-    if (this.addStaffForm.valid) {
-      console.log('Form update Data:', this.addStaffForm.value); // Gửi lên API
+    if (this.updateStaffForm.valid) {
+      console.log('Form update Data:', this.updateStaffForm.value); // Gửi lên API
       this.hideDialogUpdate();
     } else {
       console.log('Form update Invalid');
-      this.addStaffForm.markAllAsTouched();
+      this.updateStaffForm.markAllAsTouched();
     }
   }
 
@@ -246,11 +257,10 @@ export class StaffsComponent implements OnInit {
     }
 
     const formData = new FormData();
-    formData.append('accountId', this.selectedAccountId.toString()); // Thêm ID người dùng
     formData.append('workDescription', this.workDescription); // Thêm mô tả công việc
 
     this.selectedFacilityMajors.forEach(fm => {
-      formData.append('facilityMajorsId', fm.id.toString());
+      formData.append('facilityMajorsId', fm.Major.Id.toString());
     });
 
     console.log('FormData Values:');

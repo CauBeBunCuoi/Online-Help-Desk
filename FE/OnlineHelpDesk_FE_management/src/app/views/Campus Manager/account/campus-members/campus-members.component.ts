@@ -45,9 +45,20 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
   providers: [ConfirmationService, MessageService],
 })
 export class CampusMembersComponent {
-  accounts!: any[];
+  members!: any[];
+
+  jobTypes = [
+    { label: 'Đa cấp', value: 1 },
+    { label: 'Nô lệ', value: 2 },
+    { label: 'Bác sĩ', value: 3 },
+    { label: 'Công an', value: 4 },
+    { label: 'Bảo vệ', value: 5 },
+    { label: 'Giáo viên', value: 6 },
+    { label: 'Học sinh', value: 7 },
+  ];
 
   addMemberForm: FormGroup;
+  updateMemberForm: FormGroup;
   add: boolean = false;
   @ViewChild('fileUploadRef') fileUpload!: FileUpload;
   avatarUrl: string | null = null;
@@ -64,20 +75,27 @@ export class CampusMembersComponent {
     private fb: FormBuilder
   ) {
     this.addMemberForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      address: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-      dateOfBirth: ['', Validators.required],
-      avatar: [''], // Thêm ảnh dưới dạng Base64,
-      roleId: 4,
+      FullName: ['', [Validators.required, Validators.minLength(3)]], // Họ và tên (bắt buộc, tối thiểu 3 ký tự)
+      Email: ['', [Validators.required, Validators.email]], // Email (bắt buộc, đúng định dạng)
+      Password: ['', [Validators.required, Validators.minLength(6)]], // Mật khẩu (bắt buộc, tối thiểu 6 ký tự)
+      JobTypeId: [null, Validators.required], // Nghề nghiệp (bắt buộc)
+      Address: ['', Validators.required], // Địa chỉ (bắt buộc)
+      DateOfBirth: ['', Validators.required], // Ngày sinh (bắt buộc)
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]], // Số điện thoại (10-11 số)
+      Image: [''] // Avatar (Base64)
     });
+    this.updateMemberForm = this.fb.group({
+      FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      Address: ['', Validators.required],
+      Image: [''] // Ảnh dưới dạng Base64
+    });
+
   }
 
   ngOnInit() {
-    this.authService.getAccounts().then((data) => {
-      this.accounts = data;
+    this.authService.getAccountMember().then((data) => {
+      this.members = data;
     });
   }
 
@@ -86,7 +104,7 @@ export class CampusMembersComponent {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
@@ -118,27 +136,21 @@ export class CampusMembersComponent {
 
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
-    this.selectedAccountId = id; // Lưu ID của tài khoản được chọn
 
-    // 🔥 Gọi API lấy thông tin tài khoản
-    this.authService.findById(id).then(account => {
-      if (account) {
-        const formattedDate = account.dateOfBirth
-          ? new Date(account.dateOfBirth).toISOString().split('T')[0] // Chuyển sang YYYY-MM-DD
-          : null;
+    this.authService.findById(id).then(staff => {
+      if (staff) {
+        this.avatarUrl = staff.Account.ImageUrl || null; // Cập nhật avatar
 
-        this.addMemberForm.patchValue({
-          fullName: account.fullName,
-          email: account.email,
-          address: account.address,
-          phone: account.phone,
-          password: account.password,
-          dateOfBirth: formattedDate, // Gán ngày đã chuyển đổi
-          avatar: account.logo || null
+        // 🔥 Cập nhật dữ liệu vào form
+        this.updateMemberForm.patchValue({
+          FullName: staff.Account.FullName,
+          Phone: staff.Account.Phone,
+          Address: staff.Account.Address,
+          Image: staff.Account.ImageUrl // Giữ ảnh nếu có
         });
-
-        this.avatarUrl = account.logo || null; // Cập nhật ảnh đại diện
       }
+    }).catch(error => {
+      console.error('Error fetching staff:', error);
     });
   }
 
@@ -156,7 +168,7 @@ export class CampusMembersComponent {
   }
 
   hideDialogUpdate() {
-    this.addMemberForm.reset();
+    this.updateMemberForm.reset();
     this.avatarUrl = null; // X
     // 🔥 Reset PrimeNG FileUpload
     setTimeout(() => {
@@ -173,7 +185,8 @@ export class CampusMembersComponent {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.avatarUrl = e.target.result; // Hiển thị ảnh trước
-        this.addMemberForm.patchValue({ avatar: e.target.result }); // Gán vào FormGroup
+        this.addMemberForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.updateMemberForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }
@@ -190,12 +203,12 @@ export class CampusMembersComponent {
   }
 
   updateMember() {
-    if (this.addMemberForm.valid) {
-      console.log('Form update Data:', this.addMemberForm.value); // Gửi lên API
+    if (this.updateMemberForm.valid) {
+      console.log('Form update Data:', this.updateMemberForm.value); // Gửi lên API
       this.hideDialogUpdate();
     } else {
       console.log('Form update Invalid');
-      this.addMemberForm.markAllAsTouched();
+      this.updateMemberForm.markAllAsTouched();
     }
   }
 }

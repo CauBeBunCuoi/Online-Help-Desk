@@ -1,0 +1,123 @@
+<p-toast />
+<p-confirmdialog />
+<div class="card">
+    <p-table #dt2 [value]="filteredAssignees" dataKey="Account.Id" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="Account.FullName"
+        [globalFilterFields]="['Account.FullName', 'Account.Email', 'Account.Phone', 'JobType.Name', 'Role.Name']"
+        [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+
+        <!-- Thanh tìm kiếm chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-between">
+                <!-- Ô tìm kiếm -->
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)" placeholder="Search Assignee" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Account.Id">ID</th>
+                <th pSortableColumn="Account.FullName">Full Name</th>
+                <th pSortableColumn="Account.Email">Email</th>
+                <th pSortableColumn="Account.Phone">Phone</th>
+                <th pSortableColumn="JobType.Name">JobType</th>
+                <th pSortableColumn="Role.Name">Role</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-assignee>
+            <tr>
+                <td>{{ assignee.Account.Id }}</td>
+                <td>{{ assignee.Account.FullName }}</td>
+                <td>{{ assignee.Account.Email }}</td>
+                <td>{{ assignee.Account.Phone }}</td>
+                <td>{{ assignee.JobType.Name }}</td>
+                <td>{{ assignee.Role.Name }}</td>
+                <td>
+                    <p-button (click)="confirmDelete($event, assignee.Account.Id)" label="Delete" severity="danger"
+                        [outlined]="true" />
+                    <p-button (click)="showDialogUpdate(assignee.Account.Id)" label="Update" class="ms-2" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Work Description" [modal]="true" [(visible)]="update" [style]="{ width: '60rem' }"
+    [closable]="false">
+    <span class="text-muted d-block mb-3">Update the work description for this staff</span>
+
+    <div class="d-flex gap-4">
+        <!-- 🏢 Danh sách Majors -->
+        <div class="flex-grow-1 card">
+            <h5 class="text-center mb-3">Assigned Majors</h5>
+            <p-table #dt2 [value]="selectedEmployeeMajors" dataKey="Id" [paginator]="true" [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 25]" sortField="Name" [globalFilterFields]="[
+                    'Id',
+                    'Name',
+                    'MainDescription',
+                    'WorkShifstDescription'
+                ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '25rem' }">
+
+                <!-- Header -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="Id">ID</th>
+                        <th pSortableColumn="Name">Name</th>
+                        <th pSortableColumn="MainDescription">Main Description</th>
+                        <th pSortableColumn="WorkShifstDescription">Work Shift</th>
+                        <th pSortableColumn="IsOpen">Status</th>
+                    </tr>
+                </ng-template>
+
+                <!-- Body -->
+                <ng-template pTemplate="body" let-major>
+                    <tr>
+                        <td>{{ major.Id }}</td>
+                        <td>{{ major.Name }}</td>
+                        <td>{{ major.MainDescription }}</td>
+                        <td>{{ major.WorkShifstDescription }}</td>
+                        <td>
+                            <p-tag [value]="major.IsOpen ? 'Open' : 'Closed'"
+                                [severity]="major.IsOpen ? 'success' : 'danger'">
+                            </p-tag>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <!-- 📌 Form cập nhật Work Description -->
+        <div class="flex-grow-1">
+            <form [formGroup]="updateMajorAssignmentForm">
+                <!-- 📝 Work Description -->
+                <div class="mb-3">
+                    <label for="WorkDescription" class="fw-semibold d-block">Work Description</label>
+                    <textarea pInputTextarea id="WorkDescription" class="form-control w-100"
+                        formControlName="WorkDescription"></textarea>
+                    <small *ngIf="updateMajorAssignmentForm.controls['WorkDescription'].invalid &&
+                        updateMajorAssignmentForm.controls['WorkDescription'].touched" class="text-danger">
+                        Work description is required (Min 3 chars).
+                    </small>
+                </div>
+                
+
+                <!-- 📌 Footer -->
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+                    <p-button label="Update" (click)="updateMajorAssignment()"
+                        [disabled]="updateMajorAssignmentForm.invalid" />
+                </div>
+            </form>
+        </div>
+    </div>
+</p-dialog>

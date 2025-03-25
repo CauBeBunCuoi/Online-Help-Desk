@@ -1,11 +1,13 @@
 <p-toast />
 <p-confirmdialog />
 <div class="container">
-    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-success" (click)="showDialogAdd()">Add</button>
+    </div>
     <div class="card">
-        <p-table #dt2 [value]="facilityItems" dataKey="id" [paginator]="true" [rows]="10"
-            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="name" [globalFilterFields]="['name']"
-            [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+        <p-table #dt2 [value]="facilityItems" dataKey="Item.Id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Item.Name"
+            [globalFilterFields]="['Item.Name']" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
 
             <!-- Thanh tìm kiếm chung -->
             <ng-template #caption>
@@ -15,7 +17,7 @@
                             <i class="pi pi-search"></i>
                         </p-inputicon>
                         <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                            placeholder="Tìm kiếm Facility Item" />
+                            placeholder="Search Facility Item" />
                     </p-iconfield>
                 </div>
             </ng-template>
@@ -23,69 +25,72 @@
             <!-- Header -->
             <ng-template pTemplate="header">
                 <tr>
-                    <th pSortableColumn="id">ID</th>
-                    <th pSortableColumn="name">Tên Facility Item</th>
-                    <th pSortableColumn="count">Số lượng</th>
-                    <th pSortableColumn="createdAt">Ngày tạo</th>
-                    <th pSortableColumn="updatedAt">Ngày cập nhật</th>
-                    <th>Hành động</th>
+                    <th pSortableColumn="Item.Id">ID</th>
+                    <th pSortableColumn="Item.Name">Facility Item Name</th>
+                    <th pSortableColumn="Item.Count">Total Quantity</th>
+                    <th pSortableColumn="Item.InUseCount">In Use</th>
+                    <th pSortableColumn="Item.CreatedAt">Created At</th>
+                    <th pSortableColumn="Item.UpdatedAt">Updated At</th>
+                    <th>Actions</th>
                 </tr>
             </ng-template>
 
             <!-- Body -->
             <ng-template pTemplate="body" let-item>
                 <tr>
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.count }}</td>
-                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ item.Item.Id }}</td>
+                    <td>{{ item.Item.Name }}</td>
+                    <td>{{ item.Item.Count }}</td>
+                    <td>{{ item.Item.InUseCount }}</td>
+                    <td>{{ item.Item.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ item.Item.UpdatedAt | date: 'dd/MM/yyyy' }}</td>
                     <td>
-                        <p-button (click)="confirmDelete(item.id)" label="Delete" severity="danger" [outlined]="true" />
-                        <p-button (click)="showDialogFacilityMajorTable(item.id, item.count)" label="Update 1" class="ms-2" />
-                        <p-button (click)="showDialogUpdate(item.id)" label="Update" class="ms-2" />
+                        <p-button (click)="confirmDelete($event, item.Item.Id)" label="Delete" severity="danger"
+                            [outlined]="true" />
+                        <p-button (click)="showDialogFacilityMajorTable(item.Item.Id, item.Item.Count)" label="Update 1"
+                            class="ms-2" />
+                        <p-button (click)="showDialogUpdate(item.Item.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
             </ng-template>
         </p-table>
-
     </div>
 </div>
-<!-- Dialog Add Thâm -->
-<p-dialog header="Add Faility Item" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
-    <span class="text-muted d-block mb-3">Add information</span>
+
+<!-- Dialog Add Item -->
+<p-dialog header="Add Facility Item" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add Item Information</span>
+
+    <!-- Ảnh Item -->
     <div class="text-center mb-3">
         @if (imageUrl) {
-        <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar [image]="imageUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
         } @else {
-        <p-avatar icon="pi pi-user" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
         }
-        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
             (onSelect)="onFileSelect($event)" />
     </div>
 
     <form [formGroup]="addFacilityItemForm">
         <!-- Name -->
         <div class="mb-3 row">
-            <label for="name" class="col-sm-4 col-form-label fw-semibold">Name</label>
+            <label for="name" class="col-sm-4 col-form-label fw-semibold">Item Name</label>
             <div class="col-sm-8">
-                <input pInputText id="name" class="form-control" formControlName="name" />
-                @if (addFacilityItemForm.controls['name'].invalid &&
-                addFacilityItemForm.controls['name'].touched) {
-                <small class="text-danger">
-                    Name is required (Min 3 chars).
-                </small> }
+                <input pInputText id="name" class="form-control" formControlName="Name" />
+                @if (addFacilityItemForm.controls['Name'].invalid && addFacilityItemForm.controls['Name'].touched) {
+                <small class="text-danger">Item Name is required (Min 3 chars).</small>
+                }
             </div>
         </div>
-        <!-- Phone -->
+
+        <!-- Count -->
         <div class="mb-3 row">
-            <label for="amount" class="col-sm-4 col-form-label fw-semibold">Amount</label>
+            <label for="count" class="col-sm-4 col-form-label fw-semibold">Count</label>
             <div class="col-sm-8">
-                <input pInputText id="amount" class="form-control" formControlName="count" />
-                @if (addFacilityItemForm.controls['count'].invalid && addFacilityItemForm.controls['count'].touched) {
-                <small class="text-danger">
-                    Amount must be more than 1
-                </small>
+                <input pInputText id="count" type="number" class="form-control" formControlName="Count" />
+                @if (addFacilityItemForm.controls['Count'].invalid && addFacilityItemForm.controls['Count'].touched) {
+                <small class="text-danger">Count must be at least 1.</small>
                 }
             </div>
         </div>
@@ -98,96 +103,150 @@
 </p-dialog>
 
 <!-- Dialog Update cập nhật -->
-<p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
-    <span class="text-muted d-block mb-3">Update information</span>
-    <div class="text-center mb-3">
-        @if (imageUrl) {
-        <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
-        } @else {
-        <p-avatar icon="pi pi-user" class="custom-avatar mb-3"></p-avatar>
-        }
-        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
-            (onSelect)="onFileSelect($event)" />
-    </div>
+<p-dialog header="Update Facility Item" [modal]="true" [(visible)]="update" [style]="{ width: '60rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update Item Information</span>
 
-    <form [formGroup]="addFacilityItemForm">
-        <!-- Name -->
-        <div class="mb-3 row">
-            <label for="name" class="col-sm-4 col-form-label fw-semibold">Name</label>
-            <div class="col-sm-8">
-                <input pInputText id="name" class="form-control" formControlName="name" />
-                @if (addFacilityItemForm.controls['name'].invalid &&
-                addFacilityItemForm.controls['name'].touched) {
-                <small class="text-danger">
-                    Name is required (Min 3 chars).
-                </small> }
-            </div>
+    <div class="d-flex">
+        <!-- Bảng Facility Major -->
+        <div class="me-4" style="width: 40%;">
+            <p-table #dt3 [value]="itemMajors" dataKey="Major.Id" [paginator]="true" [rows]="5"
+                [rowsPerPageOptions]="[5, 10]" [loading]="loading" sortField="Major.Name"
+                [globalFilterFields]="['Major.Name', 'Major.IsOpen']" [sortOrder]="-1"
+                [tableStyle]="{ 'min-width': '20rem' }">
+
+                <!-- Thanh tìm kiếm -->
+                <ng-template #caption>
+                    <div class="d-flex justify-content-end">
+                        <p-iconfield iconPosition="left">
+                            <p-inputicon>
+                                <i class="pi pi-search"></i>
+                            </p-inputicon>
+                            <input pInputText type="text" (input)="onGlobalFilter($event, dt3)"
+                                placeholder="Search Major" />
+                        </p-iconfield>
+                    </div>
+                </ng-template>
+
+                <!-- Header -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="Major.Id">ID</th>
+                        <th pSortableColumn="Major.Name">Name</th>
+                        <th pSortableColumn="Major.IsOpen">Status</th>
+                    </tr>
+                </ng-template>
+
+                <!-- Body -->
+                <ng-template pTemplate="body" let-major>
+                    <tr>
+                        <td>{{ major.Id }}</td>
+                        <td>{{ major.Name }}</td>
+                        <td>
+                            <p-tag [value]="major.IsOpen ? 'Open' : 'Closed'"
+                                [severity]="major.IsOpen ? 'success' : 'danger'" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-        <!-- Phone -->
-        <div class="mb-3 row">
-            <label for="amount" class="col-sm-4 col-form-label fw-semibold">Amount</label>
-            <div class="col-sm-8">
-                <input pInputText id="amount" class="form-control" formControlName="count" />
-                @if (addFacilityItemForm.controls['count'].invalid && addFacilityItemForm.controls['count'].touched) {
-                <small class="text-danger">
-                    Amount must be more than 1
-                </small>
-                }
-            </div>
+
+        <!-- Form cập nhật -->
+        <div style="width: 60%;">
+            <form [formGroup]="updateFacilityItemForm">
+                <div class="text-center mb-3">
+                    <p-avatar *ngIf="imageUrl; else noImage" [image]="imageUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                    <ng-template #noImage>
+                        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                    </ng-template>
+                    <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
+                        (onSelect)="onFileSelect($event)" />
+                </div>
+
+                <!-- Name -->
+                <div class="mb-3 row">
+                    <label for="name" class="col-sm-4 col-form-label fw-semibold">Item Name</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="name" class="form-control" formControlName="Name" />
+                        <small *ngIf="updateFacilityItemForm.controls['Name'].invalid && updateFacilityItemForm.controls['Name'].touched"
+                            class="text-danger">Item Name is required (Min 3 chars).</small>
+                    </div>
+                </div>
+
+                <!-- Count -->
+                <div class="mb-3 row">
+                    <label for="count" class="col-sm-4 col-form-label fw-semibold">Count</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="count" type="number" class="form-control" formControlName="Count" />
+                        <small *ngIf="updateFacilityItemForm.controls['Count'].invalid && updateFacilityItemForm.controls['Count'].touched"
+                            class="text-danger">Count must be at least 1.</small>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+                    <p-button label="Update" (click)="updateFacilityItem()" [disabled]="updateFacilityItemForm.invalid" />
+                </div>
+            </form>
         </div>
-        <!-- Footer -->
-        <div class="d-flex justify-content-end gap-2">
-            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateFacilityItem()" [disabled]="addFacilityItemForm.invalid" />
-        </div>
-    </form>
+    </div>
 </p-dialog>
 
-<p-dialog header="Facility majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
+<p-dialog header="Facility Majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
     [closable]="false">
 
+    <!-- Số lượng khả dụng -->
     <div class="mb-3">
         <label for="amount" class="form-label fw-semibold">Tổng khả dụng: {{ count }}</label><br>
-        <p-inputnumber inputId="amount" [(ngModel)]="amount" (onInput)="onAmountInput()" [min]="0" [max]="count" />
+        <p-inputnumber inputId="amount" [(ngModel)]="amount" (onInput)="onAmountInput()" [min]="1" [max]="count" />
         &nbsp;<small class="text-muted">Remaining: {{ remainingAmount }}</small>
     </div>
 
-    <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="id"
-        [tableStyle]="{'min-width': '50rem'}" (onRowSelect)="onFacilityMajorSelect($event.data)" 
+    <!-- Table -->
+    <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="Major.Id"
+        [tableStyle]="{'min-width': '50rem'}" (onRowSelect)="onFacilityMajorSelect($event.data)"
         (onRowUnselect)="onFacilityMajorUnselect($event.data)">
-        <ng-template #header>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
             <tr>
                 <th style="width: 4rem"></th>
-                <th pSortableColumn="id">ID</th>
-                <th pSortableColumn="name">Name</th>
-                <th pSortableColumn="mainDescription">Main Description</th>
-                <th pSortableColumn="workShifstDescription">Work Shift</th>
-                <th pSortableColumn="isOpen">Status</th>
+                <th pSortableColumn="Major.Id">ID</th>
+                <th pSortableColumn="Major.Name">Name</th>
+                <th pSortableColumn="Major.MainDescription">Main Description</th>
+                <th pSortableColumn="Major.WorkShifstDescription">Work Shift</th>
+                <th pSortableColumn="Major.IsOpen">Status</th>
                 <th>Action</th>
             </tr>
         </ng-template>
-        <ng-template #body let-facilityMajor>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-major>
             <tr>
                 <td>
-                    <p-tableCheckbox [value]="facilityMajor" [disabled]="remainingAmount < amount && !selectedFacilityMajors.includes(facilityMajor)"/>
+                    <p-tableCheckbox [value]="major"
+                        [disabled]="remainingAmount < amount && !selectedFacilityMajors.includes(major)" />
                 </td>
-                <td>{{ facilityMajor.id }}</td>
-                <td>{{ facilityMajor.name }}</td>
-                <td>{{ facilityMajor.mainDescription }}</td>
-                <td>{{ facilityMajor.workShifstDescription }}</td>
+                <td>{{ major.Major.Id }}</td>
+                <td>{{ major.Major.Name }}</td>
+                <td>{{ major.Major.MainDescription }}</td>
+                <td>{{ major.Major.WorkShifstDescription }}</td>
                 <td>
-                    <p-tag [value]="facilityMajor.isOpen ? 'Open' : 'Closed'"
-                        [severity]="facilityMajor.isOpen ? 'success' : 'danger'" />
+                    <p-tag [value]="major.Major.IsOpen ? 'Open' : 'Closed'"
+                        [severity]="major.Major.IsOpen ? 'success' : 'danger'" />
                 </td>
                 <td>
-                    <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                    <p-button (click)="confirmDelete($event, major.Major.Id)" label="Delete" severity="danger"
+                        [outlined]="true" />
                 </td>
             </tr>
         </ng-template>
     </p-table>
+
     <!-- Footer -->
     <div class="d-flex justify-content-end gap-2 mt-3">
         <p-button label="Cancel" severity="secondary" (click)="hideDialogFacilityMajorTable()" class="me-2" />
-        <p-button label="Update" (click)="updateFacilityMajorSelect()" [disabled]="selectedFacilityMajors.length === 0" />
+        <p-button label="Update" (click)="updateFacilityMajorSelect()"
+            [disabled]="selectedFacilityMajors.length === 0" />
     </div>
 </p-dialog>
