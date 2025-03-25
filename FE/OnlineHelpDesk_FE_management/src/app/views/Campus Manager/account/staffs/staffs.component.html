@@ -1,4 +1,329 @@
-<button type="button" class="btn btn-success">Add</button>
-<ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-quartz" [rowData]="rowData" [columnDefs]="colDefs"
-    [defaultColDef]="defaultColDef" />
+<p-toast />
+<p-confirmdialog />
+<div class="container">
+    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="card">
+        <p-table #dt2 [value]="accounts" dataKey="id" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+            [loading]="loading" sortField="email"
+            [globalFilterFields]="['fullName', 'email', 'roleId', 'isDeactivated']" [sortOrder]="-1"
+            [tableStyle]="{ 'min-width': '60rem' }">
+            <!-- Thanh tìm kiếm chung -->
+            <ng-template #caption>
+                <div class="d-flex justify-content-end">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm tài khoản" />
 
+                    </p-iconfield>
+                </div>
+            </ng-template>
+
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id">ID</th>
+                    <th pSortableColumn="fullName">Họ và tên</th>
+                    <th pSortableColumn="email">Email</th>
+                    <th pSortableColumn="roleId">Vai trò</th>
+                    <th pSortableColumn="isDeactivated">Trạng thái</th>
+                    <th pSortableColumn="createdAt">Ngày tạo</th>
+                    <th>Hành động</th>
+                </tr>
+                <!-- <tr>
+                    <th>
+                        <p-columnFilter field="id"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter field="fullName"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter field="email"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter field="roleId"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter field="isDeactivated"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="date" field="createdAt"></p-columnFilter>
+                    </th>
+                    <th></th>
+                </tr> -->
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-account>
+                <tr>
+                    <td>{{ account.id }}</td>
+                    <td>{{ account.fullName }}</td>
+                    <td>{{ account.email }}</td>
+                    <td>{{ account.roleId }}</td>
+                    <td>
+                        <p-tag [value]="account.isDeactivated ? 'Bị khóa' : 'Hoạt động'" />
+                    </td>
+                    <td>{{ account.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                        <p-button (click)="showDialogFacilityMajorTable(account.id)" label="Update 1" class="ms-2" />
+                        <p-button (click)="showDialogUpdate(account.id)" label="Update 2" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<!-- Dialog Add Thâm -->
+<p-dialog header="Add Staff" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+    <div class="text-center mb-3">
+        @if (avatarUrl) {
+        <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+            (onSelect)="onFileSelect($event)" />
+    </div>
+
+    <form [formGroup]="addStaffForm">
+        <!-- Full Name -->
+        <div class="mb-3 row">
+            <label for="fullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
+            <div class="col-sm-8">
+                <input pInputText id="fullName" class="form-control" formControlName="fullName" />
+                @if (addStaffForm.controls['fullName'].invalid &&
+                addStaffForm.controls['fullName'].touched) {
+                <small class="text-danger">
+                    Full name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3 row">
+            <label for="email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+            <div class="col-sm-8">
+                <input pInputText id="email" class="form-control" formControlName="email" />
+
+                @if (addStaffForm.controls['email'].invalid && addStaffForm.controls['email'].touched) {
+                <small class="text-danger">
+                    Enter a valid email.
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3 row">
+            <label for="password" class="col-sm-4 col-form-label fw-semibold">Password</label>
+            <div class="col-sm-8">
+                <input pInputText id="password" type="password" class="form-control" formControlName="password" />
+                @if (addStaffForm.controls['password'].invalid && addStaffForm.controls['password'].touched) {
+                <small class="text-danger">
+                    Password must be at least 6 characters.
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="mb-3 row">
+            <label for="address" class="col-sm-4 col-form-label fw-semibold">Address</label>
+            <div class="col-sm-8">
+                <input pInputText id="address" class="form-control" formControlName="address" />
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+            <div class="col-sm-8">
+                <input pInputText id="phone" class="form-control" formControlName="phone" />
+                @if (addStaffForm.controls['phone'].invalid && addStaffForm.controls['phone'].touched) {
+                <small class="text-danger">
+                    Phone must be 10-11 digits.
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Phân Role -->
+        <div class="mb-3 row">
+            <label for="roleTypes" class="col-sm-4 col-form-label fw-semibold">Role</label>
+            <div class="col-sm-8">
+                <p-select [options]="roleTypes" optionLabel="label" optionValue="value" formControlName="roleId"
+                    placeholder="Select Role" [showClear]="true"></p-select>
+                @if (addStaffForm.controls['roleId'].invalid && addStaffForm.controls['roleId'].touched) {
+                <small class="text-danger">
+                    Role must choose.
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="mb-3 row">
+            <label for="dateOfBirth" class="col-sm-4 col-form-label fw-semibold">Date of birth</label>
+            <div class="col-sm-8">
+                <input pInputText id="dateOfBirth" type="date" class="form-control" formControlName="dateOfBirth" />
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Register" (click)="registerStaff()" [disabled]="addStaffForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update information</span>
+    <div class="text-center mb-3">
+        @if (avatarUrl) {
+        <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+            (onSelect)="onFileSelect($event)" />
+    </div>
+    <form [formGroup]="addStaffForm">
+        <!-- Full Name -->
+        <div class="mb-3 row">
+            <label for="fullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
+            <div class="col-sm-8">
+                <input pInputText id="fullName" class="form-control" formControlName="fullName" />
+                @if (addStaffForm.controls['fullName'].invalid &&
+                addStaffForm.controls['fullName'].touched) {
+                <small class="text-danger">
+                    Full name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Email -->
+        <div class="mb-3 row">
+            <label for="email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+            <div class="col-sm-8">
+                <input pInputText id="email" class="form-control" formControlName="email" />
+
+                @if (addStaffForm.controls['email'].invalid && addStaffForm.controls['email'].touched) {
+                <small class="text-danger">
+                    Enter a valid email.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Password -->
+        <div class="mb-3 row">
+            <label for="password" class="col-sm-4 col-form-label fw-semibold">Password</label>
+            <div class="col-sm-8">
+                <input pInputText id="password" type="password" class="form-control" formControlName="password"
+                    readonly />
+                @if (addStaffForm.controls['password'].invalid && addStaffForm.controls['password'].touched) {
+                <small class="text-danger">
+                    Password must be at least 6 characters.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Address -->
+        <div class="mb-3 row">
+            <label for="address" class="col-sm-4 col-form-label fw-semibold">Address</label>
+            <div class="col-sm-8">
+                <input pInputText id="address" class="form-control" formControlName="address" />
+            </div>
+        </div>
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+            <div class="col-sm-8">
+                <input pInputText id="phone" class="form-control" formControlName="phone" />
+                @if (addStaffForm.controls['phone'].invalid && addStaffForm.controls['phone'].touched) {
+                <small class="text-danger">
+                    Phone must be 10-11 digits.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Phân Role -->
+        <div class="mb-3 row">
+            <label for="roleTypes" class="col-sm-4 col-form-label fw-semibold">Role</label>
+            <div class="col-sm-8">
+                <p-select [options]="roleTypes" optionLabel="label" optionValue="value" formControlName="roleId"
+                    placeholder="Select Role"></p-select>
+                @if (addStaffForm.controls['roleId'].invalid && addStaffForm.controls['roleId'].touched) {
+                <small class="text-danger">
+                    Role must choose.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Date of Birth -->
+        <div class="mb-3 row">
+            <label for="dateOfBirth" class="col-sm-4 col-form-label fw-semibold">Date of birth</label>
+            <div class="col-sm-8">
+                <input pInputText id="dateOfBirth" type="date" class="form-control" formControlName="dateOfBirth" />
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateStaff()" [disabled]="addStaffForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Facility majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
+    [closable]="false">
+    <!-- Work Description -->
+    <div class="mb-3">
+        <label for="workDescription" class="form-label fw-semibold">Work Description</label>
+        <textarea pInputTextarea [(ngModel)]="workDescription" rows="3" class="form-control"
+            placeholder="Enter work description..."></textarea>
+    </div>
+    <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="id"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template #header>
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th pSortableColumn="id">ID</th>
+                <th pSortableColumn="name">Name</th>
+                <th pSortableColumn="mainDescription">Main Description</th>
+                <th pSortableColumn="workShifstDescription">Work Shift</th>
+                <th pSortableColumn="isOpen">Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-facilityMajor>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="facilityMajor" />
+                </td>
+                <td>{{ facilityMajor.id }}</td>
+                <td>{{ facilityMajor.name }}</td>
+                <td>{{ facilityMajor.mainDescription }}</td>
+                <td>{{ facilityMajor.workShifstDescription }}</td>
+                <td>
+                    <p-tag [value]="facilityMajor.isOpen ? 'Open' : 'Closed'"
+                        [severity]="facilityMajor.isOpen ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- Footer -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <p-button label="Cancel" severity="secondary" (click)="hideDialogFacilityMajorTable()" class="me-2" />
+        <p-button label="Update" (click)="updateFacilityMajorSelect()" />
+    </div>
+</p-dialog>

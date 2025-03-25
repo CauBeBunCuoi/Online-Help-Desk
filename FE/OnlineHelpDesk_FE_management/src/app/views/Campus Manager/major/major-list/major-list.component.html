@@ -1,1 +1,284 @@
-<p>major-list works!</p>
+<p-toast />
+<p-confirmdialog />
+<div class="container">
+    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="card">
+        <p-table #dt2 [value]="facilityMajors" dataKey="id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="name"
+            [globalFilterFields]="['name', 'isOpen']" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+
+            <!-- Thanh tìm kiếm chung -->
+            <ng-template #caption>
+                <div class="d-flex justify-content-end">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm Facility Major" />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id">ID</th>
+                    <th pSortableColumn="name">Tên</th>
+                    <th pSortableColumn="isOpen">Trạng thái</th>
+                    <th pSortableColumn="closeScheduleDate">Ngày đóng</th>
+                    <th pSortableColumn="openScheduleDate">Ngày mở</th>
+                    <th>Hành động</th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-facilityMajor>
+                <tr>
+                    <td>{{ facilityMajor.id }}</td>
+                    <td>{{ facilityMajor.name }}</td>
+                    <td>
+                        <p-tag [value]="facilityMajor.isOpen ? 'Mở' : 'Đóng'" />
+                    </td>
+                    <td>{{ facilityMajor.closeScheduleDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ facilityMajor.openScheduleDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                        <p-button (click)="showDialogUpdate(facilityMajor.id)" label="Update 1" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+
+<!-- Dialog Add Thâm -->
+<p-dialog header="Add Facility Major" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+
+    <!-- Logo -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-building" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadLogo  mode="basic" accept="image/*" chooseLabel="Choose Logo"
+            (onSelect)="onFileSelectLogo($event)" />
+    </div>
+
+    <!-- Background -->
+    <div class="text-center mb-3">
+        @if (backgroundUrl) {
+        <img [src]="backgroundUrl" alt="Background" class="img-fluid rounded mb-3" style="max-height: 150px;">
+        } @else {
+        <div class="bg-secondary rounded mb-3"
+            style="height: 150px; display: flex; align-items: center; justify-content: center; color: white;">
+            No Background
+        </div>
+        }
+        <p-fileUpload #fileUploadBackground  mode="basic" accept="image/*" chooseLabel="Choose Background"
+            (onSelect)="onFileSelectBackground($event)" />
+    </div>
+
+    <form [formGroup]="addFacilityMajorForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="name" class="col-sm-4 col-form-label fw-semibold">Facility Major Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="name" class="form-control" formControlName="name" />
+                @if (addFacilityMajorForm.controls['name'].invalid && addFacilityMajorForm.controls['name'].touched) {
+                <small class="text-danger">
+                    Facility Major name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Main Description -->
+        <div class="mb-3 row">
+            <label for="mainDescription" class="col-sm-4 col-form-label fw-semibold">Main Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="mainDescription" class="form-control"
+                    formControlName="mainDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Work Shift Description -->
+        <div class="mb-3 row">
+            <label for="workShifstDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+                Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="workShifstDescription" class="form-control"
+                    formControlName="workShifstDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Open -->
+        <div class="mb-3 row">
+            <label for="isOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
+            <div class="col-sm-8">
+                <p-checkbox id="isOpen" formControlName="isOpen" binary="true"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Close Schedule Date -->
+        <div class="mb-3 row">
+            <label for="closeScheduleDate" class="col-sm-4 col-form-label fw-semibold">Close Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="closeScheduleDate" type="date" class="form-control"
+                    formControlName="closeScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Open Schedule Date -->
+        <div class="mb-3 row">
+            <label for="openScheduleDate" class="col-sm-4 col-form-label fw-semibold">Open Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="openScheduleDate" type="date" class="form-control"
+                    formControlName="openScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Facility Major Type -->
+        <div class="mb-3 row">
+            <label for="facilityMajorTypeId" class="col-sm-4 col-form-label fw-semibold">Facility Major Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilityMajorTypes" optionLabel="label" optionValue="value"
+                    formControlName="facilityMajorTypeId" placeholder="Select Type"></p-select>
+            </div>
+        </div>
+
+        <!-- Facility -->
+        <div class="mb-3 row">
+            <label for="facilityId" class="col-sm-4 col-form-label fw-semibold">Facility</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilities" optionLabel="label" optionValue="value" formControlName="facilityId"
+                    placeholder="Select Facility"></p-select>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Register" (click)="addFacilityMajor()" [disabled]="addFacilityMajorForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+
+<!-- Dialog Update cập nhật -->
+
+<p-dialog header="Update Facility Major" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }"
+    [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+
+    <!-- Logo -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-building" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadLogo  mode="basic" accept="image/*" chooseLabel="Choose Logo"
+            (onSelect)="onFileSelectLogo($event)" />
+    </div>
+
+    <!-- Background -->
+    <div class="text-center mb-3">
+        @if (backgroundUrl) {
+        <img [src]="backgroundUrl" alt="Background" class="img-fluid rounded mb-3" style="max-height: 150px;">
+        } @else {
+        <div class="bg-secondary rounded mb-3"
+            style="height: 150px; display: flex; align-items: center; justify-content: center; color: white;">
+            No Background
+        </div>
+        }
+        <p-fileUpload #fileUploadBackground  mode="basic" accept="image/*" chooseLabel="Choose Background"
+            (onSelect)="onFileSelectBackground($event)" />
+    </div>
+
+    <form [formGroup]="addFacilityMajorForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="name" class="col-sm-4 col-form-label fw-semibold">Facility Major Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="name" class="form-control" formControlName="name" />
+                @if (addFacilityMajorForm.controls['name'].invalid && addFacilityMajorForm.controls['name'].touched) {
+                <small class="text-danger">
+                    Facility Major name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Main Description -->
+        <div class="mb-3 row">
+            <label for="mainDescription" class="col-sm-4 col-form-label fw-semibold">Main Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="mainDescription" class="form-control"
+                    formControlName="mainDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Work Shift Description -->
+        <div class="mb-3 row">
+            <label for="workShifstDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+                Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="workShifstDescription" class="form-control"
+                    formControlName="workShifstDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Open -->
+        <div class="mb-3 row">
+            <label for="isOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
+            <div class="col-sm-8">
+                <p-checkbox id="isOpen" formControlName="isOpen" binary="true"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Close Schedule Date -->
+        <div class="mb-3 row">
+            <label for="closeScheduleDate" class="col-sm-4 col-form-label fw-semibold">Close Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="closeScheduleDate" type="date" class="form-control"
+                    formControlName="closeScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Open Schedule Date -->
+        <div class="mb-3 row">
+            <label for="openScheduleDate" class="col-sm-4 col-form-label fw-semibold">Open Schedule Date</label>
+            <div class="col-sm-8">
+                <input pInputText id="openScheduleDate" type="date" class="form-control"
+                    formControlName="openScheduleDate" />
+            </div>
+        </div>
+
+        <!-- Facility Major Type -->
+        <div class="mb-3 row">
+            <label for="facilityMajorTypeId" class="col-sm-4 col-form-label fw-semibold">Facility Major Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilityMajorTypes" optionLabel="label" optionValue="value"
+                    formControlName="facilityMajorTypeId" placeholder="Select Type"></p-select>
+            </div>
+        </div>
+
+        <!-- Facility -->
+        <div class="mb-3 row">
+            <label for="facilityId" class="col-sm-4 col-form-label fw-semibold">Facility</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilities" optionLabel="label" optionValue="value" formControlName="facilityId"
+                    placeholder="Select Facility"></p-select>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateFacilityMajor()" [disabled]="addFacilityMajorForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

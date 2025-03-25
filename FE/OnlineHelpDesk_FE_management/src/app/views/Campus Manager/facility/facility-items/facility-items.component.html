@@ -1,1 +1,193 @@
-<p>facility-items works!</p>
+<p-toast />
+<p-confirmdialog />
+<div class="container">
+    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="card">
+        <p-table #dt2 [value]="facilityItems" dataKey="id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="name" [globalFilterFields]="['name']"
+            [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+
+            <!-- Thanh tìm kiếm chung -->
+            <ng-template #caption>
+                <div class="d-flex justify-content-end">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm Facility Item" />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id">ID</th>
+                    <th pSortableColumn="name">Tên Facility Item</th>
+                    <th pSortableColumn="count">Số lượng</th>
+                    <th pSortableColumn="createdAt">Ngày tạo</th>
+                    <th pSortableColumn="updatedAt">Ngày cập nhật</th>
+                    <th>Hành động</th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.count }}</td>
+                    <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-button (click)="confirmDelete(item.id)" label="Delete" severity="danger" [outlined]="true" />
+                        <p-button (click)="showDialogFacilityMajorTable(item.id, item.count)" label="Update 1" class="ms-2" />
+                        <p-button (click)="showDialogUpdate(item.id)" label="Update" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</div>
+<!-- Dialog Add Thâm -->
+<p-dialog header="Add Faility Item" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+    <div class="text-center mb-3">
+        @if (imageUrl) {
+        <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+            (onSelect)="onFileSelect($event)" />
+    </div>
+
+    <form [formGroup]="addFacilityItemForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="name" class="col-sm-4 col-form-label fw-semibold">Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="name" class="form-control" formControlName="name" />
+                @if (addFacilityItemForm.controls['name'].invalid &&
+                addFacilityItemForm.controls['name'].touched) {
+                <small class="text-danger">
+                    Name is required (Min 3 chars).
+                </small> }
+            </div>
+        </div>
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="amount" class="col-sm-4 col-form-label fw-semibold">Amount</label>
+            <div class="col-sm-8">
+                <input pInputText id="amount" class="form-control" formControlName="count" />
+                @if (addFacilityItemForm.controls['count'].invalid && addFacilityItemForm.controls['count'].touched) {
+                <small class="text-danger">
+                    Amount must be more than 1
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Add" (click)="addFacilityItem()" [disabled]="addFacilityItemForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update information</span>
+    <div class="text-center mb-3">
+        @if (imageUrl) {
+        <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+            (onSelect)="onFileSelect($event)" />
+    </div>
+
+    <form [formGroup]="addFacilityItemForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="name" class="col-sm-4 col-form-label fw-semibold">Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="name" class="form-control" formControlName="name" />
+                @if (addFacilityItemForm.controls['name'].invalid &&
+                addFacilityItemForm.controls['name'].touched) {
+                <small class="text-danger">
+                    Name is required (Min 3 chars).
+                </small> }
+            </div>
+        </div>
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="amount" class="col-sm-4 col-form-label fw-semibold">Amount</label>
+            <div class="col-sm-8">
+                <input pInputText id="amount" class="form-control" formControlName="count" />
+                @if (addFacilityItemForm.controls['count'].invalid && addFacilityItemForm.controls['count'].touched) {
+                <small class="text-danger">
+                    Amount must be more than 1
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateFacilityItem()" [disabled]="addFacilityItemForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Facility majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
+    [closable]="false">
+
+    <div class="mb-3">
+        <label for="amount" class="form-label fw-semibold">Tổng khả dụng: {{ count }}</label><br>
+        <p-inputnumber inputId="amount" [(ngModel)]="amount" (onInput)="onAmountInput()" [min]="0" [max]="count" />
+        &nbsp;<small class="text-muted">Remaining: {{ remainingAmount }}</small>
+    </div>
+
+    <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="id"
+        [tableStyle]="{'min-width': '50rem'}" (onRowSelect)="onFacilityMajorSelect($event.data)" 
+        (onRowUnselect)="onFacilityMajorUnselect($event.data)">
+        <ng-template #header>
+            <tr>
+                <th style="width: 4rem"></th>
+                <th pSortableColumn="id">ID</th>
+                <th pSortableColumn="name">Name</th>
+                <th pSortableColumn="mainDescription">Main Description</th>
+                <th pSortableColumn="workShifstDescription">Work Shift</th>
+                <th pSortableColumn="isOpen">Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-facilityMajor>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="facilityMajor" [disabled]="remainingAmount < amount && !selectedFacilityMajors.includes(facilityMajor)"/>
+                </td>
+                <td>{{ facilityMajor.id }}</td>
+                <td>{{ facilityMajor.name }}</td>
+                <td>{{ facilityMajor.mainDescription }}</td>
+                <td>{{ facilityMajor.workShifstDescription }}</td>
+                <td>
+                    <p-tag [value]="facilityMajor.isOpen ? 'Open' : 'Closed'"
+                        [severity]="facilityMajor.isOpen ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- Footer -->
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <p-button label="Cancel" severity="secondary" (click)="hideDialogFacilityMajorTable()" class="me-2" />
+        <p-button label="Update" (click)="updateFacilityMajorSelect()" [disabled]="selectedFacilityMajors.length === 0" />
+    </div>
+</p-dialog>
