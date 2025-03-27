@@ -69,10 +69,15 @@ export class ServiceRequestService {
     }
   ];
 
-  constructor() {}
+  constructor() { }
 
   // ✅ Lấy danh sách tất cả ServiceRequests
-  getAllServiceRequests(): Promise<any[]> {
+  getAllServiceRequestsByHead(id: number): Promise<any[]> {
+    return Promise.resolve(this.serviceRequests);
+  }
+
+  // ✅ Lấy danh sách tất cả ServiceRequests
+  getAllServiceRequestsByAssignee(id: number): Promise<any[]> {
     return Promise.resolve(this.serviceRequests);
   }
 
@@ -90,6 +95,12 @@ export class ServiceRequestService {
   // ✅ Lọc ServiceRequest theo Service ID
   getRequestsByService(serviceId: number): Promise<any[]> {
     return Promise.resolve(this.serviceRequests.filter(sr => sr.ServiceRequest.ServiceId === serviceId));
+  }
+
+
+  // ✅ Lọc ServiceRequest theo Service ID
+  getRequestsByMajor(majorId: number): Promise<any[]> {
+    return Promise.resolve(this.serviceRequests.filter(sr => sr.Major.Id === majorId));
   }
 
   // ✅ Lọc ServiceRequest theo người yêu cầu (Requester)

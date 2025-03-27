@@ -23,6 +23,7 @@ import { FacilityMajorService } from '../../../../../core/service/facility-major
 import { Select, SelectModule } from 'primeng/select';
 import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 import { ServiceManagementService } from '../../../../../core/service/service-management.service';
+import { ServiceAvailabilityService } from '../../../../../core/service/service-availability.service';
 
 @Component({
   selector: 'app-service-table',
@@ -66,6 +67,8 @@ export class ServiceTableComponent implements OnInit {
   facilityMajorOptions: any[] = [];
   selectedMajorId: number | null = null;
 
+  serviceSchedules: any[] = [];
+
   selectedServiceId: number | null = null;
 
   @ViewChild('fileUploadLogo') fileUploadLogo!: FileUpload;
@@ -75,6 +78,20 @@ export class ServiceTableComponent implements OnInit {
 
   addServiceForm: FormGroup;
   add: boolean = false;
+
+  addServiceAvailableForm: FormGroup;
+  addServiceAvailable: boolean = false;
+
+  // goi service lấy day
+  daysOfWeek = [
+    { value: 1, label: 'Sunday' },
+    { value: 2, label: 'Monday' },
+    { value: 3, label: 'Tuesday' },
+    { value: 4, label: 'Wednesday' },
+    { value: 5, label: 'Thursday' },
+    { value: 6, label: 'Friday' },
+    { value: 7, label: 'Saturday' }
+  ];
 
   updateServiceForm: FormGroup;
   update: boolean = false;
@@ -86,6 +103,7 @@ export class ServiceTableComponent implements OnInit {
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private serviceManagementService: ServiceManagementService,
     private facilityMajorService: FacilityMajorService,
+    private serviceAvailabilityService: ServiceAvailabilityService,
     private fb: FormBuilder,
   ) {
     this.addServiceForm = this.fb.group({
@@ -97,6 +115,11 @@ export class ServiceTableComponent implements OnInit {
       WorkShiftsDescription: [''], // Mô tả ca làm việc
       ServiceTypeId: [null, Validators.required], // Loại dịch vụ
       Image: [''] // Hình ảnh (logo) dưới dạng Base64
+    });
+    this.addServiceAvailableForm = this.fb.group({
+      DayOfWeek: [null, Validators.required],
+      StartRequestableTime: ['', Validators.required],
+      EndRequestableTime: ['', Validators.required]
     });
     this.updateServiceForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên dịch vụ
@@ -173,16 +196,6 @@ export class ServiceTableComponent implements OnInit {
     this.add = true;
   }
 
-  addService() {
-    if (this.addServiceForm.valid) {
-      console.log('Form Data:', this.addServiceForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addServiceForm.markAllAsTouched();
-    }
-  }
-
   hideDialogAdd() {
     this.addServiceForm.reset();
     this.logoUrl = null; // X
@@ -193,6 +206,39 @@ export class ServiceTableComponent implements OnInit {
       }
     }, 100);
     this.add = false;
+  }
+
+  addService() {
+    if (this.addServiceForm.valid) {
+      console.log('Form Data:', this.addServiceForm.value); // Gửi lên API
+      this.hideDialogAdd();
+    } else {
+      console.log('Form Invalid');
+      this.addServiceForm.markAllAsTouched();
+    }
+  }
+
+  showDialogServiceAvailable(id: number) {
+    this.addServiceAvailable = true;
+    this.selectedServiceId = id;
+  }
+
+  hideDialogServiceAvailable() {
+    this.addServiceAvailableForm.reset();
+    this.addServiceAvailable = false;
+  }
+
+  addAvailability() {
+    if (this.addServiceAvailableForm.valid) {
+      const newSchedule = {
+        Schedule: this.addServiceAvailableForm.value
+      };
+      // them service id vao tu selectedservice
+      this.serviceAvailabilityService.addSchedule(newSchedule).then(() => {
+        alert('Service Availability Added!');
+        this.addServiceAvailableForm.reset();
+      });
+    }
   }
 
   showDialogUpdate(id: number) {
@@ -207,7 +253,7 @@ export class ServiceTableComponent implements OnInit {
           console.warn('No Service data found for ID:', id);
           return;
         }
-        console.log(serviceData);
+
         // ✅ Chuyển đổi ngày về định dạng `YYYY-MM-DD`
         const formattedCloseDate = serviceData.Service.CloseScheduleDate
           ? new Date(serviceData.Service.CloseScheduleDate).toISOString().split('T')[0]
@@ -225,7 +271,6 @@ export class ServiceTableComponent implements OnInit {
           RequestInitHintDescription: serviceData.Service.RequestInitHintDescription,
           MainDescription: serviceData.Service.MainDescription,
           WorkShiftsDescription: serviceData.Service.WorkShiftsDescription,
-          IsOpen: serviceData.Service.IsOpen,
           CloseScheduleDate: formattedCloseDate,
           OpenScheduleDate: formattedOpenDate,
           ServiceTypeId: serviceData.Service.ServiceTypeId,
@@ -238,6 +283,12 @@ export class ServiceTableComponent implements OnInit {
       .catch(error => {
         console.error('❌ Error fetching service data:', error);
       });
+    // ✅ Gọi API lấy danh sách lịch trình (`Schedules`) của Service này
+    this.serviceAvailabilityService.getSchedulesByServiceId(id)
+      .then(schedules => {
+        this.serviceSchedules = schedules; // Lưu vào biến để hiển thị bảng
+      })
+      .catch(error => console.error('❌ Error fetching schedules:', error));
   }
 
   hideDialogUpdate() {

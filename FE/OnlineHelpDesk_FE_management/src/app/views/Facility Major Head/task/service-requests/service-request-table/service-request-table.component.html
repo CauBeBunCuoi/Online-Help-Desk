@@ -46,8 +46,8 @@
                 </td>
                 <td>{{ request.ServiceRequest.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event, request.ServiceRequest.Id)" label="Delete" severity="danger"
-                        [outlined]="true" />
+                    <p-button (click)="confirmDelete($event, request.ServiceRequest.Id)" label="Delete"
+                        severity="danger" [outlined]="true" />
                     <p-button (click)="showDialogUpdate(request.ServiceRequest.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
@@ -66,25 +66,36 @@
             <label for="Action" class="col-sm-4 col-form-label fw-semibold">Action</label>
             <div class="col-sm-8">
                 <p-select [options]="actions" optionLabel="label" optionValue="value" formControlName="Action"
-                [virtualScroll]="true" [virtualScrollItemSize]="3" placeholder="Select Action">
+                    appendTo="body" placeholder="Select Action">
                 </p-select>
             </div>
         </div>
 
         <!-- 🏷 Assign To -->
-        @if (updateServiceRequestForm.get('Action')?.value === 'Assign') {
+        @if (updateServiceRequestForm.get('Action')?.value === 'Assigned') {
         <div class="mb-3 row">
             <label for="AssigneeId" class="col-sm-4 col-form-label fw-semibold">Assign To</label>
             <div class="col-sm-8">
                 <p-select [options]="assignees" optionLabel="name" optionValue="id" formControlName="AssigneeId"
-                [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="10" placeholder="Select Assignee">
+                    [filter]="true" filterBy="name" appendTo="body" placeholder="Select Assignee">
                 </p-select>
             </div>
         </div>
         }
 
-        <!-- ✅ Request Result -->
-        @if (updateServiceRequestForm.get('Action')?.value === 'Finish') {
+        <!-- 📝 Progress Note (bắt buộc cho nhiều trạng thái) -->
+        @if (['Assigned', 'RejectedByAssignee', 'AcceptedByAssignee', 'CompletedByAssignee', 'Finished', 'Canceled']
+            .includes(updateServiceRequestForm.get('Action')?.value)) {
+        <div class="mb-3 row">
+            <label for="ProgressNote" class="col-sm-4 col-form-label fw-semibold">Progress Note</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="ProgressNote" class="form-control" formControlName="ProgressNote"></textarea>
+            </div>
+        </div>
+        }
+
+        <!-- ✅ Request Result (luôn hiện khi chọn Finished hoặc CompletedByAssignee) -->
+        @if (['Finished', 'CompletedByAssignee'].includes(updateServiceRequestForm.get('Action')?.value)) {
         <div class="mb-3 row">
             <label for="RequestResultDescription" class="col-sm-4 col-form-label fw-semibold">Result Description</label>
             <div class="col-sm-8">
@@ -95,16 +106,14 @@
         }
 
         <!-- ❌ Cancel Reason -->
-        @if (updateServiceRequestForm.get('Action')?.value === 'Cancel') {
+        @if (updateServiceRequestForm.get('Action')?.value === 'Canceled') {
         <div class="mb-3 row">
             <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="CancelReason" class="form-control"
-                    formControlName="CancelReason"></textarea>
+                <textarea pInputTextarea id="CancelReason" class="form-control" formControlName="CancelReason"></textarea>
             </div>
         </div>
         }
-        <div class="" style="height: 40px;"></div>
 
         <!-- 📌 Footer -->
         <div class="d-flex justify-content-end gap-2">

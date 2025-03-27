@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -12,8 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TaskRequestService } from '../../../../core/service/task-request.service';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskAssignmentsTableComponent } from './task-assignments-table/task-assignments.component'
+import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 
 @Component({
   selector: 'app-task-assignments',
@@ -22,7 +21,6 @@ import { TaskAssignmentsTableComponent } from './task-assignments-table/task-ass
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    Dialog,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
@@ -41,18 +39,10 @@ export class TaskAssignmentsComponent implements OnInit {
 
   filteredTaskRequests: any[] = [];
 
-  addTaskRequestForm: FormGroup;
-  add: boolean = false;
-
   constructor(
-    private fb: FormBuilder,
     private taskRequestService: TaskRequestService,
+    private facilityMajorService: FacilityMajorService,
   ) {
-    this.addTaskRequestForm = this.fb.group({
-      Description: ['', [Validators.minLength(3)]],
-      MajorId: [null, Validators.required],
-      RequesterId: 1,
-    });
   }
 
   ngOnInit() {
@@ -61,25 +51,30 @@ export class TaskAssignmentsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.taskRequestService.getTaskRequests().then(taskRequests => {
-      // Lọc danh sách Major từ taskRequests và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      taskRequests.forEach(task => {
-        if (!uniqueMajors.has(task.Major.Id)) {
-          uniqueMajors.set(task.Major.Id, {
-            id: task.Major.Id,
-            name: task.Major.Name
+    // theo head
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.majorOptions = [];
+        return;
+      }
+      this.majorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
           });
         }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
     });
   }
 
   // ✅ Lấy toàn bộ Task Requests
   loadTaskRequests() {
-    this.taskRequestService.getTaskRequests().then(taskRequests => {
+    this.taskRequestService.getTaskRequestsByAccountId(1).then(taskRequests => {
       this.filteredTaskRequests = taskRequests; // Ban đầu hiển thị tất cả
     });
   }
@@ -87,30 +82,11 @@ export class TaskAssignmentsComponent implements OnInit {
   // ✅ Lọc Task Requests theo `selectedMajorId`
   filterTaskRequests() {
     if (this.selectedMajorId) {
-      this.taskRequestService.getTaskRequests().then(taskRequests => {
+      this.taskRequestService.getTaskRequestsByMajorId(this.selectedMajorId).then(taskRequests => {
         this.filteredTaskRequests = taskRequests.filter(task => task.Major.Id === this.selectedMajorId);
       });
     } else {
       this.loadTaskRequests(); // Nếu không chọn Major, hiển thị tất cả
-    }
-  }
-
-  showDialogAdd() {
-    this.add = true;
-  }
-
-  hideDialogAdd() {
-    this.addTaskRequestForm.reset();
-    this.add = false;
-  }
-
-  addTaskRequest() {
-    if (this.addTaskRequestForm.valid) {
-      console.log('Form Data:', this.addTaskRequestForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addTaskRequestForm.markAllAsTouched();
     }
   }
 }

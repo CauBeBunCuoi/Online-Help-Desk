@@ -11,7 +11,7 @@ export class TaskRequestService {
                 Description: 'Fix projector in Room 101',
                 RequesterId: 2,
                 FacilityMajorId: 1,
-                CancelReason: null,
+                CancelReason: 'Làm ăn như c.. ch.',
                 RequestStatusId: 1,
                 CreatedAt: new Date().toISOString(),
                 UpdatedAt: new Date().toISOString()
@@ -71,6 +71,11 @@ export class TaskRequestService {
 
     // ✅ Lấy danh sách TaskRequests
     getTaskRequests(): Promise<any[]> {
+        return Promise.resolve(this.taskRequests);
+    }
+
+    // ✅ Lấy danh sách TaskRequests
+    getTaskRequestsByAccountId(id: number): Promise<any[]> {
         return Promise.resolve(this.taskRequests);
     }
     // ✅ Lấy danh sách TaskRequests

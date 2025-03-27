@@ -48,10 +48,13 @@ export class ServiceRequestTableComponent implements OnInit {
   @Input() serviceRequests: any[] = []; // ✅ Nhận dữ liệu từ component cha
   majorOptions: any[] = [];
   actions = [
-    { label: 'Assign', value: 'Assign' },
-    { label: 'Finish', value: 'Finish' },
-    { label: 'Cancel', value: 'Cancel' }
-  ];  
+    { label: 'Assigned', value: 'Assigned' },
+    { label: 'RejectedByAssignee', value: 'RejectedByAssignee' },
+    { label: 'AcceptedByAssignee', value: 'AcceptedByAssignee' },
+    { label: 'CompletedByAssignee', value: 'CompletedByAssignee' },
+    { label: 'Finished', value: 'Finished' },
+    { label: 'Canceled', value: 'Canceled' }
+  ];
 
   assignees = [
     { id: 1, name: 'John Doe' },
@@ -79,11 +82,12 @@ export class ServiceRequestTableComponent implements OnInit {
       AssigneeId: [null], // Chỉ yêu cầu khi Assign
       RequestResultDescription: ['', Validators.minLength(3)], // Chỉ yêu cầu khi Finish
       CancelReason: ['', Validators.minLength(3)], // Chỉ yêu cầu khi Cancel
+      ProgressNote: ['', Validators.minLength(3)], //
     });
   }
 
   ngOnInit() {
-    // this.loadMajorOptions();
+    
   }
 
   onGlobalFilter(event: Event, dt: any) {
@@ -117,24 +121,6 @@ export class ServiceRequestTableComponent implements OnInit {
     });
   }
 
-  // loadMajorOptions() {
-  //   this.taskRequestService.getTaskRequests().then(taskRequests => {
-  //     // Lọc danh sách Major từ taskRequests và loại bỏ trùng lặp
-  //     const uniqueMajors = new Map<number, any>();
-
-  //     taskRequests.forEach(task => {
-  //       if (!uniqueMajors.has(task.Major.Id)) {
-  //         uniqueMajors.set(task.Major.Id, {
-  //           id: task.Major.Id,
-  //           name: task.Major.Name
-  //         });
-  //       }
-  //     });
-  //     this.majorOptions = Array.from(uniqueMajors.values());
-  //     console.log(this.majorOptions);
-  //   });
-  // }
-
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
     this.selectedServiceRequestId = id; // Lưu ID request
@@ -160,7 +146,6 @@ export class ServiceRequestTableComponent implements OnInit {
       console.error('❌ Lỗi khi lấy dữ liệu Service Request:', error);
     });
   }
-
 
   hideDialogUpdate() {
     this.updateServiceRequestForm.reset();

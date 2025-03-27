@@ -46,9 +46,14 @@ import { TaskRequestService } from '../../../../../core/service/task-request.ser
 })
 export class TaskAssignmentsTableComponent implements OnInit {
   @Input() taskRequests: any[] = []; // ✅ Nhận dữ liệu từ component cha
-  majorOptions: any[] = [];
+  actions = [
+    { label: 'Finished', value: 'Finished' },
+    { label: 'Canceled', value: 'Canceled' }
+  ];
 
-  addTaskRequestForm: FormGroup;
+  selectedTaskRequestId: number;
+
+  updateTaskRequestForm: FormGroup;
 
   // updateStaffForm: FormGroup
   update: boolean = false;
@@ -61,15 +66,13 @@ export class TaskAssignmentsTableComponent implements OnInit {
     private taskRequestService: TaskRequestService,
     private fb: FormBuilder
   ) {
-    this.addTaskRequestForm = this.fb.group({
-      Description: ['', [Validators.minLength(3)]],
-      MajorId: [null, Validators.required],
-      RequesterId: 1,
+    this.updateTaskRequestForm = this.fb.group({
+      Action: [null, Validators.required], // Thêm action
+      CancelReason: ['', Validators.minLength(3)], // Chỉ yêu cầu khi Cancel
     });
   }
 
   ngOnInit() {
-    this.loadMajorOptions();
   }
 
   onGlobalFilter(event: Event, dt: any) {
@@ -103,49 +106,39 @@ export class TaskAssignmentsTableComponent implements OnInit {
     });
   }
 
-  loadMajorOptions() {
-    this.taskRequestService.getTaskRequests().then(taskRequests => {
-      // Lọc danh sách Major từ taskRequests và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      taskRequests.forEach(task => {
-        if (!uniqueMajors.has(task.Major.Id)) {
-          uniqueMajors.set(task.Major.Id, {
-            id: task.Major.Id,
-            name: task.Major.Name
-          });
-        }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
-      console.log(this.majorOptions);
-    });
-  }
-
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
-    // 🔥 Gọi API lấy thông tin tài khoản
-    this.taskRequestService.findById(id).then(task => {
-      if (task) {
-        this.addTaskRequestForm.patchValue({
-          Description: task.TaskRequest.Description,
-          MajorId: task.Major.Id,
-        });
+    this.selectedTaskRequestId = id; // Lưu ID request
+    // ✅ Reset form trước khi điền dữ liệu mới
+    this.updateTaskRequestForm.reset();
+
+    // 🔥 Gọi API lấy dữ liệu
+    this.taskRequestService.findById(id).then(taskRequest => {
+      if (!taskRequest || !taskRequest.TaskRequest) {
+        console.warn(`⚠️ Không tìm thấy dữ liệu Service Request cho ID: ${id}`);
+        return;
       }
+      // ✅ Điền dữ liệu vào form
+      this.updateTaskRequestForm.patchValue({
+        CancelReason: taskRequest.TaskRequest.CancelReason || '',
+      });
+    }).catch(error => {
+      console.error('❌ Lỗi khi lấy dữ liệu Service Request:', error);
     });
   }
 
   hideDialogUpdate() {
-    this.addTaskRequestForm.reset();
+    this.updateTaskRequestForm.reset();
     this.update = false;
   }
 
   updateTaskRequest() {
-    if (this.addTaskRequestForm.valid) {
-      console.log('Form update Data:', this.addTaskRequestForm.value); // Gửi lên API
+    if (this.updateTaskRequestForm.valid) {
+      console.log('Form update Data:', this.updateTaskRequestForm.value); // Gửi lên API
       this.hideDialogUpdate();
     } else {
       console.log('Form update Invalid');
-      this.addTaskRequestForm.markAllAsTouched();
+      this.updateTaskRequestForm.markAllAsTouched();
     }
   }
 }
