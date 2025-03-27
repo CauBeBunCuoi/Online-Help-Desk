@@ -27,14 +27,57 @@ export class FacilityService {
     },
   ];
 
+  private facilitiesById = [
+    {
+      Facility: {
+        Id: 1,
+        Name: 'Main Campus',
+        Description: 'Main facility for all majors',
+        ImageUrl: 'https://example.com/facility1.jpg',
+        IsDeactivated: false,
+        CreatedAt: '2024-01-01'
+      },
+      Majors: [
+        {
+          Id: 101,
+          Name: 'Computer Science',
+          MainDescription: 'Software & hardware education',
+          WorkShiftsDescription: 'Day & Night shifts',
+          FacilityMajorTypeId: 1,
+          FacilityId: 1,
+          IsOpen: true,
+          CloseScheduleDate: '',
+          OpenScheduleDate: '2024-01-01',
+          IsDeactivated: false,
+          CreatedAt: '2024-01-01',
+          BackgroundImageUrl: 'https://example.com/cs-bg.jpg',
+          ImageUrl: 'https://example.com/cs-logo.jpg'
+        },
+        {
+          Id: 102,
+          Name: 'Mechanical Engineering',
+          MainDescription: 'Focus on machine learning & robotics',
+          WorkShiftsDescription: 'Morning shifts',
+          FacilityMajorTypeId: 2,
+          FacilityId: 1,
+          IsOpen: true,
+          CloseScheduleDate: '',
+          OpenScheduleDate: '2024-01-01',
+          IsDeactivated: false,
+          CreatedAt: '2024-01-01',
+          BackgroundImageUrl: 'https://example.com/me-bg.jpg',
+          ImageUrl: 'https://example.com/me-logo.jpg'
+        }
+      ]
+    }
+  ];
   // ✅ Lấy danh sách tất cả cơ sở
   getFacilities(): Promise<any[]> {
     return Promise.resolve(this.facilities);
   }
-
-  // ✅ Tìm cơ sở theo ID
-  findById(id: number): Promise<any | null> {
-    const facility = this.facilities.find(f => f.Facility.Id === id);
+  // ✅ Lấy thông tin của một Facility theo ID
+  getFacilityById(facilityId: number): Promise<any | null> {
+    const facility = this.facilitiesById.find(f => f.Facility.Id === facilityId);
     return Promise.resolve(facility || null);
   }
 

@@ -47,6 +47,7 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 export class CampusMembersComponent {
   members!: any[];
 
+  // lấy Api Job
   jobTypes = [
     { label: 'Đa cấp', value: 1 },
     { label: 'Nô lệ', value: 2 },
@@ -137,23 +138,22 @@ export class CampusMembersComponent {
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
 
-    this.authService.findById(id).then(staff => {
-      if (staff) {
-        this.avatarUrl = staff.Account.ImageUrl || null; // Cập nhật avatar
+    this.authService.findById(id).then(member => {
+      if (member) {
+        this.avatarUrl = member.Account.ImageUrl || null; // Cập nhật avatar
 
         // 🔥 Cập nhật dữ liệu vào form
         this.updateMemberForm.patchValue({
-          FullName: staff.Account.FullName,
-          Phone: staff.Account.Phone,
-          Address: staff.Account.Address,
-          Image: staff.Account.ImageUrl // Giữ ảnh nếu có
+          FullName: member.Account.FullName,
+          Phone: member.Account.Phone,
+          Address: member.Account.Address,
+          Image: member.Account.ImageUrl // Giữ ảnh nếu có
         });
       }
     }).catch(error => {
       console.error('Error fetching staff:', error);
     });
   }
-
 
   hideDialogAdd() {
     this.addMemberForm.reset();

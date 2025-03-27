@@ -54,11 +54,11 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 export class FacilityMajorTableComponent implements OnInit {
   @Input() facilityMajors: any[] = []; // ✅ Nhận dữ liệu từ component cha
 
-  // gọi service lấy facility và type major
+  // gọi service api lấy facility và type major
   facilityOptions: any[] = [];
   selectedFacilityMajorId: number | null = null;
 
-  // đợi lấy service
+  // đợi lấy api service
   facilityMajorTypes = [
     { label: 'Engineering', value: 1 },
     { label: 'Science', value: 2 },
@@ -90,10 +90,9 @@ export class FacilityMajorTableComponent implements OnInit {
     this.updateFacilityMajorForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên Facility Major
       MainDescription: [''], // Mô tả chính
-      WorkShifstDescription: [''], // Mô tả ca làm việc
+      WorkShiftsDescription: [''], // Mô tả ca làm việc
       FacilityMajorTypeId: [null, Validators.required], // Loại FacilityMajor (Số)
       FacilityId: [null, Validators.required], // Facility liên kết (Số)
-      IsOpen: [false, Validators.required], // Mở hay đóng
       CloseScheduleDate: [null], // Ngày đóng
       OpenScheduleDate: [null], // Ngày mở
       BackgroundImage: [''], // Ảnh nền dưới dạng Base64
@@ -175,8 +174,7 @@ export class FacilityMajorTableComponent implements OnInit {
         this.updateFacilityMajorForm.patchValue({
           Name: facilityMajor.Major.Name,
           MainDescription: facilityMajor.Major.MainDescription,
-          WorkShifstDescription: facilityMajor.Major.WorkShifstDescription,
-          IsOpen: facilityMajor.Major.IsOpen,
+          WorkShiftsDescription: facilityMajor.Major.WorkShiftsDescription,
           CloseScheduleDate: formattedCloseDate, // Định dạng ngày
           OpenScheduleDate: formattedOpenDate, // Định dạng ngày
           FacilityMajorTypeId: facilityMajor.MajorType.Id,

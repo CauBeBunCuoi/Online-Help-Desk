@@ -6,11 +6,10 @@
             'Major.Id',
             'Major.Name',
             'Major.MainDescription',
-            'Major.WorkShifstDescription',
+            'Major.WorkShiftsDescription',
             'Facility.Name',
             'MajorType.Name',
-            'MajorType.IsOpen',
-        ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+        ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '70rem' }">
 
         <!-- Thanh tìm kiếm chung -->
         <ng-template #caption>
@@ -31,10 +30,9 @@
                 <th pSortableColumn="Major.Id">ID</th>
                 <th pSortableColumn="Major.Name">Name</th>
                 <th pSortableColumn="Major.MainDescription">Main Description</th>
-                <th pSortableColumn="Major.WorkShifstDescription">Work Shift</th>
+                <th pSortableColumn="Major.WorkShiftsDescription">Work Shift</th>
                 <th pSortableColumn="Facility.Name">Facility</th>
                 <th pSortableColumn="MajorType.Name">Major Type</th>
-                <th pSortableColumn="Major.IsOpen">Status</th>
                 <th>Action</th>
             </tr>
         </ng-template>
@@ -45,14 +43,9 @@
                 <td>{{ facilityMajor.Major.Id }}</td>
                 <td>{{ facilityMajor.Major.Name }}</td>
                 <td>{{ facilityMajor.Major.MainDescription }}</td>
-                <td>{{ facilityMajor.Major.WorkShifstDescription }}</td>
+                <td>{{ facilityMajor.Major.WorkShiftsDescription }}</td>
                 <td>{{ facilityMajor.Facility.Name }}</td>
                 <td>{{ facilityMajor.MajorType.Name }}</td>
-                <td>
-                    <p-tag [value]="facilityMajor.Major.IsOpen ? 'Open' : 'Closed'"
-                        [severity]="facilityMajor.Major.IsOpen ? 'success' : 'danger'">
-                    </p-tag>
-                </td>
                 <td>
                     <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
                     <p-button (click)="showDialogUpdate(facilityMajor.Major.Id)" label="Update" class="ms-2" />
@@ -118,19 +111,11 @@
 
         <!-- Work Shift Description -->
         <div class="mb-3 row">
-            <label for="WorkShifstDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
                 Description</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="WorkShifstDescription" class="form-control"
-                    formControlName="WorkShifstDescription"></textarea>
-            </div>
-        </div>
-
-        <!-- Is Open -->
-        <div class="mb-3 row">
-            <label for="IsOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
-            <div class="col-sm-8">
-                <p-checkbox inputId="IsOpen" formControlName="IsOpen"></p-checkbox>
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
             </div>
         </div>
 

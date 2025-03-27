@@ -39,7 +39,7 @@ export class ServiceRequestService {
       },
       Service: {
         Name: 'IT Support',
-        FacilitymajorId: 1,
+        FacilityMajorId: 1,
         IsInitRequestDescriptionRequired: true,
         RequestInitHintDescription: 'Provide details about the issue',
         MainDescription: 'Technical support for IT-related problems',
@@ -55,7 +55,7 @@ export class ServiceRequestService {
         Id: 1,
         Name: 'Computer Science',
         MainDescription: 'Handles software & hardware issues',
-        WorkShifstDescription: 'Day & Night shifts',
+        WorkShiftsDescription: 'Day & Night shifts',
         FacilityMajorTypeId: 1,
         FacilityId: 1,
         IsOpen: true,

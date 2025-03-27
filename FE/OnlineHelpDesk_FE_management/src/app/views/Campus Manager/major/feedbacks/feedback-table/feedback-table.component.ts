@@ -53,7 +53,7 @@ export class FeedbackTableComponent implements OnInit {
   majorInfo: any;
   majorType: any;
 
-  addFeedbackForm: FormGroup;
+  detailFeedbackForm: FormGroup;
 
   // updateStaffForm: FormGroup
   update: boolean = false;
@@ -66,7 +66,7 @@ export class FeedbackTableComponent implements OnInit {
     private feedbackService: FeedbackService,
     private fb: FormBuilder
   ) {
-    this.addFeedbackForm = this.fb.group({
+    this.detailFeedbackForm = this.fb.group({
       Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung tối thiểu 3 ký tự
       Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]], // Đánh giá từ 1-5
       IsDeactivated: [{ value: false, disabled: true }] // ✅ Chỉ đặt `disabled` ở đây
@@ -133,7 +133,7 @@ export class FeedbackTableComponent implements OnInit {
       if (feedback) {
         this.selectedFeedback = feedback; // Lưu Feedback được chọn
 
-        this.addFeedbackForm.patchValue({
+        this.detailFeedbackForm.patchValue({
           Content: feedback.Feedback.Content,
           Rate: feedback.Feedback.Rate,
           IsDeactivated: feedback.Feedback.IsDeactivated
@@ -150,7 +150,7 @@ export class FeedbackTableComponent implements OnInit {
   }
 
   hideDialogDetail() {
-    this.addFeedbackForm.reset();
+    this.detailFeedbackForm.reset();
 
     this.selectedFeedback = null;
     this.accountInfo = null;

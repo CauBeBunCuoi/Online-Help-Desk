@@ -47,8 +47,12 @@ import { TaskRequestService } from '../../../../../core/service/task-request.ser
 export class TaskAssignmentsTableComponent implements OnInit {
   @Input() taskRequests: any[] = []; // ✅ Nhận dữ liệu từ component cha
   majorOptions: any[] = [];
+  actions = [
+    { label: 'Finished', value: 'Finished' },
+    { label: 'Canceled', value: 'Canceled' }
+  ];  
 
-  addTaskRequestForm: FormGroup;
+  updateTaskRequestForm: FormGroup;
 
   // updateStaffForm: FormGroup
   update: boolean = false;
@@ -61,7 +65,8 @@ export class TaskAssignmentsTableComponent implements OnInit {
     private taskRequestService: TaskRequestService,
     private fb: FormBuilder
   ) {
-    this.addTaskRequestForm = this.fb.group({
+    this.updateTaskRequestForm = this.fb.group({
+      CancelReason: ['', [Validators.minLength(3)]],
       Description: ['', [Validators.minLength(3)]],
       MajorId: [null, Validators.required],
       RequesterId: 1,
@@ -126,7 +131,7 @@ export class TaskAssignmentsTableComponent implements OnInit {
     // 🔥 Gọi API lấy thông tin tài khoản
     this.taskRequestService.findById(id).then(task => {
       if (task) {
-        this.addTaskRequestForm.patchValue({
+        this.updateTaskRequestForm.patchValue({
           Description: task.TaskRequest.Description,
           MajorId: task.Major.Id,
         });
@@ -135,17 +140,17 @@ export class TaskAssignmentsTableComponent implements OnInit {
   }
 
   hideDialogUpdate() {
-    this.addTaskRequestForm.reset();
+    this.updateTaskRequestForm.reset();
     this.update = false;
   }
 
   updateTaskRequest() {
-    if (this.addTaskRequestForm.valid) {
-      console.log('Form update Data:', this.addTaskRequestForm.value); // Gửi lên API
+    if (this.updateTaskRequestForm.valid) {
+      console.log('Form update Data:', this.updateTaskRequestForm.value); // Gửi lên API
       this.hideDialogUpdate();
     } else {
       console.log('Form update Invalid');
-      this.addTaskRequestForm.markAllAsTouched();
+      this.updateTaskRequestForm.markAllAsTouched();
     }
   }
 }

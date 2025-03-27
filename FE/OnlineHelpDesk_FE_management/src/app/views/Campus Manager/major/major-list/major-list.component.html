@@ -2,15 +2,17 @@
 <p-confirmdialog />
 <div class="container">
     <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+
     <div class="card">
         <p-table #dt2 [value]="facilityMajors" dataKey="Major.Id" [paginator]="true" [rows]="10"
-            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Major.Name"
-            [globalFilterFields]="['Major.Name', 'Major.IsOpen']" [sortOrder]="-1"
-            [tableStyle]="{ 'min-width': '60rem' }">
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Major.Id"
+            [globalFilterFields]="['Major.Name', 'MajorType.Name', 'Facility.Name']" [sortOrder]="-1"
+            [tableStyle]="{ 'min-width': '100rem' }">
 
-            <!-- Thanh tìm kiếm chung -->
+            <!-- Thanh tìm kiếm -->
             <ng-template #caption>
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-between">
+                    <h5 class="fw-bold">Facility Majors</h5>
                     <p-iconfield iconPosition="left">
                         <p-inputicon>
                             <i class="pi pi-search"></i>
@@ -24,11 +26,12 @@
             <!-- Header -->
             <ng-template pTemplate="header">
                 <tr>
-                    <th pSortableColumn="Major.Id">ID</th>
-                    <th pSortableColumn="Major.Name">Tên</th>
-                    <th pSortableColumn="Major.IsOpen">Trạng thái</th>
-                    <th pSortableColumn="Major.CloseScheduleDate">Ngày đóng</th>
-                    <th pSortableColumn="Major.OpenScheduleDate">Ngày mở</th>
+                    <th pSortableColumn="Major.Id">ID <p-sortIcon field="Major.Id"></p-sortIcon></th>
+                    <th pSortableColumn="Major.Name">Tên <p-sortIcon field="Major.Name"></p-sortIcon></th>
+                    <th>Hình ảnh</th>
+                    <th>Mô tả</th>
+                    <th pSortableColumn="MajorType.Name">Loại <p-sortIcon field="MajorType.Name"></p-sortIcon></th>
+                    <th pSortableColumn="Facility.Name">Cơ sở <p-sortIcon field="Facility.Name"></p-sortIcon></th>
                     <th>Hành động</th>
                 </tr>
             </ng-template>
@@ -39,11 +42,13 @@
                     <td>{{ facilityMajor.Major.Id }}</td>
                     <td>{{ facilityMajor.Major.Name }}</td>
                     <td>
-                        <p-tag [value]="facilityMajor.Major.IsOpen ? 'Mở' : 'Đóng'"
-                            [severity]="facilityMajor.Major.IsOpen ? 'success' : 'danger'" />
+                        <img *ngIf="facilityMajor.Major.ImageUrl" [src]="facilityMajor.Major.ImageUrl"
+                            alt="{{ facilityMajor.Major.Name }}" class="table-image">
+                        <span *ngIf="!facilityMajor.Major.ImageUrl" class="text-muted">No Image</span>
                     </td>
-                    <td>{{ facilityMajor.Major.CloseScheduleDate | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ facilityMajor.Major.OpenScheduleDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ facilityMajor.Major.MainDescription }}</td>
+                    <td>{{ facilityMajor.MajorType?.Name || 'N/A' }}</td>
+                    <td>{{ facilityMajor.Facility?.Name || 'N/A' }}</td>
                     <td>
                         <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" label="Delete"
                             severity="danger" [outlined]="true" />
@@ -109,37 +114,11 @@
 
         <!-- Work Shift Description -->
         <div class="mb-3 row">
-            <label for="WorkShifstDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
                 Description</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="WorkShifstDescription" class="form-control"
-                    formControlName="WorkShifstDescription"></textarea>
-            </div>
-        </div>
-
-        <!-- Is Open -->
-        <div class="mb-3 row">
-            <label for="IsOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
-            <div class="col-sm-8">
-                <p-checkbox inputId="IsOpen" formControlName="IsOpen"></p-checkbox>
-            </div>
-        </div>
-
-        <!-- Close Schedule Date -->
-        <div class="mb-3 row">
-            <label for="CloseScheduleDate" class="col-sm-4 col-form-label fw-semibold">Close Schedule Date</label>
-            <div class="col-sm-8">
-                <input pInputText id="CloseScheduleDate" type="date" class="form-control"
-                    formControlName="CloseScheduleDate" />
-            </div>
-        </div>
-
-        <!-- Open Schedule Date -->
-        <div class="mb-3 row">
-            <label for="OpenScheduleDate" class="col-sm-4 col-form-label fw-semibold">Open Schedule Date</label>
-            <div class="col-sm-8">
-                <input pInputText id="OpenScheduleDate" type="date" class="form-control"
-                    formControlName="OpenScheduleDate" />
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
             </div>
         </div>
 
@@ -156,8 +135,8 @@
         <div class="mb-3 row">
             <label for="FacilityId" class="col-sm-4 col-form-label fw-semibold">Facility</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityOptions" optionLabel="name" optionValue="id"
-                    formControlName="FacilityId" placeholder="Select Facility"></p-select>
+                <p-select [options]="facilityOptions" optionLabel="name" optionValue="id" formControlName="FacilityId"
+                    placeholder="Select Facility"></p-select>
             </div>
         </div>
 
@@ -225,19 +204,11 @@
 
         <!-- Work Shift Description -->
         <div class="mb-3 row">
-            <label for="WorkShifstDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
                 Description</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="WorkShifstDescription" class="form-control"
-                    formControlName="WorkShifstDescription"></textarea>
-            </div>
-        </div>
-
-        <!-- Is Open -->
-        <div class="mb-3 row">
-            <label for="IsOpen" class="col-sm-4 col-form-label fw-semibold">Open Status</label>
-            <div class="col-sm-8">
-                <p-checkbox inputId="IsOpen" formControlName="IsOpen"></p-checkbox>
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
             </div>
         </div>
 
@@ -272,8 +243,8 @@
         <div class="mb-3 row">
             <label for="FacilityId" class="col-sm-4 col-form-label fw-semibold">Facility</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityOptions" optionLabel="name" optionValue="id"
-                    formControlName="FacilityId" placeholder="Select Facility"></p-select>
+                <p-select [options]="facilityOptions" optionLabel="name" optionValue="id" formControlName="FacilityId"
+                    placeholder="Select Facility"></p-select>
             </div>
         </div>
 

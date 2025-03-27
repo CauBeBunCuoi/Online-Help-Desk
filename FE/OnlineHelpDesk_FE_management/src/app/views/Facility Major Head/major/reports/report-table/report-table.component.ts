@@ -54,7 +54,7 @@ export class ReportTableComponent implements OnInit {
   majorInfo: any;
   majorType: any;
 
-  addReportForm: FormGroup;
+  detailReportForm: FormGroup;
 
   // updateStaffForm: FormGroup
   update: boolean = false;
@@ -67,7 +67,7 @@ export class ReportTableComponent implements OnInit {
     private reportService: ReportService,
     private fb: FormBuilder
   ) {
-    this.addReportForm = this.fb.group({
+    this.detailReportForm = this.fb.group({
       Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung báo cáo (tối thiểu 3 ký tự)
       ReportTypeId: [null, Validators.required], // Loại báo cáo
       FacilityMajorId: [null, Validators.required], // Major liên quan
@@ -136,7 +136,7 @@ export class ReportTableComponent implements OnInit {
       if (report) {
         this.selectedReport = report; // Lưu Report được chọn
 
-        this.addReportForm.patchValue({
+        this.detailReportForm.patchValue({
           Content: report.Report.Content,
           ReportTypeId: report.Report.ReportTypeId,
           IsResolved: report.Report.IsResolved,
@@ -154,7 +154,7 @@ export class ReportTableComponent implements OnInit {
   }
 
   hideDialogDetail() {
-    this.addReportForm.reset();
+    this.detailReportForm.reset();
 
     this.selectedReport = null;
     this.accountInfo = null;

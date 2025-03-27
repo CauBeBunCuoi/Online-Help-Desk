@@ -68,16 +68,4 @@ export class AuthService {
     const account = this.accounts.find(acc => acc.Account.Id === id);
     return Promise.resolve(account || null);
   }
-
-  // ✅ Lọc account theo RoleId
-  getAccountsByRole(roleId: number): Promise<any[]> {
-    const filteredAccounts = this.accounts.filter(acc => acc.Account.RoleId === roleId);
-    return Promise.resolve(filteredAccounts);
-  }
-
-  // ✅ Lọc account theo JobTypeId
-  getAccountsByJobType(jobTypeId: number): Promise<any[]> {
-    const filteredAccounts = this.accounts.filter(acc => acc.Account.JobTypeId === jobTypeId);
-    return Promise.resolve(filteredAccounts);
-  }
 }

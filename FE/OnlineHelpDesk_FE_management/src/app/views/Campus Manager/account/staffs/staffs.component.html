@@ -50,7 +50,8 @@
                     <td>
                         <p-button (click)="confirmDelete($event, staff.Account.Id)" label="Delete" severity="danger"
                             [outlined]="true" />
-                        <p-button (click)="showDialogFacilityMajorTable(staff.Account.Id)" label="Update 1" class="ms-2" />
+                        <p-button (click)="showDialogFacilityMajorTable(staff.Account.Id)" label="Update 1"
+                            class="ms-2" />
                         <p-button (click)="showDialogUpdate(staff.Account.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
@@ -131,7 +132,7 @@
         <div class="mb-3 row">
             <label for="RoleId" class="col-sm-4 col-form-label fw-semibold">Role</label>
             <div class="col-sm-8">
-                <p-select [options]="roleTypes" optionLabel="label" optionValue="value" formControlName="RoleId"
+                <p-select [options]="roleTypes" optionLabel="Name" optionValue="Id" formControlName="RoleId"
                     placeholder="Select Role"></p-select>
                 @if (addStaffForm.controls['RoleId'].invalid && addStaffForm.controls['RoleId'].touched) {
                 <small class="text-danger">
@@ -144,7 +145,7 @@
         <div class="mb-3 row">
             <label for="JobTypeId" class="col-sm-4 col-form-label fw-semibold">Job Type</label>
             <div class="col-sm-8">
-                <p-select [options]="jobTypes" optionLabel="label" optionValue="value" formControlName="JobTypeId"
+                <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
                     placeholder="Select Job Type"></p-select>
                 @if (addStaffForm.controls['JobTypeId'].invalid && addStaffForm.controls['JobTypeId'].touched) {
                 <small class="text-danger">
@@ -169,104 +170,166 @@
 </p-dialog>
 
 <!-- Dialog Update Staff -->
-<p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+<p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
-    <!-- Avatar Upload -->
-    <div class="text-center mb-3">
-        @if (avatarUrl) {
-        <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
-        } @else {
-        <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
-        }
-        <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar" (onSelect)="onFileSelect($event)" />
-    </div>
-    <form [formGroup]="updateStaffForm">
-        <!-- Full Name -->
-        <div class="mb-3 row">
-            <label for="FullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
-            <div class="col-sm-8">
-                <input pInputText id="FullName" class="form-control" formControlName="FullName" />
-                @if (updateStaffForm.controls['FullName'].invalid && updateStaffForm.controls['FullName'].touched) {
-                <small class="text-danger">
-                    Full name is required (Min 3 chars).
-                </small>
-                }
-            </div>
-        </div>
-        <!-- Address -->
-        <div class="mb-3 row">
-            <label for="Address" class="col-sm-4 col-form-label fw-semibold">Address</label>
-            <div class="col-sm-8">
-                <input pInputText id="Address" class="form-control" formControlName="Address" />
-                @if (updateStaffForm.controls['Address'].invalid && updateStaffForm.controls['Address'].touched) {
-                <small class="text-danger">
-                    Address is required.
-                </small>
-                }
-            </div>
-        </div>
-        <!-- Phone -->
-        <div class="mb-3 row">
-            <label for="Phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
-            <div class="col-sm-8">
-                <input pInputText id="Phone" class="form-control" formControlName="Phone" />
-                @if (updateStaffForm.controls['Phone'].invalid && updateStaffForm.controls['Phone'].touched) {
-                <small class="text-danger">
-                    Phone must be 10-11 digits.
-                </small>
-                }
-            </div>
-        </div>
+    
+    <div class="d-flex gap-4">
+        <!-- 🏢 Danh sách Majors -->
+        <div class="flex-grow-1 card">
+            <h5 class="text-center mb-3">Assigned Majors</h5>
+            <p-table #dt2 [value]="selectedEmployeeMajors" dataKey="Id" [paginator]="true" [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 25]" sortField="Name" [globalFilterFields]="[
+                    'Id',
+                    'Name',
+                    'MainDescription',
+                    'WorkShiftsDescription'
+                ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '25rem' }">
 
-        <!-- Footer -->
-        <div class="d-flex justify-content-end gap-2">
-            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateStaff()" [disabled]="updateStaffForm.invalid" />
+                <!-- Header -->
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="Id">ID</th>
+                        <th pSortableColumn="Name">Name</th>
+                        <th pSortableColumn="MainDescription">Main Description</th>
+                        <th pSortableColumn="WorkShiftsDescription">Work Shift</th>
+                        <th pSortableColumn="IsOpen">Status</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+
+                <!-- Body -->
+                <ng-template pTemplate="body" let-major>
+                    <tr>
+                        <td>{{ major.Id }}</td>
+                        <td>{{ major.Name }}</td>
+                        <td>{{ major.MainDescription }}</td>
+                        <td>{{ major.WorkShiftsDescription }}</td>
+                        <td>
+                            <p-tag [value]="major.IsOpen ? 'Open' : 'Closed'"
+                                [severity]="major.IsOpen ? 'success' : 'danger'">
+                            </p-tag>
+                        </td>
+                        <td>
+                            <p-button (click)="confirmDelete($event, major.Id)" label="Delete" severity="danger"
+                                [outlined]="true" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-    </form>
+        <div class="flex-grow-1">
+            <!-- Avatar Upload -->
+            <div class="text-center mb-3">
+                @if (avatarUrl) {
+                <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                } @else {
+                <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                }
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar" (onSelect)="onFileSelect($event)" />
+            </div>
+            <form [formGroup]="updateStaffForm">
+                <!-- Full Name -->
+                <div class="mb-3 row">
+                    <label for="FullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="FullName" class="form-control" formControlName="FullName" />
+                        @if (updateStaffForm.controls['FullName'].invalid && updateStaffForm.controls['FullName'].touched) {
+                        <small class="text-danger">
+                            Full name is required (Min 3 chars).
+                        </small>
+                        }
+                    </div>
+                </div>
+                <!-- Address -->
+                <div class="mb-3 row">
+                    <label for="Address" class="col-sm-4 col-form-label fw-semibold">Address</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="Address" class="form-control" formControlName="Address" />
+                        @if (updateStaffForm.controls['Address'].invalid && updateStaffForm.controls['Address'].touched) {
+                        <small class="text-danger">
+                            Address is required.
+                        </small>
+                        }
+                    </div>
+                </div>
+                <!-- Phone -->
+                <div class="mb-3 row">
+                    <label for="Phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="Phone" class="form-control" formControlName="Phone" />
+                        @if (updateStaffForm.controls['Phone'].invalid && updateStaffForm.controls['Phone'].touched) {
+                        <small class="text-danger">
+                            Phone must be 10-11 digits.
+                        </small>
+                        }
+                    </div>
+                </div>
+                <!-- Job Type Selection -->
+                <div class="mb-3 row">
+                    <label for="JobTypeId" class="col-sm-4 col-form-label fw-semibold">Job Type</label>
+                    <div class="col-sm-8">
+                        <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
+                            placeholder="Select Job Type"></p-select>
+                        @if (updateStaffForm.controls['JobTypeId'].invalid && updateStaffForm.controls['JobTypeId'].touched) {
+                        <small class="text-danger">
+                            Job type must be selected.
+                        </small>
+                        }
+                    </div>
+                </div>
+                <!-- Date of Birth -->
+                <div class="mb-3 row">
+                    <label for="DateOfBirth" class="col-sm-4 col-form-label fw-semibold">Date of Birth</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="DateOfBirth" type="date" class="form-control" formControlName="DateOfBirth" />
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+                    <p-button label="Update" (click)="updateStaff()" [disabled]="updateStaffForm.invalid" />
+                </div>
+            </form>
+        </div>
+    </div>
 </p-dialog>
 
+<!-- Dialog phân Major -->
 <p-dialog header="Facility majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
     [closable]="false">
-    <!-- Work Description -->
-    <div class="mb-3">
-        <label for="workDescription" class="form-label fw-semibold">Work Description</label>
-        <textarea pInputTextarea [(ngModel)]="workDescription" rows="3" class="form-control"
-            placeholder="Enter work description..."></textarea>
-    </div>
     <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="Major.Id"
-    [tableStyle]="{'min-width': '50rem'}">
-    <ng-template #header>
-        <tr>
-            <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-            <th pSortableColumn="Major.Id">ID</th>
-            <th pSortableColumn="Major.Name">Name</th>
-            <th pSortableColumn="Major.MainDescription">Main Description</th>
-            <th pSortableColumn="Major.WorkShifstDescription">Work Shift</th>
-            <th pSortableColumn="Major.IsOpen">Status</th>
-            <th>Action</th>
-        </tr>
-    </ng-template>
-    <ng-template #body let-facilityMajor>
-        <tr>
-            <td>
-                <p-tableCheckbox [value]="facilityMajor" />
-            </td>
-            <td>{{ facilityMajor.Major.Id }}</td>
-            <td>{{ facilityMajor.Major.Name }}</td>
-            <td>{{ facilityMajor.Major.MainDescription }}</td>
-            <td>{{ facilityMajor.Major.WorkShifstDescription }}</td>
-            <td>
-                <p-tag [value]="facilityMajor.Major.IsOpen ? 'Open' : 'Closed'"
-                    [severity]="facilityMajor.Major.IsOpen ? 'success' : 'danger'" />
-            </td>
-            <td>
-                <p-button label="Delete" severity="danger" [outlined]="true" />
-                <!-- (click)="confirmDelete($event)"  -->
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template #header>
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th pSortableColumn="Major.Id">ID</th>
+                <th pSortableColumn="Major.Name">Name</th>
+                <th pSortableColumn="Major.MainDescription">Main Description</th>
+                <th pSortableColumn="Major.WorkShiftsDescription">Work Shift</th>
+                <th pSortableColumn="Major.IsOpen">Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-facilityMajor>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="facilityMajor" />
+                </td>
+                <td>{{ facilityMajor.Major.Id }}</td>
+                <td>{{ facilityMajor.Major.Name }}</td>
+                <td>{{ facilityMajor.Major.MainDescription }}</td>
+                <td>{{ facilityMajor.Major.WorkShiftsDescription }}</td>
+                <td>
+                    <p-tag [value]="facilityMajor.Major.IsOpen ? 'Open' : 'Closed'"
+                        [severity]="facilityMajor.Major.IsOpen ? 'success' : 'danger'" />
+                </td>
+                <td>
+                    <p-button label="Delete" severity="danger" [outlined]="true" />
+                    <!-- (click)="confirmDelete($event)"  -->
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
 
     <!-- Footer -->
     <div class="d-flex justify-content-end gap-2 mt-3">

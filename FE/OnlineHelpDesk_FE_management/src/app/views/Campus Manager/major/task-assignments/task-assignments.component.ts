@@ -14,6 +14,7 @@ import { TaskRequestService } from '../../../../core/service/task-request.servic
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskAssignmentsTableComponent } from './task-assignments-table/task-assignments.component'
+import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 
 @Component({
   selector: 'app-task-assignments',
@@ -47,11 +48,12 @@ export class TaskAssignmentsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private taskRequestService: TaskRequestService,
+    private facilityMajorService: FacilityMajorService,
   ) {
     this.addTaskRequestForm = this.fb.group({
       Description: ['', [Validators.minLength(3)]],
-      MajorId: [null, Validators.required],
       RequesterId: 1,
+      FacilityMajorId: [null, Validators.required],
     });
   }
 
@@ -61,21 +63,27 @@ export class TaskAssignmentsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.taskRequestService.getTaskRequests().then(taskRequests => {
-      // Lọc danh sách Major từ taskRequests và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
+    this.facilityMajorService.getFacilityMajors().then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.majorOptions = [];
+        return;
+      }
 
-      taskRequests.forEach(task => {
-        if (!uniqueMajors.has(task.Major.Id)) {
-          uniqueMajors.set(task.Major.Id, {
-            id: task.Major.Id,
-            name: task.Major.Name
+      this.majorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
           });
         }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
     });
   }
+
 
   // ✅ Lấy toàn bộ Task Requests
   loadTaskRequests() {
@@ -87,7 +95,7 @@ export class TaskAssignmentsComponent implements OnInit {
   // ✅ Lọc Task Requests theo `selectedMajorId`
   filterTaskRequests() {
     if (this.selectedMajorId) {
-      this.taskRequestService.getTaskRequests().then(taskRequests => {
+      this.taskRequestService.getTaskRequestsByMajorId(this.selectedMajorId).then(taskRequests => {
         this.filteredTaskRequests = taskRequests.filter(task => task.Major.Id === this.selectedMajorId);
       });
     } else {

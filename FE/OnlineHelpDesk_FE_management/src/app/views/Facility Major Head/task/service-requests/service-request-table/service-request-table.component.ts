@@ -51,7 +51,7 @@ export class ServiceRequestTableComponent implements OnInit {
     { label: 'Assign', value: 'Assign' },
     { label: 'Finish', value: 'Finish' },
     { label: 'Cancel', value: 'Cancel' }
-  ];
+  ];  
 
   assignees = [
     { id: 1, name: 'John Doe' },

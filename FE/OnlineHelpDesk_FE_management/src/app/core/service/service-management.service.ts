@@ -9,7 +9,7 @@ export class ServiceManagementService {
             Service: {
                 Id: 1, // ✅ Thêm ID để dễ tìm kiếm
                 Name: 'IT Support',
-                FacilitymajorId: 1,
+                FacilityMajorId: 1,
                 IsInitRequestDescriptionRequired: true,
                 RequestInitHintDescription: 'Provide details about the issue',
                 MainDescription: 'Technical support for IT-related problems',
@@ -26,7 +26,7 @@ export class ServiceManagementService {
                 Id: 1,
                 Name: 'Computer Science',
                 MainDescription: 'Handles software & hardware issues',
-                WorkShifstDescription: 'Day & Night shifts',
+                WorkShiftsDescription: 'Day & Night shifts',
                 FacilityMajorTypeId: 1,
                 FacilityId: 1,
                 IsOpen: true,
@@ -38,15 +38,15 @@ export class ServiceManagementService {
                 ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg'
             },
             ServiceType: {
-                id: 1,
-                name: 'Support'
+                Id: 1,
+                Name: 'Support'
             }
         },
         {
             Service: {
                 Id: 2,
                 Name: 'Maintenance Request',
-                FacilitymajorId: 2,
+                FacilityMajorId: 2,
                 IsInitRequestDescriptionRequired: false,
                 RequestInitHintDescription: '',
                 MainDescription: 'Request for facility maintenance',
@@ -63,7 +63,7 @@ export class ServiceManagementService {
                 Id: 2,
                 Name: 'Mechanical Engineering',
                 MainDescription: 'Maintenance of machines & equipment',
-                WorkShifstDescription: 'Morning shifts',
+                WorkShiftsDescription: 'Morning shifts',
                 FacilityMajorTypeId: 2,
                 FacilityId: 1,
                 IsOpen: true,
@@ -75,8 +75,8 @@ export class ServiceManagementService {
                 ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg'
             },
             ServiceType: {
-                id: 2,
-                name: 'Maintenance'
+                Id: 2,
+                Name: 'Maintenance'
             }
         }
     ];
@@ -88,10 +88,15 @@ export class ServiceManagementService {
         return Promise.resolve(this.services);
     }
 
+    // ✅ Lấy danh sách tất cả Services
+    getAllServicesByAccountId(id: number): Promise<any[]> {
+        return Promise.resolve(this.services);
+    }
+
     // ✅ Tìm Service theo ID của FacilityMajor
-    getServicesByFacilityMajor(facilityMajorId: number): Promise<any[]> {
+    getServicesByFacilityMajor(FacilityMajorId: number): Promise<any[]> {
         return Promise.resolve(
-            this.services.filter(service => service.Service.FacilitymajorId === facilityMajorId)
+            this.services.filter(service => service.Service.FacilityMajorId === FacilityMajorId)
         );
     }
 

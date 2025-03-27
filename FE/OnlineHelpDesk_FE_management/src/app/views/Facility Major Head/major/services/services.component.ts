@@ -22,7 +22,7 @@ export class ServicesComponent implements OnInit {
   filteredServices: any[] = [];
 
   constructor(
-    // private facilityMajorService: FacilityMajorService,
+    private facilityMajorService: FacilityMajorService,
     private serviceManagementService: ServiceManagementService,
   ) { }
 
@@ -32,25 +32,30 @@ export class ServicesComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.serviceManagementService.getAllServices().then(services => {
-      // Lọc danh sách Service từ services và loại bỏ trùng lặp
-      const uniqueServices = new Map<number, any>();
-
-      services.forEach(service => {
-        if (!uniqueServices.has(service.Major.Id)) {
-          uniqueServices.set(service.Major.Id, {
-            id: service.Major.Id,
-            name: service.Major.Name
+    // theo head
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.majorOptions = [];
+        return;
+      }
+      this.majorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
           });
         }
-      });
-      this.majorOptions = Array.from(uniqueServices.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
     });
   }
 
   // ✅ Lấy toàn bộ feedback
   loadServices() {
-    this.serviceManagementService.getAllServices().then((data) => {
+    this.serviceManagementService.getAllServicesByAccountId(1).then((data) => {
       this.filteredServices = data;
     });
   }
@@ -58,7 +63,7 @@ export class ServicesComponent implements OnInit {
   // ✅ Lọc major theo `selectedMajorId`
   filterServices() {
     if (this.selectedMajorId) {
-      this.serviceManagementService.getAllServices().then(services => {
+      this.serviceManagementService.getServicesByFacilityMajor(this.selectedMajorId).then(services => {
         this.filteredServices = services.filter(service => service.Major.Id === this.selectedMajorId);
       });
     } else {

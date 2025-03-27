@@ -21,7 +21,7 @@ export class FeedbackService {
         Id: 1,
         Name: 'Computer Science',
         MainDescription: 'Handles all CS-related subjects',
-        WorkShifstDescription: 'Morning and Evening Shifts',
+        WorkShiftsDescription: 'Morning and Evening Shifts',
         FacilityMajorTypeId: 2,
         FacilityId: 1,
         IsOpen: true,
@@ -62,7 +62,7 @@ export class FeedbackService {
         Id: 2,
         Name: 'Mechanical Engineering',
         MainDescription: 'Focuses on mechanical systems',
-        WorkShifstDescription: 'Day Shifts',
+        WorkShiftsDescription: 'Day Shifts',
         FacilityMajorTypeId: 3,
         FacilityId: 2,
         IsOpen: false,
@@ -91,6 +91,11 @@ export class FeedbackService {
 
   // ✅ Lấy danh sách tất cả feedbacks
   getFeedbacks(): Promise<any[]> {
+    return Promise.resolve(this.feedbacks);
+  }
+
+  // ✅ Lấy danh sách tất cả feedbacks
+  getFeedbacksByAccountId(id: number): Promise<any[]> {
     return Promise.resolve(this.feedbacks);
   }
 

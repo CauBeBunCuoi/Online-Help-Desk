@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { MajorAssignmentService } from '../../../../core/service/major-assignment.service';
 
 @Component({
   selector: 'app-staffs',
@@ -50,19 +51,22 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
 })
 export class StaffsComponent implements OnInit {
   staffs!: any[];
+  // goi api lấy role và job
   roleTypes = [
-    { label: 'Facility Major Head', value: 2 },
-    { label: 'Nô lệ', value: 3 },
+    { Name: 'Facility Major Head', Id: 2 },
+    { Name: 'Nô lệ', Id: 3 },
   ];
   jobTypes = [
-    { label: 'Đa cấp', value: 1 },
-    { label: 'Nô lệ', value: 2 },
-    { label: 'Bác sĩ', value: 3 },
-    { label: 'Công an', value: 4 },
-    { label: 'Bảo vệ', value: 5 },
-    { label: 'Giáo viên', value: 6 },
-    { label: 'Học sinh', value: 7 },
+    { Name: 'Đa cấp', Id: 1 },
+    { Name: 'Nô lệ', Id: 2 },
+    { Name: 'Bác sĩ', Id: 3 },
+    { Name: 'Công an', Id: 4 },
+    { Name: 'Bảo vệ', Id: 5 },
+    { Name: 'Giáo viên', Id: 6 },
+    { Name: 'Học sinh', Id: 7 },
   ];
+  // lấy major của nhân viên
+  selectedEmployeeMajors: any[] = [];
 
   selectedAccountId: number | null = null;
 
@@ -71,6 +75,7 @@ export class StaffsComponent implements OnInit {
 
   addStaffForm: FormGroup;
   updateStaffForm: FormGroup;
+
   add: boolean = false;
   @ViewChild('fileUploadRef') fileUpload!: FileUpload;
   avatarUrl: string | null = null;
@@ -79,7 +84,6 @@ export class StaffsComponent implements OnInit {
   update: boolean = false;
 
   facilityMajorTable: boolean = false;
-  workDescription: string = '';
 
   loading: boolean = false;
   activityValues: number[] = [0, 100];
@@ -87,6 +91,7 @@ export class StaffsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private facilityMajorService: FacilityMajorService,
+    private majorAssignmentService: MajorAssignmentService,
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private fb: FormBuilder
   ) {
@@ -102,20 +107,18 @@ export class StaffsComponent implements OnInit {
       Image: [''] // Avatar dưới dạng Base64
     });
     this.updateStaffForm = this.fb.group({
-      FullName: ['', [Validators.required, Validators.minLength(3)]],
-      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-      Address: ['', Validators.required],
-      Image: [''] // Ảnh dưới dạng Base64
+      FullName: ['', [Validators.required, Validators.minLength(3)]], // Họ và tên (bắt buộc, tối thiểu 3 ký tự)
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]], // Số điện thoại (10-11 số)
+      Address: ['', Validators.required], // Địa chỉ (bắt buộc)
+      JobTypeId: [null, Validators.required], // Mã loại công việc (bắt buộc)
+      DateOfBirth: [null, Validators.required], // Ngày sinh (dạng Date hoặc string ISO 8601)
+      Image: [''] // Ảnh dưới dạng Base64 (không bắt buộc)
     });
-
   }
 
   ngOnInit() {
     this.authService.getAccountStaff().then((data) => {
       this.staffs = data;
-    });
-    this.facilityMajorService.getFacilityMajors().then(data => {
-      this.facilityMajors = data;
     });
   }
 
@@ -159,22 +162,36 @@ export class StaffsComponent implements OnInit {
     this.update = true; // Mở dialog
 
     this.authService.findById(id).then(staff => {
-      if (staff) {
-        this.avatarUrl = staff.Account.ImageUrl || null; // Cập nhật avatar
-
-        // 🔥 Cập nhật dữ liệu vào form
-        this.updateStaffForm.patchValue({
-          FullName: staff.Account.FullName,
-          Phone: staff.Account.Phone,
-          Address: staff.Account.Address,
-          Image: staff.Account.ImageUrl // Giữ ảnh nếu có
-        }); 
+      if (!staff || !staff.Account) {
+        console.warn(`⚠️ Không tìm thấy thông tin nhân viên với ID: ${id}`);
+        return;
       }
+
+      // ✅ Xử lý ngày sinh (convert string -> Date)
+      const formattedDateOfBirth = staff.Account.DateOfBirth
+        ? new Date(staff.Account.DateOfBirth).toISOString().split('T')[0]
+        : null;
+
+      // ✅ Cập nhật ảnh hiển thị
+      this.avatarUrl = staff.Account.ImageUrl || null;
+
+      // ✅ Cập nhật dữ liệu vào form
+      this.updateStaffForm.patchValue({
+        FullName: staff.Account.FullName || '',
+        Phone: staff.Account.Phone || '',
+        Address: staff.Account.Address || '',
+        JobTypeId: staff.Account.JobTypeId || null, // Định danh loại công việc
+        DateOfBirth: formattedDateOfBirth, // Chuyển đổi ngày sinh sang định dạng phù hợp
+        Image: staff.Account.ImageUrl || '' // Lưu lại ảnh nếu có
+      });
     }).catch(error => {
-      console.error('Error fetching staff:', error);
+      console.error('❌ Lỗi khi lấy thông tin nhân viên:', error);
+    });
+
+    this.majorAssignmentService.getMajorAssignmentsByStaff(id).then(assignments => {
+      this.selectedEmployeeMajors = assignments.map(a => a.Major);
     });
   }
-
 
   hideDialogAdd() {
     this.addStaffForm.reset();
@@ -236,13 +253,23 @@ export class StaffsComponent implements OnInit {
   showDialogFacilityMajorTable(id: number) {
     this.facilityMajorTable = true;
     this.selectedAccountId = id;
+    Promise.all([
+      this.majorAssignmentService.getMajorAssignmentsByStaff(id),
+      this.facilityMajorService.getFacilityMajors()
+    ]).then(([assignments, allMajors]) => {
+      this.selectedEmployeeMajors = assignments.map(a => a.Major);
+
+      // ✅ Lọc ra những major chưa được phân công
+      this.facilityMajors = allMajors.filter(major =>
+        !this.selectedEmployeeMajors.some(assigned => assigned.Id === major.Major.Id)
+      );
+    });
   }
 
   hideDialogFacilityMajorTable() {
     this.facilityMajorTable = false;
     this.selectedAccountId = null;
     this.selectedFacilityMajors = []; // 🔥 Reset danh sách đã chọn
-    this.workDescription = ''; // 🔥 Reset workDescription
   }
 
   updateFacilityMajorSelect() {
@@ -257,8 +284,6 @@ export class StaffsComponent implements OnInit {
     }
 
     const formData = new FormData();
-    formData.append('workDescription', this.workDescription); // Thêm mô tả công việc
-
     this.selectedFacilityMajors.forEach(fm => {
       formData.append('facilityMajorsId', fm.Major.Id.toString());
     });

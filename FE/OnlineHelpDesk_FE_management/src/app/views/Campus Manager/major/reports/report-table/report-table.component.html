@@ -7,8 +7,9 @@
   'Report.Content', 
   'Account.FullName', 
   'Report.IsResolved', 
-  'Report.CreatedAt'
-]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+  'Report.CreatedAt',
+  'MajorType.Name'
+]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '70rem' }">
         <!-- Thanh tìm kiếm chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-end">
@@ -28,6 +29,7 @@
                 <th pSortableColumn="Account.FullName">User</th>
                 <th pSortableColumn="Report.Content">Content</th>
                 <th pSortableColumn="ReportType.Name">Report Type</th>
+                <th pSortableColumn="MajorType.Name">Major Type</th> <!-- ✅ Cột mới -->
                 <th pSortableColumn="Report.IsResolved">Status</th>
                 <th pSortableColumn="Report.CreatedAt">CreatedAt</th>
                 <th>Action</th>
@@ -41,6 +43,7 @@
                 <td>{{ report.Account.FullName }}</td>
                 <td>{{ report.Report.Content }}</td>
                 <td>{{ report.ReportType.Name }}</td>
+                <td>{{ report.MajorType.Name }}</td> <!-- ✅ Hiển thị `MajorType` -->
                 <td>
                     <p-tag [value]="report.Report.IsResolved ? 'Resolved' : 'Pending'"
                         [severity]="report.Report.IsResolved ? 'success' : 'warn'">
@@ -56,10 +59,9 @@
     </p-table>
 </div>
 
-
 <!-- Dialog Update detail -->
 <p-dialog header="Report Details" [modal]="true" [(visible)]="update" [closable]="false" [style]="{ width: '50rem' }">
-    <form [formGroup]="addReportForm">
+    <form [formGroup]="updateReportForm">
         <!-- User Info -->
         <div class="mb-3 d-flex align-items-center">
             @if(accountInfo?.ImageUrl) {
@@ -98,7 +100,7 @@
             <div class="form-check">
                 <input type="checkbox" id="IsResolved" class="form-check-input" formControlName="IsResolved" />
                 <label for="IsResolved" class="form-check-label">
-                    {{ addReportForm.controls['IsResolved'].value ? 'Resolved' : 'Pending' }}
+                    {{ updateReportForm.controls['IsResolved'].value ? 'Resolved' : 'Pending' }}
                 </label>
             </div>
         </div>

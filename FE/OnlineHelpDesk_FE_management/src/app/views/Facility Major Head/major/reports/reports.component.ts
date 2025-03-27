@@ -13,6 +13,7 @@ import { ReportService } from '../../../../core/service/report.service';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReportTableComponent } from './report-table/report-table.component';
+import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 
 @Component({
   selector: 'app-reports',
@@ -39,17 +40,10 @@ export class ReportsComponent implements OnInit {
 
   filteredReports: any[] = [];
 
-  addReportForm: FormGroup;
-
   constructor(
-    private fb: FormBuilder,
     private reportService: ReportService,
+    private facilityMajorService: FacilityMajorService
   ) {
-    this.addReportForm = this.fb.group({
-      Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung tối thiểu 3 ký tự
-      Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]], // Đánh giá từ 1-5
-      IsDeactivated: [false], // Trạng thái kích hoạt
-    });
   }
 
   ngOnInit() {
@@ -58,25 +52,30 @@ export class ReportsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.reportService.getAllReports().then(reports => {
-      // Lọc danh sách Major từ reports và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      reports.forEach(report => {
-        if (!uniqueMajors.has(report.Major.Id)) {
-          uniqueMajors.set(report.Major.Id, {
-            id: report.Major.Id,
-            name: report.Major.Name
+    // theo head
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.majorOptions = [];
+        return;
+      }
+      this.majorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
           });
         }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
     });
   }
 
-  // ✅ Lấy toàn bộ feedback
+  // ✅ Lấy toàn bộ report
   loadReports() {
-    this.reportService.getAllReports().then(reports => {
+    this.reportService.getAllReportsByAccountId(1).then(reports => {
       this.filteredReports = reports; // Ban đầu hiển thị tất cả
     });
   }
@@ -84,7 +83,7 @@ export class ReportsComponent implements OnInit {
   // ✅ Lọc feedback theo `selectedMajorId`
   filterReports() {
     if (this.selectedMajorId) {
-      this.reportService.getAllReports().then(reports => {
+      this.reportService.getReportsByFacilityMajor(this.selectedMajorId).then(reports => {
         this.filteredReports = reports.filter(report => report.Major.Id === this.selectedMajorId);
       });
     } else {

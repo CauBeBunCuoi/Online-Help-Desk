@@ -156,8 +156,8 @@ export class FacilityItemsComponent implements OnInit {
       }
     });
 
-    this.itemAssignmentService.getMajorsByFacilityItemId(id).then(major => {
-      this.itemMajors = major;
+    this.facilityItemService.getMajorsByFacilityItemId(id).then(assignments => {
+      this.itemMajors = assignments.map(a => a.Major);
     });
   }
 

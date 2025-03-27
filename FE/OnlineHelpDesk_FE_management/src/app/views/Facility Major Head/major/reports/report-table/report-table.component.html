@@ -58,7 +58,7 @@
 
 <!-- Dialog Update detail -->
 <p-dialog header="Report Details" [modal]="true" [(visible)]="update" [closable]="false" [style]="{ width: '50rem' }">
-    <form [formGroup]="addReportForm">
+    <form [formGroup]="detailReportForm">
         <!-- User Info -->
         <div class="mb-3 d-flex align-items-center">
             @if(accountInfo?.ImageUrl) {
@@ -97,7 +97,7 @@
             <div class="form-check">
                 <input type="checkbox" id="IsResolved" class="form-check-input" formControlName="IsResolved" />
                 <label for="IsResolved" class="form-check-label">
-                    {{ addReportForm.controls['IsResolved'].value ? 'Resolved' : 'Pending' }}
+                    {{ detailReportForm.controls['IsResolved'].value ? 'Resolved' : 'Pending' }}
                 </label>
             </div>
         </div>

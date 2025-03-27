@@ -65,7 +65,7 @@
                     'Id',
                     'Name',
                     'MainDescription',
-                    'WorkShifstDescription'
+                    'WorkShiftsDescription'
                 ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '25rem' }">
 
                 <!-- Header -->
@@ -74,7 +74,7 @@
                         <th pSortableColumn="Id">ID</th>
                         <th pSortableColumn="Name">Name</th>
                         <th pSortableColumn="MainDescription">Main Description</th>
-                        <th pSortableColumn="WorkShifstDescription">Work Shift</th>
+                        <th pSortableColumn="WorkShiftsDescription">Work Shift</th>
                         <th pSortableColumn="IsOpen">Status</th>
                     </tr>
                 </ng-template>
@@ -85,7 +85,7 @@
                         <td>{{ major.Id }}</td>
                         <td>{{ major.Name }}</td>
                         <td>{{ major.MainDescription }}</td>
-                        <td>{{ major.WorkShifstDescription }}</td>
+                        <td>{{ major.WorkShiftsDescription }}</td>
                         <td>
                             <p-tag [value]="major.IsOpen ? 'Open' : 'Closed'"
                                 [severity]="major.IsOpen ? 'success' : 'danger'">
@@ -109,7 +109,7 @@
                         Work description is required (Min 3 chars).
                     </small>
                 </div>
-                
+
 
                 <!-- 📌 Footer -->
                 <div class="d-flex justify-content-end gap-2">

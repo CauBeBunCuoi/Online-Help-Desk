@@ -45,8 +45,6 @@ import { ReportService } from '../../../../../core/service/report.service';
 })
 export class ReportTableComponent implements OnInit {
   @Input() reports: any[] = []; // ✅ Nhận dữ liệu từ component cha
-  majorOptions: any[] = [];
-  selectedMajorId: number | null = null;
 
   selectedReport: number | null = null;
   reportType: any;
@@ -54,7 +52,7 @@ export class ReportTableComponent implements OnInit {
   majorInfo: any;
   majorType: any;
 
-  addReportForm: FormGroup;
+  updateReportForm: FormGroup;
 
   // updateStaffForm: FormGroup
   update: boolean = false;
@@ -67,7 +65,7 @@ export class ReportTableComponent implements OnInit {
     private reportService: ReportService,
     private fb: FormBuilder
   ) {
-    this.addReportForm = this.fb.group({
+    this.updateReportForm = this.fb.group({
       Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung báo cáo (tối thiểu 3 ký tự)
       ReportTypeId: [null, Validators.required], // Loại báo cáo
       FacilityMajorId: [null, Validators.required], // Major liên quan
@@ -77,7 +75,6 @@ export class ReportTableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadMajorOptions();
   }
 
   onGlobalFilter(event: Event, dt: any) {
@@ -111,23 +108,6 @@ export class ReportTableComponent implements OnInit {
     });
   }
 
-  loadMajorOptions() {
-    this.reportService.getAllReports().then(reports => {
-      // Lọc danh sách Major từ reports và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      reports.forEach(report => {
-        if (!uniqueMajors.has(report.Major.Id)) {
-          uniqueMajors.set(report.Major.Id, {
-            id: report.Major.Id,
-            name: report.Major.Name
-          });
-        }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
-    });
-  }
-
   showDialogUpdate(id: number) {
     this.update = true; // Mở dialog
 
@@ -136,7 +116,7 @@ export class ReportTableComponent implements OnInit {
       if (report) {
         this.selectedReport = report; // Lưu Report được chọn
 
-        this.addReportForm.patchValue({
+        this.updateReportForm.patchValue({
           Content: report.Report.Content,
           ReportTypeId: report.Report.ReportTypeId,
           IsResolved: report.Report.IsResolved,
@@ -154,8 +134,7 @@ export class ReportTableComponent implements OnInit {
   }
 
   hideDialogDetail() {
-    this.addReportForm.reset();
-
+    this.updateReportForm.reset();
     this.selectedReport = null;
     this.accountInfo = null;
     this.majorInfo = null;

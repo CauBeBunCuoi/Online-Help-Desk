@@ -10,7 +10,7 @@ export class FacilityMajorService {
         Id: 1,
         Name: 'Computer Science',
         MainDescription: 'Handles all CS-related subjects',
-        WorkShifstDescription: 'Morning and Evening Shifts',
+        WorkShiftsDescription: 'Morning and Evening Shifts',
         FacilityMajorTypeId: 2,
         FacilityId: 1,
         IsOpen: true,
@@ -39,7 +39,7 @@ export class FacilityMajorService {
         Id: 2,
         Name: 'Mechanical Engineering',
         MainDescription: 'Focuses on mechanical systems',
-        WorkShifstDescription: 'Day Shifts',
+        WorkShiftsDescription: 'Day Shifts',
         FacilityMajorTypeId: 3,
         FacilityId: 2,
         IsOpen: false,
@@ -68,7 +68,7 @@ export class FacilityMajorService {
         Id: 3,
         Name: 'Computer Science',
         MainDescription: 'Handles all CS-related subjects',
-        WorkShifstDescription: 'Morning and Evening Shifts',
+        WorkShiftsDescription: 'Morning and Evening Shifts',
         FacilityMajorTypeId: 2,
         FacilityId: 1,
         IsOpen: true,
@@ -97,7 +97,7 @@ export class FacilityMajorService {
         Id: 4,
         Name: 'Computer Science',
         MainDescription: 'Handles all CS-related subjects',
-        WorkShifstDescription: 'Morning and Evening Shifts',
+        WorkShiftsDescription: 'Morning and Evening Shifts',
         FacilityMajorTypeId: 2,
         FacilityId: 1,
         IsOpen: true,
@@ -135,7 +135,7 @@ export class FacilityMajorService {
         Id: 1,
         Name: 'Computer Science',
         MainDescription: 'Handles software & hardware issues',
-        WorkShifstDescription: 'Day & Night shifts',
+        WorkShiftsDescription: 'Day & Night shifts',
         FacilityMajorTypeId: 1,
         FacilityId: 1,
         IsOpen: true,
@@ -158,7 +158,7 @@ export class FacilityMajorService {
         Id: 2,
         Name: 'Mechanical Engineering',
         MainDescription: 'Maintenance of machines & equipment',
-        WorkShifstDescription: 'Morning shifts',
+        WorkShiftsDescription: 'Morning shifts',
         FacilityMajorTypeId: 2,
         FacilityId: 1,
         IsOpen: true,
@@ -174,6 +174,11 @@ export class FacilityMajorService {
 
   // ✅ Lấy danh sách tất cả Majors
   getFacilityMajors(): Promise<any[]> {
+    return Promise.resolve(this.majors);
+  }
+  
+  // ✅ Lấy danh sách tất cả Majors
+  getFacilityMajorsByAccountId(id: number): Promise<any[]> {
     return Promise.resolve(this.majors);
   }
 

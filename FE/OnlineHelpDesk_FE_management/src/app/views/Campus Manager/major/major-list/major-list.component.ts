@@ -16,7 +16,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { HttpClientModule } from '@angular/common/http';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -38,8 +37,6 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
     AvatarModule,
     IconFieldModule,
     InputIconModule,
-    CheckboxModule,
-    Checkbox,
     MultiSelectModule,
     SelectModule,
     HttpClientModule,
@@ -52,11 +49,11 @@ import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 export class MajorListComponent implements OnInit {
   facilityMajors!: any[];
 
-  // gọi service lấy facility và type major
+  // gọi service lấy facility
   facilityOptions: any[] = [];
   selectedFacilityId: number | null = null;
 
-  // đợi lấy service
+  // đợi lấy service major type
   facilityMajorTypes = [
     { label: 'Engineering', value: 1 },
     { label: 'Science', value: 2 },
@@ -90,12 +87,9 @@ export class MajorListComponent implements OnInit {
     this.addFacilityMajorForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên Facility Major
       MainDescription: [''], // Mô tả chính
-      WorkShifstDescription: [''], // Mô tả ca làm việc
+      WorkShiftsDescription: [''], // Mô tả ca làm việc
       FacilityMajorTypeId: [null, Validators.required], // Loại Facility Major
       FacilityId: [null, Validators.required], // Facility liên kết
-      IsOpen: [false, Validators.required], // Trạng thái mở/đóng
-      CloseScheduleDate: [null], // Ngày đóng
-      OpenScheduleDate: [null], // Ngày mở
       BackgroundImage: [''], // Ảnh nền (Base64 hoặc URL)
       Image: [''] // Ảnh chính (Base64 hoặc URL)
     });
@@ -103,10 +97,9 @@ export class MajorListComponent implements OnInit {
     this.updateFacilityMajorForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên Facility Major
       MainDescription: [''], // Mô tả chính
-      WorkShifstDescription: [''], // Mô tả ca làm việc
+      WorkShiftsDescription: [''], // Mô tả ca làm việc
       FacilityMajorTypeId: [null, Validators.required], // Loại Facility Major
       FacilityId: [null, Validators.required], // Facility liên kết
-      IsOpen: [false, Validators.required], // Trạng thái mở/đóng
       CloseScheduleDate: [null], // Ngày đóng
       OpenScheduleDate: [null], // Ngày mở
       BackgroundImage: [''], // Ảnh nền (Base64 hoặc URL)
@@ -193,8 +186,7 @@ export class MajorListComponent implements OnInit {
         this.updateFacilityMajorForm.patchValue({
           Name: facilityMajor.Major.Name,
           MainDescription: facilityMajor.Major.MainDescription,
-          WorkShifstDescription: facilityMajor.Major.WorkShifstDescription,
-          IsOpen: facilityMajor.Major.IsOpen,
+          WorkShiftsDescription: facilityMajor.Major.WorkShiftsDescription,
           CloseScheduleDate: formattedCloseDate, // Định dạng ngày
           OpenScheduleDate: formattedOpenDate, // Định dạng ngày
           FacilityMajorTypeId: facilityMajor.MajorType.Id,

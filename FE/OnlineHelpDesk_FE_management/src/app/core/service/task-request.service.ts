@@ -24,7 +24,7 @@ export class TaskRequestService {
                 Id: 1,
                 Name: 'Computer Science',
                 MainDescription: 'Handles all CS-related subjects',
-                WorkShifstDescription: 'Morning and Evening Shifts',
+                WorkShiftsDescription: 'Morning and Evening Shifts',
                 FacilityMajorTypeId: 2,
                 FacilityId: 1,
                 IsOpen: true,
@@ -55,7 +55,7 @@ export class TaskRequestService {
                 Id: 2,
                 Name: 'Mechanical Engineering',
                 MainDescription: 'Focuses on mechanical systems',
-                WorkShifstDescription: 'Day Shifts',
+                WorkShiftsDescription: 'Day Shifts',
                 FacilityMajorTypeId: 3,
                 FacilityId: 2,
                 IsOpen: false,
@@ -71,6 +71,10 @@ export class TaskRequestService {
 
     // ✅ Lấy danh sách TaskRequests
     getTaskRequests(): Promise<any[]> {
+        return Promise.resolve(this.taskRequests);
+    }
+    // ✅ Lấy danh sách TaskRequests
+    getTaskRequestsByMajorId(id: number): Promise<any[]> {
         return Promise.resolve(this.taskRequests);
     }
 

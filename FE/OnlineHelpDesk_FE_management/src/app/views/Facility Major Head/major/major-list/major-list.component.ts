@@ -31,8 +31,8 @@ export class MajorListComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajors().then(majors => {
-      // Lọc danh sách Major từ majors và loại bỏ trùng lặp
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(majors => {
+      // Lọc danh sách Major từ majors và loại bỏ trùng lặp theo héad
       const uniqueMajors = new Map<number, any>();
 
       majors.forEach(major => {
@@ -47,9 +47,9 @@ export class MajorListComponent implements OnInit {
     });
   }
 
-  // ✅ Lấy toàn bộ feedback
+  // ✅ Lấy toàn bộ theo head
   loadFacilityMajors() {
-    this.facilityMajorService.getFacilityMajors().then((data) => {
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then((data) => {
       this.filteredFacilityMajors = data;
     });
   }

@@ -22,7 +22,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { FacilityMajorService } from '../../../../../core/service/facility-major.service';
 import { Select, SelectModule } from 'primeng/select';
 import { Checkbox, CheckboxModule } from 'primeng/checkbox';
-import { ServiceManagementService } from 'src/app/core/service/service-management.service';
+import { ServiceManagementService } from '../../../../../core/service/service-management.service';
 
 @Component({
   selector: 'app-service-table',
@@ -54,6 +54,7 @@ import { ServiceManagementService } from 'src/app/core/service/service-managemen
 export class ServiceTableComponent implements OnInit {
   @Input() services: any[] = []; // ✅ Nhận dữ liệu từ component cha
 
+  // all api service type
   serviceTypes = [
     { value: 1, label: 'IT Support' },
     { value: 2, label: 'Maintenance' },
@@ -89,25 +90,21 @@ export class ServiceTableComponent implements OnInit {
   ) {
     this.addServiceForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên dịch vụ
-      FacilitymajorId: [null, Validators.required], // ID FacilityMajor liên kết
+      FacilityMajorId: [null, Validators.required], // ID FacilityMajor liên kết
       IsInitRequestDescriptionRequired: [false], // Yêu cầu mô tả khi tạo request
       RequestInitHintDescription: [''], // Gợi ý mô tả khi tạo request
       MainDescription: ['', [Validators.required, Validators.minLength(5)]], // Mô tả chính
       WorkShiftsDescription: [''], // Mô tả ca làm việc
-      IsOpen: [false, Validators.required], // Trạng thái mở/đóng
-      CloseScheduleDate: [null], // Ngày đóng
-      OpenScheduleDate: [null], // Ngày mở
       ServiceTypeId: [null, Validators.required], // Loại dịch vụ
       Image: [''] // Hình ảnh (logo) dưới dạng Base64
     });
     this.updateServiceForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên dịch vụ
-      FacilitymajorId: [null, Validators.required], // ID Facility Major (Chữ 'm' cần viết thường theo JSON)
+      FacilityMajorId: [null, Validators.required], // ID Facility Major (Chữ 'm' cần viết thường theo JSON)
       IsInitRequestDescriptionRequired: [false, Validators.required], // Có bắt buộc mô tả không
       RequestInitHintDescription: [''], // Gợi ý mô tả yêu cầu
       MainDescription: [''], // Mô tả chính
       WorkShiftsDescription: [''], // Mô tả ca làm việc
-      IsOpen: [false, Validators.required], // Trạng thái mở
       CloseScheduleDate: [null], // Ngày đóng
       OpenScheduleDate: [null], // Ngày mở
       ServiceTypeId: [null, Validators.required], // Loại dịch vụ
@@ -120,19 +117,24 @@ export class ServiceTableComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajors().then(majors => {
-      // Lọc danh sách Major từ majors và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      majors.forEach(major => {
-        if (!uniqueMajors.has(major.Major.Id)) {
-          uniqueMajors.set(major.Major.Id, {
+    // theo head
+    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.facilityMajorOptions = [];
+        return;
+      }
+      this.facilityMajorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
             id: major.Major.Id,
             name: major.Major.Name
           });
         }
-      });
-      this.facilityMajorOptions = Array.from(uniqueMajors.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.facilityMajorOptions = [];
     });
   }
 
@@ -218,7 +220,7 @@ export class ServiceTableComponent implements OnInit {
         // ✅ Cập nhật `FormGroup`
         this.updateServiceForm.patchValue({
           Name: serviceData.Service.Name,
-          FacilitymajorId: serviceData.Major.Id,
+          FacilityMajorId: serviceData.Major.Id,
           IsInitRequestDescriptionRequired: serviceData.Service.IsInitRequestDescriptionRequired,
           RequestInitHintDescription: serviceData.Service.RequestInitHintDescription,
           MainDescription: serviceData.Service.MainDescription,

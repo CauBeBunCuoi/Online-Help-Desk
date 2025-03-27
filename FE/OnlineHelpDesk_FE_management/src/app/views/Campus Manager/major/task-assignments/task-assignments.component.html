@@ -3,8 +3,8 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <label for="majorFilter" class="fw-semibold mb-2">Filter by Major</label>
-            <p-select [options]="majorOptions" [(ngModel)]="selectedMajorId" optionLabel="name" optionValue="id" [filter]="true"
-                filterBy="name" [showClear]="true" placeholder="Select a Major" class="form-control"
+            <p-select [options]="majorOptions" [(ngModel)]="selectedMajorId" optionLabel="name" optionValue="id"
+                [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Major" class="form-control"
                 (onChange)="filterTaskRequests()">
             </p-select>
         </div>
@@ -35,14 +35,15 @@
                 }
             </div>
         </div>
-        <!-- MajorId -->
+        <!-- FacilityMajorId -->
         <div class="mb-3 row">
-            <label for="MajorId" class="col-sm-4 col-form-label fw-semibold">Major</label>
+            <label for="FacilityMajorId" class="col-sm-4 col-form-label fw-semibold">Major</label>
             <div class="col-sm-8">
-                <p-select [options]="majorOptions" formControlName="MajorId" optionLabel="name" optionValue="id"
+                <p-select [options]="majorOptions" formControlName="FacilityMajorId" optionLabel="name" optionValue="id"
                     [showClear]="true" placeholder="Select a Major" class="w-100">
                 </p-select>
-                @if (addTaskRequestForm.controls['MajorId'].invalid && addTaskRequestForm.controls['MajorId'].touched) {
+                @if (addTaskRequestForm.controls['FacilityMajorId'].invalid &&
+                addTaskRequestForm.controls['FacilityMajorId'].touched) {
                 <small class="text-danger">
                     Major must choose.
                 </small>

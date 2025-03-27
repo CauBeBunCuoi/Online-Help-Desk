@@ -7,12 +7,12 @@ export class ItemAssignmentService {
   constructor() {}
 
   // Dữ liệu giả lập FacilityItemAssignments
-  private mockFacilityItemAssignments = {
+  private FacilityItemAssignments = {
     FacilityItemAssignments: [
       {
         FacilityItemAssignment: {
           FacilityItemId: 1,
-          FacilitymajorId: 101,
+          FacilityMajorId: 101,
           ItemCount: 5,
           Created: '2025-03-24T10:00:00Z'
         },
@@ -20,7 +20,7 @@ export class ItemAssignmentService {
           Id: 101,
           Name: 'Computer Science',
           MainDescription: 'Study of computation and programming',
-          WorkShifstDescription: 'Day & Night shifts',
+          WorkShiftsDescription: 'Day & Night shifts',
           FacilityMajorTypeId: 1,
           FacilityId: 1,
           IsOpen: true,
@@ -35,7 +35,7 @@ export class ItemAssignmentService {
       {
         FacilityItemAssignment: {
           FacilityItemId: 2,
-          FacilitymajorId: 102,
+          FacilityMajorId: 102,
           ItemCount: 3,
           Created: '2025-03-24T11:00:00Z'
         },
@@ -43,7 +43,7 @@ export class ItemAssignmentService {
           Id: 102,
           Name: 'Mechanical Engineering',
           MainDescription: 'Design and production of machinery',
-          WorkShifstDescription: 'Morning shifts',
+          WorkShiftsDescription: 'Morning shifts',
           FacilityMajorTypeId: 2,
           FacilityId: 1,
           IsOpen: false,
@@ -58,7 +58,7 @@ export class ItemAssignmentService {
       {
         FacilityItemAssignment: {
           FacilityItemId: 1,
-          FacilitymajorId: 103,
+          FacilityMajorId: 103,
           ItemCount: 2,
           Created: '2025-03-24T12:00:00Z'
         },
@@ -66,7 +66,7 @@ export class ItemAssignmentService {
           Id: 103,
           Name: 'Electrical Engineering',
           MainDescription: 'Power systems and electronics',
-          WorkShifstDescription: 'Evening shifts',
+          WorkShiftsDescription: 'Evening shifts',
           FacilityMajorTypeId: 3,
           FacilityId: 2,
           IsOpen: true,
@@ -85,7 +85,7 @@ export class ItemAssignmentService {
   getFacilityItemAssignments(facilityId: number): Promise<any> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(this.mockFacilityItemAssignments);
+        resolve(this.FacilityItemAssignments);
       }, 1000);
     });
   }
@@ -94,7 +94,7 @@ export class ItemAssignmentService {
   getMajorsByFacilityItemId(facilityItemId: number): Promise<any[]> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const majors = this.mockFacilityItemAssignments.FacilityItemAssignments
+        const majors = this.FacilityItemAssignments.FacilityItemAssignments
           .filter(item => item.FacilityItemAssignment.FacilityItemId === facilityItemId)
           .map(item => item.Major);
         resolve(majors);

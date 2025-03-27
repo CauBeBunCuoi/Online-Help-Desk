@@ -13,6 +13,7 @@ import { ReportService } from '../../../../core/service/report.service';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReportTableComponent } from './report-table/report-table.component';
+import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 
 @Component({
   selector: 'app-reports',
@@ -44,6 +45,7 @@ export class ReportsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private reportService: ReportService,
+    private facilityMajorService: FacilityMajorService,
   ) {
     this.addReportForm = this.fb.group({
       Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung tối thiểu 3 ký tự
@@ -58,19 +60,23 @@ export class ReportsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.reportService.getAllReports().then(reports => {
-      // Lọc danh sách Major từ reports và loại bỏ trùng lặp
-      const uniqueMajors = new Map<number, any>();
-
-      reports.forEach(report => {
-        if (!uniqueMajors.has(report.Major.Id)) {
-          uniqueMajors.set(report.Major.Id, {
-            id: report.Major.Id,
-            name: report.Major.Name
+    this.facilityMajorService.getFacilityMajors().then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+        this.majorOptions = [];
+        return;
+      }
+      this.majorOptions = facilityMajors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
           });
         }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
     });
   }
 
@@ -84,8 +90,8 @@ export class ReportsComponent implements OnInit {
   // ✅ Lọc feedback theo `selectedMajorId`
   filterReports() {
     if (this.selectedMajorId) {
-      this.reportService.getAllReports().then(reports => {
-        this.filteredReports = reports.filter(report => report.Major.Id === this.selectedMajorId);
+      this.reportService.getReportsByFacilityMajor(this.selectedMajorId).then(reports => {
+        this.filteredReports = reports;
       });
     } else {
       this.loadReports(); // Nếu không chọn Major, hiển thị tất cả

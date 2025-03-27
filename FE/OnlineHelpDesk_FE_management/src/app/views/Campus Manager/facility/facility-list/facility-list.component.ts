@@ -124,7 +124,7 @@ export class FacilityListComponent {
     this.selectedFacilityId = id; // Lưu ID của facility được chọn
 
     // 🔥 Gọi API lấy thông tin facility
-    this.facilityService.findById(id).then(facility => {
+    this.facilityService.getFacilityById(id).then(facility => {
       if (facility) {
         this.updateFacilityForm.patchValue({
           Name: facility.Facility.Name, // Cập nhật field đúng với JSON
@@ -132,7 +132,7 @@ export class FacilityListComponent {
           Image: facility.Facility.ImageUrl || null
         });
 
-        this.majors = facility.Major;
+        this.majors = facility.Majors;
         this.logoUrl = facility.Facility.ImageUrl || null; // Cập nhật ảnh đại diện
       }
     });

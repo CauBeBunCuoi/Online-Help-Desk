@@ -104,7 +104,7 @@
 
 
 <!-- Dialog Update cập nhật -->
-<p-dialog header="Update Facility" [modal]="true" [(visible)]="update" [style]="{ width: '60rem' }" [closable]="false">
+<p-dialog header="Update Facility" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
 
     <div class="row">
@@ -139,22 +139,27 @@
         <div class="col-md-5">
             <div class="text-center mb-3">
                 <p-avatar [image]="logoUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
-                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Image" (onSelect)="onFileSelect($event)" />
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Image"
+                    (onSelect)="onFileSelect($event)" />
             </div>
-
             <form [formGroup]="updateFacilityForm">
                 <div class="mb-3">
                     <label for="Name" class="fw-semibold d-block">Name</label>
                     <input pInputText id="Name" class="form-control w-100" formControlName="Name" />
-                    <small *ngIf="updateFacilityForm.controls['Name'].invalid && updateFacilityForm.controls['Name'].touched" class="text-danger">
+                    <small
+                        *ngIf="updateFacilityForm.controls['Name'].invalid && updateFacilityForm.controls['Name'].touched"
+                        class="text-danger">
                         Name is required (Min 3 chars).
                     </small>
                 </div>
 
                 <div class="mb-3">
                     <label for="Description" class="fw-semibold d-block">Description</label>
-                    <textarea pInputTextarea id="Description" class="form-control w-100" formControlName="Description"></textarea>
-                    <small *ngIf="updateFacilityForm.controls['Description'].invalid && updateFacilityForm.controls['Description'].touched" class="text-danger">
+                    <textarea pInputTextarea id="Description" class="form-control w-100"
+                        formControlName="Description"></textarea>
+                    <small
+                        *ngIf="updateFacilityForm.controls['Description'].invalid && updateFacilityForm.controls['Description'].touched"
+                        class="text-danger">
                         Enter a valid description.
                     </small>
                 </div>

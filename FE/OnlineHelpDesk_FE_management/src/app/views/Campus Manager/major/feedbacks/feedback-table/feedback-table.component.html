@@ -19,7 +19,6 @@
                     </p-inputicon>
                     <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
                         placeholder="Tìm kiếm feedback" />
-
                 </p-iconfield>
             </div>
         </ng-template>
@@ -62,7 +61,7 @@
 
 <!-- Dialog Update detail -->
 <p-dialog header="Feedback Details" [modal]="true" [(visible)]="update" [closable]="false" [style]="{ width: '50rem' }">
-    <form [formGroup]="addFeedbackForm">
+    <form [formGroup]="detailFeedbackForm">
         <!-- User Info -->
         <div class="mb-3 d-flex align-items-center">
             @if(accountInfo?.ImageUrl) {
