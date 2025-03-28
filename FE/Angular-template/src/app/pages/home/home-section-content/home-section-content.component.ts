@@ -29,14 +29,14 @@ import { RouterLink } from '@angular/router';
     CarouselModule,
     FacilityMajorTopFeedbackComponent,
     ProgressSpinnerModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './home-section-content.component.html',
   styleUrl: './home-section-content.component.scss'
 })
 export class HomeSectionContentComponent implements OnInit, OnDestroy {
 
-  facilitiesMajor: any[];
+  facilitiesMajor!: any[];
   showFullDescription: { [key: number]: boolean } = {};
   maxLength = 100;
   isLoading = true; // Biến kiểm soát hiển thị spinner
@@ -46,17 +46,11 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.facilityMajorService.getFacilityMajors()
-      .then(response => {
-        console.log("API Response:", response);
-
-        // Kiểm tra nếu response hợp lệ
-        if (response && response.data.facilityMajors) {
-          this.facilitiesMajor = response.data.facilityMajors;
-        } else {
-          this.facilitiesMajor = [];
-        }
-      })
+    this.facilityMajorService.getFacilityMajors().then(
+      (data) => {
+        this.facilitiesMajor = data;
+      }
+    )
       .catch(error => {
         console.error('Error:', error);
         this.facilitiesMajor = [];

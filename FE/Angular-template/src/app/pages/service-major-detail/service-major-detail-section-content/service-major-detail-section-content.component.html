@@ -9,8 +9,7 @@
                             description is here
                         </div>
                         <button type="button" class="btn btn-success" (click)="showDialog()">Đặt ngay</button>
-                        <p-dialog header="Book liền" [modal]="true" [(visible)]="visible"
-                            [style]="{ width: '25rem' }">
+                        <p-dialog header="Book liền" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
                             <span class="text-secondary d-block mb-3">Vui lòng điền vô:</span>
                             <div class="d-flex align-items-center mb-3">
                                 <label for="username" class="fw-semibold me-3 w-25">Username</label>
@@ -25,7 +24,6 @@
                                 <p-button label="Save" (click)="visible = false" />
                             </div>
                         </p-dialog>
-
                     </div>
                 </div>
             </div>
@@ -37,9 +35,9 @@
                             <!-- Facility major is Here :) -->
                             <div class="company-card p-3 border rounded shadow-sm">
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg"
-                                        width="70px" height="70px" alt="Company Logo" class="company-logo me-2" />
-                                    <div class="fw-bold">CÔNG TY TNHH VIETNAM CONCENTRIX SERVICES</div>
+                                    <img [src]="service?.Major?.ImageUrl" width="70px" height="70px" alt="Company Logo"
+                                        class="company-logo me-2" />
+                                    <div class="fw-bold">{{service?.Major?.Name}}</div>
                                 </div>
                                 <div class="text-muted small">
                                     <div><i class="pi pi-users"></i> <strong>Quy mô:</strong> 1000+ nhân viên</div>
@@ -47,8 +45,8 @@
                                     <div><i class="pi pi-map-marker"></i> <strong>Địa điểm:</strong> QTSC Building 1, Lô
                                         34, đường số 14, CVPM Quang Trung,...</div>
                                 </div>
-                                <a [routerLink]="['/facility-major-detail/1']" class="text-success mt-2 d-block">Xem trang công ty <i
-                                        class="pi pi-external-link"></i></a>
+                                <a [routerLink]="['/facility-major-detail/1']" class="text-success mt-2 d-block">Xem
+                                    trang công ty <i class="pi pi-external-link"></i></a>
                             </div>
                         </div>
                     </div>

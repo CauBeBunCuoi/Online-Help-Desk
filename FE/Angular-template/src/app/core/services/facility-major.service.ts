@@ -4,49 +4,138 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class FacilityMajorService {
-    private facilityMajors = [
+    private majors: any[] = [
         {
-            id: 1,
-            name: 'Engineering',
-            mainDescription: 'Engineering department focuses on mechanical and electrical fields.',
-            workShiftDescription: 'Morning and Afternoon shifts available.',
-            isOpen: true,
-            closeScheduleDate: null,
-            openScheduleDate: '2025-03-15',
-            openTime: '08:00:00',
-            closeTime: '18:00:00',
-            logo: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg',
-            image: 'https://www.topcv.vn/images/default_cover/topcv_cover_4.jpg',
-            description: `Công ty Aureole CSD INC chuyên về ứng dụng phần mềm trong lĩnh vực xây dựng.`
+            Major: {
+                Id: 1,
+                Name: 'Computer Science',
+                MainDescription: 'Handles all CS-related subjects',
+                WorkShiftsDescription: 'Morning and Evening Shifts',
+                FacilityMajorTypeId: 2,
+                FacilityId: 1,
+                IsOpen: true,
+                CloseScheduleDate: null,
+                OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+            },
+            MajorType: {
+                Id: 1,
+                Name: 'Technology',
+            },
+            Facility: {
+                Id: 1,
+                Name: 'Tech Campus',
+                Description: 'A hub for IT and engineering students',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+            },
         },
         {
-            id: 2,
-            name: 'Medical',
-            mainDescription: 'Medical department focuses on healthcare and patient support.',
-            workShiftDescription: 'Night shift available.',
-            isOpen: false,
-            closeScheduleDate: '2025-04-01',
-            openScheduleDate: '2025-05-01',
-            openTime: '07:00:00',
-            closeTime: '17:00:00',
-            logo: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg',
-            image: 'https://www.topcv.vn/images/default_cover/topcv_cover_3.jpg',
-            description: `Bệnh viện đa khoa với nhiều chuyên khoa hiện đại.`
-        }
+            Major: {
+                Id: 2,
+                Name: 'Mechanical Engineering',
+                MainDescription: 'Focuses on mechanical systems',
+                WorkShiftsDescription: 'Day Shifts',
+                FacilityMajorTypeId: 3,
+                FacilityId: 2,
+                IsOpen: false,
+                CloseScheduleDate: new Date(2024, 8, 1).toISOString(),
+                OpenScheduleDate: new Date(2024, 9, 1).toISOString(),
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+            },
+            MajorType: {
+                Id: 2,
+                Name: 'Engineering',
+            },
+            Facility: {
+                Id: 2,
+                Name: 'Engineering Campus',
+                Description: 'A place for mechanical and electrical studies',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+            },
+        },
+        {
+            Major: {
+                Id: 3,
+                Name: 'Computer Science',
+                MainDescription: 'Handles all CS-related subjects',
+                WorkShiftsDescription: 'Morning and Evening Shifts',
+                FacilityMajorTypeId: 2,
+                FacilityId: 1,
+                IsOpen: true,
+                CloseScheduleDate: null,
+                OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+            },
+            MajorType: {
+                Id: 1,
+                Name: 'Technology',
+            },
+            Facility: {
+                Id: 1,
+                Name: 'Tech Campus',
+                Description: 'A hub for IT and engineering students',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+            },
+        },
+        {
+            Major: {
+                Id: 4,
+                Name: 'Computer Science',
+                MainDescription: 'Handles all CS-related subjects',
+                WorkShiftsDescription: 'Morning and Evening Shifts',
+                FacilityMajorTypeId: 2,
+                FacilityId: 1,
+                IsOpen: true,
+                CloseScheduleDate: null,
+                OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+            },
+            MajorType: {
+                Id: 1,
+                Name: 'Technology',
+            },
+            Facility: {
+                Id: 1,
+                Name: 'Tech Campus',
+                Description: 'A hub for IT and engineering students',
+                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
+                IsDeactivated: false,
+                CreatedAt: new Date().toISOString(),
+            },
+        },
     ];
 
-    constructor() { }
-
-    async getFacilityMajors(): Promise<any> {
-        return {
-            message: 'Ok',
-            facilityMajors: this.facilityMajors,
-        };
+    // ✅ Lấy danh sách tất cả Majors
+    getFacilityMajors(): Promise<any[]> {
+        return Promise.resolve(this.majors);
     }
 
-    async getFacilityMajorById(id: number): Promise<any> {
-        return {
-            facilityMajor: this.facilityMajors.find(fm => fm.id === id) || null
-        };
+    // ✅ Lấy danh sách tất cả Majors
+    getFacilityMajorsByAccountId(id: number): Promise<any[]> {
+        return Promise.resolve(this.majors);
+    }
+
+    // ✅ Tìm Major theo ID
+    findById(id: number): Promise<any | null> {
+        const major = this.majors.find(m => m.Major.Id === id);
+        return Promise.resolve(major || null);
     }
 }

@@ -27,13 +27,13 @@ export class AuthService {
         }
     }
 
-    async login(credentials: { email: string; password: string }) {
+    async login(email: string, password: string) {
+        const credentials = { email, password }
         try {
             const response = await callApi({ instance: publicApi, method: "post", url: "/account/login", data: credentials }, "Đăng nhập");
 
             if (response.success && response.data.access_token) {
                 localStorage.setItem("access_token", response.data.access_token);
-                localStorage.setItem("userId", response.data.user._id);
                 this.setEmail(response.data.user.email);
             }
             return response_with_mess(true, false, "Đăng nhập thành công", "Bạn đã đăng nhập thành công!", response.data);

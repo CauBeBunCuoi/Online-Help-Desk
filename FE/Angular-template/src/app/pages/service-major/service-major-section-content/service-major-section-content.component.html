@@ -4,14 +4,15 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-md-4 col-sm-6 mb-3">
-                <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
+            @for(service of services; track service) {
+            <div class="col-md-4 col-sm-6 mb-3 bg-light">
+                <a [routerLink]="['/service-major-detail', service.Service.Id]" class="text-decoration-none">
                     <div class="service-card p-3 border rounded shadow-sm d-flex">
-                        <img src="https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg"
-                            width="70px" height="70px" alt="Company Logo" class="company-logo rounded me-3">
+                        <img [src]="service.Service.ImageUrl" width="70px" height="70px" alt="Company Logo"
+                            class="company-logo rounded me-3">
                         <div class="flex-grow-1">
-                            <div class="fw-bold">Nhân Viên Kinh Doanh / Trình Dược Viên / Sales Dược</div>
-                            <div class="text-muted small">CÔNG TY TNHH THƯƠNG MẠI 7WEALTH</div>
+                            <div class="fw-bold">{{service.Service.Name}}</div>
+                            <div class="text-muted small">{{service.Major.Name}}</div>
                             <div class="d-flex mt-2">
                                 <span class="badge bg-light text-dark me-2">15 - 30 triệu</span>
                                 <span class="badge bg-light text-dark">Hà Nội</span>
@@ -20,54 +21,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-md-4 col-sm-6 mb-3">
-                <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                    <div class="service-card p-3 border rounded shadow-sm d-flex">
-                        <img src="https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg"
-                            width="70px" height="70px" alt="Company Logo" class="company-logo rounded me-3">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">Nhân Viên Kinh Doanh / Trình Dược Viên / Sales Dược</div>
-                            <div class="text-muted small">CÔNG TY TNHH THƯƠNG MẠI 7WEALTH</div>
-                            <div class="d-flex mt-2">
-                                <span class="badge bg-light text-dark me-2">15 - 30 triệu</span>
-                                <span class="badge bg-light text-dark">Hà Nội</span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6 mb-3">
-                <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                    <div class="service-card p-3 border rounded shadow-sm d-flex">
-                        <img src="https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg"
-                            width="70px" height="70px" alt="Company Logo" class="company-logo rounded me-3">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">Nhân Viên Kinh Doanh / Trình Dược Viên / Sales Dược</div>
-                            <div class="text-muted small">CÔNG TY TNHH THƯƠNG MẠI 7WEALTH</div>
-                            <div class="d-flex mt-2">
-                                <span class="badge bg-light text-dark me-2">15 - 30 triệu</span>
-                                <span class="badge bg-light text-dark">Hà Nội</span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6 mb-3">
-                <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                    <div class="service-card p-3 border rounded shadow-sm d-flex">
-                        <img src="https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_logos/cong-ty-co-phan-bat-dong-san-gempire-62908fae1a002.jpg"
-                            width="70px" height="70px" alt="Company Logo" class="company-logo rounded me-3">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">Nhân Viên Kinh Doanh / Trình Dược Viên / Sales Dược</div>
-                            <div class="text-muted small">CÔNG TY TNHH THƯƠNG MẠI 7WEALTH</div>
-                            <div class="d-flex mt-2">
-                                <span class="badge bg-light text-dark me-2">15 - 30 triệu</span>
-                                <span class="badge bg-light text-dark">Hà Nội</span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            }
         </div>
     </div>
 </section>

@@ -30,23 +30,17 @@ export class FacilityMajorSectionContentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.facilityMajorService.getFacilityMajors()
-      .then(response => {
-        console.log("API Response:", response);
-
-        // Kiểm tra nếu response hợp lệ
-        if (response && response.facilityMajors) {
-          this.facilitiesMajor = response.facilityMajors;
-        } else {
-          this.facilitiesMajor = [];
-        }
-      })
+    this.facilityMajorService.getFacilityMajors().then(
+      (data) => {
+        this.facilitiesMajor = data;
+      }
+    )
       .catch(error => {
         console.error('Error:', error);
         this.facilitiesMajor = [];
       })
       .finally(() => {
         this.isLoading = false; // Ẩn spinner khi có kết quả
-      });
+      })
   }
 }

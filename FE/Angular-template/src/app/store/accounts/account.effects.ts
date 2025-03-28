@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { AccountService } from '../../core/services/account.service';
+import { AuthService } from '../../core/services/auth.service';
 import * as AccountActions from './account.actions';
 import { catchError, map, mergeMap, of, from, switchMap } from 'rxjs';
 import { MessResponse } from '../../api/main/responseGenerator';
@@ -9,7 +9,7 @@ import { loginFailureAlert, loginSuccessAlert } from '../../utils/alert.util';
 @Injectable()
 export class AccountEffects {
   private actions$ = inject(Actions);
-  private accountService = inject(AccountService);
+  private authService = inject(AuthService);
 
   constructor() {
     console.log('🔥 AccountEffects initialized');
@@ -20,7 +20,8 @@ export class AccountEffects {
     this.actions$.pipe(
       ofType(AccountActions.login),
       switchMap(({ email, password }) =>
-        from(this.accountService.login(email, password)).pipe(
+        from(
+          this.authService.login(email, password)).pipe(
           map((response: MessResponse) => {
             if (response.success) {
               loginSuccessAlert(response.message.title, response.message.content, response.message.color);
@@ -46,7 +47,7 @@ export class AccountEffects {
     this.actions$.pipe(
       ofType(AccountActions.register),
       mergeMap(({ user }) =>
-        from(this.accountService.register(user)).pipe(
+        from(this.authService.register(user)).pipe(
           map((response) => AccountActions.registerSuccess({ user: response })),
           catchError((error) => of(AccountActions.registerFailure({ error: error.message })))
         )
@@ -59,7 +60,7 @@ export class AccountEffects {
     this.actions$.pipe(
       ofType(AccountActions.getAccountById),
       mergeMap(({ id }) =>
-        from(this.accountService.getAccountById(id)).pipe(
+        from(this.authService.findByEmail(id)).pipe(
           map((user) => AccountActions.getAccountByIdSuccess({ user })),
           catchError((error) => of(AccountActions.getAccountByIdFailure({ error: error.message })))
         )

@@ -1,55 +1,71 @@
 import { Injectable } from '@angular/core';
-import { callApi } from '../../api/main/api_call/api';
-import { publicApi, loginRequiredApi } from '../../api/instance/axiosInstance';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class AccountService {
+export class AuthService {
+  private accounts: any[] = [
+    {
+      Account: {
+        Id: 1,
+        FullName: 'John Doe',
+        Email: 'john.doe@example.com',
+        DateOfBirth: '1990-06-15',
+        Phone: '123456789',
+        Address: '123 Main St, New York, NY',
+        RoleId: 2,
+        JobTypeId: 1,
+        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
+        IsDeactivated: false,
+        CreatedAt: new Date().toISOString(),
+      },
+      Role: {
+        Id: 2,
+        Name: 'Admin',
+      },
+      JobType: {
+        Id: 1,
+        Name: 'Software Engineer',
+      },
+    },
+    {
+      Account: {
+        Id: 2,
+        FullName: 'Jane Smith',
+        Email: 'jane.smith@example.com',
+        DateOfBirth: '1995-08-22',
+        Phone: '987654321',
+        Address: '456 Elm St, Los Angeles, CA',
+        RoleId: 3,
+        JobTypeId: 2,
+        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
+        IsDeactivated: true,
+        CreatedAt: new Date().toISOString(),
+      },
+      Role: {
+        Id: 3,
+        Name: 'User',
+      },
+      JobType: {
+        Id: 2,
+        Name: 'Mechanical Engineer',
+      },
+    },
+  ];
 
-    constructor() { }
+  // ✅ Lấy danh sách tất cả accounts staff
+  getAccountStaff(): Promise<any[]> {
+    return Promise.resolve(this.accounts);
+  }
+  
+  // ✅ Lấy danh sách tất cả accounts member
+  getAccountMember(): Promise<any[]> {
+    return Promise.resolve(this.accounts);
+  }
 
-    async register(formData: FormData): Promise<any> {
-        return await callApi(
-            { instance: publicApi, method: 'post', url: '/account/register', data: formData },
-            'Đăng ký'
-        );
-    }
-    
-    async login(email: string, password: string): Promise<any> {
-        const response = await callApi(
-            {
-                instance: publicApi,
-                method: 'post',
-                url: '/account/login',
-                data: { email, password }
-            },
-            'Đăng nhập'
-        );
-        return response;
-    }
-
-
-    /**
-     * Lấy thông tin tài khoản theo ID (Cần JWT)
-     * @param id ID tài khoản
-     */
-    async getAccountById(id: string): Promise<any> {
-        return await callApi(
-            { instance: loginRequiredApi, method: 'get', url: `/account/find-by-id/${id}` },
-            'Lấy thông tin tài khoản'
-        );
-    }
-
-    /**
-     * Cập nhật thông tin tài khoản (Cần JWT)
-     * @param accountId ID tài khoản
-     * @param body Dữ liệu cập nhật
-     */
-    async updateAccount(accountId: string, body: any): Promise<any> {
-        return await callApi(
-            { instance: loginRequiredApi, method: 'put', url: `/account/update/${accountId}`, data: body },
-            'Cập nhật tài khoản'
-        );
-    }
+  // ✅ Tìm account theo ID
+  findById(id: number): Promise<any | null> {
+    const account = this.accounts.find(acc => acc.Account.Id === id);
+    return Promise.resolve(account || null);
+  }
 }
