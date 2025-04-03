@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
 {
@@ -18,20 +19,46 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
             _wwwRootPath = env.WebRootPath; // Đường dẫn tuyệt đối đến wwwroot
         }
 
-        public async Task<string> GetImageUrl(string folderName, string fileName)
+        public string ResizeBase64Image(string base64String, int maxWidth, int maxHeight)
+        {
+            // Giải mã Base64 thành byte[]
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+
+            using (MemoryStream ms = new MemoryStream(imageBytes))
+            using (Bitmap originalBitmap = new Bitmap(ms))
+            {
+                int newWidth = Math.Min(originalBitmap.Width, maxWidth);
+                int newHeight = Math.Min(originalBitmap.Height, maxHeight);
+
+                using (Bitmap resizedBitmap = new Bitmap(originalBitmap, newWidth, newHeight))
+                using (MemoryStream outputMs = new MemoryStream())
+                {
+                    resizedBitmap.Save(outputMs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    return Convert.ToBase64String(outputMs.ToArray());
+                }
+            }
+        }
+
+
+        public async Task<string> GetImageUrl(string rootFolderPath, string folderName, string fileName)
         {
             try
             {
-                fileName = await GetFullFileName(folderName, fileName);
+                fileName = await GetFullFileName(rootFolderPath + "/" + folderName, fileName);
+                if (fileName == null)
+                {
+                    return $"{_baseUrl}/{rootFolderPath}/unknown.jpg";
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return $"{_baseUrl}/wwwroot/{folderName}/unknown.jpg";
+                Console.WriteLine("\n\n\n" + ex.ToString() + "\n\n\n");
+                // return $"{_baseUrl}/{rootFolderPath}/unknown.jpg";
             }
-            return $"{_baseUrl}/wwwroot/{folderName}/{fileName}";
+            return $"{_baseUrl}/{rootFolderPath}/{folderName}/{fileName}";
         }
 
-        public async Task<string> SaveBase64File(string base64Data, string folderName, string fileName)
+        public async Task SaveBase64File(string base64Data, string folderPath, string fileName)
         {
             try
             {
@@ -53,21 +80,42 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
                 }
 
                 string fullFileName = fileName + extension;
-                string filePath = Path.Combine(_wwwRootPath, folderName, fullFileName);
+                string filePath = Path.Combine(_wwwRootPath, folderPath, fullFileName);
+
+                // kiểm tra xem folder đã tồn tại chưa
+                if (!Directory.Exists(Path.Combine(_wwwRootPath, folderPath)))
+                {
+                    Directory.CreateDirectory(Path.Combine(_wwwRootPath, folderPath));
+                }
+                else
+                {
+                    // xóa file cũ cùng tên
+                    string[] files = Directory.GetFiles(Path.Combine(_wwwRootPath, folderPath));
+                    foreach (var file in files)
+                    {
+                        string fileWithoutExt = Path.GetFileNameWithoutExtension(file);
+                        if (fileWithoutExt == fileName)
+                        {
+                            File.Delete(file);
+                        }
+                    }
+                }
 
                 byte[] buffer = Convert.FromBase64String(data);
                 await File.WriteAllBytesAsync(filePath, buffer);
 
-                return filePath;
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine("\n\n\n"+ex.ToString()+"\n\n\n");
+                Console.WriteLine("\n\n\n" + ex.ToString() + "\n\n\n");
                 throw new Exception($"Error saving file {fileName}: {ex.Message}");
             }
         }
 
-        public async Task<string> SaveFile(byte[] fileData, string folderName, string fileName, string originalFileName)
+
+
+        public async Task SaveFile(byte[] fileData, string folderName, string fileName, string originalFileName)
         {
             try
             {
@@ -75,12 +123,30 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
                 string fullFileName = fileName + extension;
                 string filePath = Path.Combine(_wwwRootPath, folderName, fullFileName);
 
+                if (!Directory.Exists(Path.Combine(_wwwRootPath, folderName)))
+                {
+                    Directory.CreateDirectory(Path.Combine(_wwwRootPath, folderName));
+                }
+                else
+                {
+                    // xóa file cũ cùng tên
+                    string[] files = Directory.GetFiles(Path.Combine(_wwwRootPath, folderName));
+                    foreach (var file in files)
+                    {
+                        string fileWithoutExt = Path.GetFileNameWithoutExtension(file);
+                        if (fileWithoutExt == fileName)
+                        {
+                            File.Delete(file);
+                        }
+                    }
+                }
+
                 await File.WriteAllBytesAsync(filePath, fileData);
 
-                return filePath;
             }
             catch (Exception ex)
             {
+                Console.WriteLine("\n\n\n" + ex.ToString() + "\n\n\n");
                 throw new Exception($"Error saving file {fileName}: {ex.Message}");
             }
         }
@@ -93,10 +159,14 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
                 if (fileToDelete == null) return;
 
                 string filePath = Path.Combine(_wwwRootPath, folderName, fileToDelete);
+
+                if (!File.Exists(filePath)) return;
+
                 File.Delete(filePath);
             }
             catch (Exception ex)
             {
+                Console.WriteLine("\n\n\n DeleteFile:" + ex.ToString() + "\n\n\n");
                 throw new Exception($"Error deleting file {fileName}: {ex.Message}");
             }
         }
@@ -106,6 +176,11 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
             try
             {
                 string folderPath = Path.Combine(_wwwRootPath, folderName);
+                if (!Directory.Exists(folderPath))
+                {
+                    return null;
+                }
+
                 string[] files = Directory.GetFiles(folderPath);
                 foreach (var file in files)
                 {
@@ -119,6 +194,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("\n\n\n" + ex.ToString() + "\n\n\n");
                 throw new Exception($"Error getting file name {fileName}: {ex.Message}");
             }
         }
@@ -127,14 +203,23 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
         {
             try
             {
-                string sourceFilePath = Path.Combine(_wwwRootPath, sourceFolder, sourceFileName);
-                string destinationFilePath = Path.Combine(_wwwRootPath, destinationFolder, destinationFileName);
+                string fullSourceFileName = await GetFullFileName(sourceFolder, sourceFileName);
+                if (fullSourceFileName == null) return;
 
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
+
+                string sourceFilePath = Path.Combine(_wwwRootPath, sourceFolder, fullSourceFileName);
+                string destinationFilePath = Path.Combine(_wwwRootPath, destinationFolder, destinationFileName + Path.GetExtension(fullSourceFileName));
+
+                if (!Directory.Exists(Path.GetDirectoryName(destinationFilePath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
+                }
+
                 File.Copy(sourceFilePath, destinationFilePath, true);
             }
             catch (Exception ex)
             {
+                Console.WriteLine("\n\n\n CopyFile: " + ex.ToString() + "\n\n\n");
                 throw new Exception($"Error copying file: {ex.Message}");
             }
         }
@@ -143,6 +228,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
         {
             try
             {
+                if (Directory.Exists(Path.Combine(_wwwRootPath, folderName)))
+                {
+                    return;
+                }
                 Directory.CreateDirectory(Path.Combine(_wwwRootPath, folderName));
             }
             catch (Exception ex)
@@ -155,6 +244,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
         {
             try
             {
+                if (!Directory.Exists(Path.Combine(_wwwRootPath, folderName)))
+                {
+                    return;
+                }
                 Directory.Delete(Path.Combine(_wwwRootPath, folderName), true);
             }
             catch (Exception ex)

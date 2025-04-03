@@ -21,7 +21,7 @@ public partial class ServiceRequest
 
     public TimeOnly? TimeRequest { get; set; }
 
-    public DateOnly DateRequest { get; set; }
+    public DateOnly? DateRequest { get; set; }
 
     public bool IsCancelAutomatically { get; set; }
 
@@ -29,11 +29,11 @@ public partial class ServiceRequest
 
     public string? CancelReason { get; set; }
 
+    public bool IsSeen { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
-    public bool IsSeen { get; set; }
 
     public virtual Account? AssignedAssignee { get; set; }
 

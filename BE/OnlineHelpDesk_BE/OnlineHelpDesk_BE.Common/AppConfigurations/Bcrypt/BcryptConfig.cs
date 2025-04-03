@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Bcrypt.interfaces;
 
-namespace OnlineHelpDesk_BE.Common.Configurations.Bcrypt
+namespace OnlineHelpDesk_BE.Common.AppConfigurations.Bcrypt
 {
     public class BcryptConfig : IBcryptConfig
     {

@@ -14,8 +14,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic
         public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
         {
             //services.AddConfiguration();
+            services.AddBackgroundServices();
             services.AddDbServices();    
             services.AddHelpers();
+            services.AddAWSServices();
             return services;
         }
     }

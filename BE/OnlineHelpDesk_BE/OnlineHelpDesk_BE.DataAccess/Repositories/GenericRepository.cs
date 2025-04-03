@@ -1,6 +1,7 @@
 ﻿using OnlineHelpDesk_BE.DataAccess.Repositories.interfaces;
 using Microsoft.EntityFrameworkCore;
 using OnlineHelpDesk_BE.DataAccess.Data;
+using OnlineHelpDesk_BE.DataAccess.Entities;
 
 namespace OnlineHelpDesk_BE.DataAccess.Repositories
 {
@@ -31,12 +32,33 @@ namespace OnlineHelpDesk_BE.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        // public async Task UpdateAsync(int id, T entity)
+        // {
+
+        //     _dbSet.Update(entity);
+        //     await _dbContext.SaveChangesAsync();
+        // }
+        public async Task UpdateAsync(int id, T entity)
         {
-            _dbSet.Update(entity);
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "Entity không được để null.");
+            }
+
+            var existingEntity = await _dbSet.FindAsync(id);
+            if (existingEntity == null)
+            {
+                throw new Exception($"Entity với Id = {id} không tồn tại.");
+            }
+
+            Console.WriteLine("Entity: " + entity.ToString());
+
+            // Đảm bảo entity được tracking
+            _dbContext.Entry(existingEntity).State = EntityState.Detached; // Ngắt tracking entity cũ
+            _dbContext.Entry(entity).State = EntityState.Modified; // Mark entity là Modified
+
             await _dbContext.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(object id)
         {
             var entity = await _dbSet.FindAsync(id);

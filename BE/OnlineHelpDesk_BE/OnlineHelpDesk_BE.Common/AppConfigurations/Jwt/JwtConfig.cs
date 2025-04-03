@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Jwt.interfaces;
 
-namespace OnlineHelpDesk_BE.Common.Configurations.Jwt
+namespace OnlineHelpDesk_BE.Common.AppConfigurations.Jwt
 {
     public class JwtConfig : IJwtConfig
     {

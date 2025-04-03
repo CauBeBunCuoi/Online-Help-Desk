@@ -9,7 +9,7 @@ public partial class Service
 
     public string Name { get; set; } = null!;
 
-    public int FacilitymajorId { get; set; }
+    public int FacilityMajorId { get; set; }
 
     public bool IsInitRequestDescriptionRequired { get; set; }
 
@@ -31,7 +31,7 @@ public partial class Service
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual FacilityMajor Facilitymajor { get; set; } = null!;
+    public virtual FacilityMajor FacilityMajor { get; set; } = null!;
 
     public virtual ICollection<ServiceAvailability> ServiceAvailabilities { get; set; } = new List<ServiceAvailability>();
 

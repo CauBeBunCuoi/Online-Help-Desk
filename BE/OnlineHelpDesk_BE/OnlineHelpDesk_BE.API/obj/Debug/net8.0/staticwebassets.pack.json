@@ -1,0 +1,309 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\12\\main.gif",
+      "PackagePath": "staticwebassets\\images\\accounts\\12\\main.gif"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\14\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\14\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\15\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\15\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\16\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\16\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\17\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\17\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\18\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\18\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\19\\main.gif",
+      "PackagePath": "staticwebassets\\images\\accounts\\19\\main.gif"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\20\\main.gif",
+      "PackagePath": "staticwebassets\\images\\accounts\\20\\main.gif"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\22\\main",
+      "PackagePath": "staticwebassets\\images\\accounts\\22"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\23\\main.gif",
+      "PackagePath": "staticwebassets\\images\\accounts\\23\\main.gif"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\24\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\24\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\25\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\25\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\26\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\26\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\27\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\27\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\2\\main.png",
+      "PackagePath": "staticwebassets\\images\\accounts\\2\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\4\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\4\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\6\\main.png",
+      "PackagePath": "staticwebassets\\images\\accounts\\6\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\accounts\\unknown.jpg",
+      "PackagePath": "staticwebassets\\images\\accounts\\unknown.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\0\\main.png",
+      "PackagePath": "staticwebassets\\images\\facilities\\0\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\12\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\12\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\13\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\13\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\14\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\14\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\15\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\15\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\16\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\16\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\17\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\17\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\1\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\1\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\8\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\8\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\9\\main.png",
+      "PackagePath": "staticwebassets\\images\\facilities\\9\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\facilities\\unknown.jpg",
+      "PackagePath": "staticwebassets\\images\\facilities\\unknown.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\items\\16\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\items\\16\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\items\\17\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\items\\17\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\items\\1\\main.png",
+      "PackagePath": "staticwebassets\\images\\items\\1\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\items\\2\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\items\\2\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\items\\unknown.jpg",
+      "PackagePath": "staticwebassets\\images\\items\\unknown.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\10\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\10\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\10\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\10\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\11\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\11\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\11\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\11\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\1\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\1\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\1\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\1\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\2\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\2\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\2\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\2\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\4\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\4\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\4\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\4\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\5\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\5\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\5\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\5\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\7\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\7\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\7\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\7\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\8\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\8\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\8\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\8\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\9\\background.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\9\\background.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\9\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\9\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\majors\\unknown.jpg",
+      "PackagePath": "staticwebassets\\images\\majors\\unknown.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\10\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\10\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\11\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\11\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\12\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\12\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\13\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\13\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\14\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\14\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\15\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\15\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\16\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\16\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\17\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\17\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\18\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\18\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\2\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\services\\2\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\3\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\services\\3\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\4\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\services\\4\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\5\\main.jpg",
+      "PackagePath": "staticwebassets\\images\\services\\5\\main.jpg"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\6\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\6\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\7\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\7\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\8\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\8\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\9\\main.png",
+      "PackagePath": "staticwebassets\\images\\services\\9\\main.png"
+    },
+    {
+      "Id": "D:\\vscode\\MY PROJECT\\Online Help Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE.API\\wwwroot\\images\\services\\unknown.jpg",
+      "PackagePath": "staticwebassets\\images\\services\\unknown.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.OnlineHelpDesk_BE.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.OnlineHelpDesk_BE.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.OnlineHelpDesk_BE.API.props",
+      "PackagePath": "build\\OnlineHelpDesk_BE.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.OnlineHelpDesk_BE.API.props",
+      "PackagePath": "buildMultiTargeting\\OnlineHelpDesk_BE.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.OnlineHelpDesk_BE.API.props",
+      "PackagePath": "buildTransitive\\OnlineHelpDesk_BE.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

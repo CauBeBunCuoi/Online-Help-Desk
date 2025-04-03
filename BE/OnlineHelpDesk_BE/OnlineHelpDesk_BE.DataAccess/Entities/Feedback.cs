@@ -15,8 +15,6 @@ public partial class Feedback
 
     public int FacilityMajorId { get; set; }
 
-    public bool IsReplaced { get; set; }
-
     public bool IsDeactivated { get; set; }
 
     public DateTime? CreatedAt { get; set; }

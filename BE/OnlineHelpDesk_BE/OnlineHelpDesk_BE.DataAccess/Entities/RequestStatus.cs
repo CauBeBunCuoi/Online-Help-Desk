@@ -9,8 +9,6 @@ public partial class RequestStatus
 
     public string Name { get; set; } = null!;
 
-    public virtual ICollection<BlacklistRequest> BlacklistRequests { get; set; } = new List<BlacklistRequest>();
-
     public virtual ICollection<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
 
     public virtual ICollection<TaskRequest> TaskRequests { get; set; } = new List<TaskRequest>();

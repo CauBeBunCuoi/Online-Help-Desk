@@ -15,6 +15,12 @@
     <Folder Include="DTOs\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Services\BackgroundServices\interfaces\" />
+    <Folder Include="Services\DbServices\MiscServices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.7.416" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
   </ItemGroup>
 
 </Project>

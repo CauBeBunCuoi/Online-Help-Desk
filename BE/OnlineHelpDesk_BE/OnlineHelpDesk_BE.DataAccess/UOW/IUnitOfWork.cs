@@ -9,6 +9,12 @@ public interface IUnitOfWork
     IFacilityMajorRepository FacilityMajorRepository  { get; }
     IServiceRepository ServiceRepository  { get; }
     IFeedbackRepository FeedbackRepository  { get; }
+    IFacilityItemAssignmentRepository FacilityItemAssignmentRepository  { get; }
+    IAssigneeFacilityMajorAssignmentRepository AssigneeFacilityMajorAssignmentRepository  { get; }
+    IReportRepository ReportRepository  { get; }
+    IServiceAvailabilityRepository ServiceAvailabilityRepository  { get; }
+    ITaskRequestRepository TaskRequestRepository  { get; }
+    IServiceRequestRepository ServiceRequestRepository  { get; }
 
 
     int Complete();

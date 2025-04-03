@@ -22,6 +22,12 @@ namespace OnlineHelpDesk_BE.DataAccess.Registrations
             services.AddScoped<IFacilityMajorRepository, FacilityMajorRepository>();    
             services.AddScoped<IServiceRepository, ServiceRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IFacilityItemAssignmentRepository, FacilityItemAssignmentRepository>();
+            services.AddScoped<IAssigneeFacilityMajorAssignmentRepository, AssigneeFacilityMajorAssignmentRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IServiceAvailabilityRepository, ServiceAvailabilityRepository>();
+            services.AddScoped<ITaskRequestRepository, TaskRequestRepository>();
+            services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
             return services;
         }
 

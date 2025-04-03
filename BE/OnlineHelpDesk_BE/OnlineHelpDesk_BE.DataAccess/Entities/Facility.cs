@@ -15,7 +15,5 @@ public partial class Facility
 
     public bool IsDeactivated { get; set; }
 
-    public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
-
-    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
+    public virtual ICollection<FacilityMajor> FacilityMajors { get; set; } = new List<FacilityMajor>();
 }

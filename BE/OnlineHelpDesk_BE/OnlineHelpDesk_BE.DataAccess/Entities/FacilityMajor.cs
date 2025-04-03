@@ -11,7 +11,7 @@ public partial class FacilityMajor
 
     public string? MainDescription { get; set; }
 
-    public string? WorkShifstDescription { get; set; }
+    public string? WorkShiftsDescription { get; set; }
 
     public bool IsOpen { get; set; }
 
@@ -19,25 +19,25 @@ public partial class FacilityMajor
 
     public DateOnly? OpenScheduleDate { get; set; }
 
+    public int FacilityMajorTypeId { get; set; }
+
+    public int? FacilityId { get; set; }
+
     public bool IsDeactivated { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
-    public int FacilityMajorTypeId { get; set; }
-
-    public virtual ICollection<Area> Areas { get; set; } = new List<Area>();
-
     public virtual ICollection<AssigneeFacilityMajorAssignment> AssigneeFacilityMajorAssignments { get; set; } = new List<AssigneeFacilityMajorAssignment>();
 
-    public virtual ICollection<BlacklistedFacilityMajor> BlacklistedFacilityMajors { get; set; } = new List<BlacklistedFacilityMajor>();
+    public virtual Facility? Facility { get; set; }
+
+    public virtual ICollection<FacilityItemAssignment> FacilityItemAssignments { get; set; } = new List<FacilityItemAssignment>();
 
     public virtual FacilityMajorType FacilityMajorType { get; set; } = null!;
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
-
-    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 

@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.User;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Facility;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajor;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Request;
-using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.Misc;
+using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.UserServices;
+using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices;
+using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServices;
+using OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices;
 
 namespace OnlineHelpDesk_BE.BusinessLogic.Services.db_services
 {
@@ -15,7 +14,6 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.db_services
             services.AddScoped<AccountService>();
 
             services.AddScoped<FacilityService>();
-            services.AddScoped<FacilityStructureService>();
             services.AddScoped<FacilityItemService>();
 
             services.AddScoped<MajorService>();
@@ -24,9 +22,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.db_services
 
             services.AddScoped<TaskRequestService>();
             services.AddScoped<ServiceRequestService>();
-            services.AddScoped<BlacklistRequestService>();
 
-            services.AddScoped<FAQService>();
 
 
 

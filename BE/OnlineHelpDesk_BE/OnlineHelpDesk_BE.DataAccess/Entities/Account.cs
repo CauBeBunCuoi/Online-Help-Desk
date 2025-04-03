@@ -29,12 +29,6 @@ public partial class Account
 
     public virtual ICollection<AssigneeFacilityMajorAssignment> AssigneeFacilityMajorAssignments { get; set; } = new List<AssigneeFacilityMajorAssignment>();
 
-    public virtual ICollection<BlacklistRequest> BlacklistRequestRequesters { get; set; } = new List<BlacklistRequest>();
-
-    public virtual ICollection<BlacklistRequest> BlacklistRequestTargets { get; set; } = new List<BlacklistRequest>();
-
-    public virtual ICollection<BlacklistedFacilityMajor> BlacklistedFacilityMajors { get; set; } = new List<BlacklistedFacilityMajor>();
-
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual JobType JobType { get; set; } = null!;

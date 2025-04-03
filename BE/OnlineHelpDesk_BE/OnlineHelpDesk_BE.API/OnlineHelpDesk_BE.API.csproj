@@ -8,12 +8,17 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineHelpDesk_BE.BusinessLogic\OnlineHelpDesk_BE.BusinessLogic.csproj" />
     <ProjectReference Include="..\OnlineHelpDesk_BE.Common\OnlineHelpDesk_BE.Common.csproj" />
     <ProjectReference Include="..\OnlineHelpDesk_BE.DataAccess\OnlineHelpDesk_BE.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\PublicControllers\" />
   </ItemGroup>
 
 </Project>
