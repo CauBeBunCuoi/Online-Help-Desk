@@ -22,37 +22,6 @@ export class AccountService {
   ) {
     //this.syncAuthWithLocalStorage();
   }
-
-
-  // Sử dụng interval check theo thời gian (có thể ảnh hưởng performance)
-  // syncAuthWithLocalStorage_CheckByInterval() {
-  //   interval(1000)
-  //     .pipe(
-  //       startWith(0), // Chạy ngay khi khởi tạo
-  //       map(() => {
-  //         const token = LocalStorageUtil.getAuthTokenFromLocalStorage();
-  //         const user = LocalStorageUtil.getAuthUserFromLocalStorage();
-
-  //         if (token !== this.previousToken) {
-  //           this.previousToken = token;
-
-  //           if (!token || !user || ! JwtUtil.isTokenValid(token)) {
-  //             this.store.dispatch(clearAuthToken());
-  //             this.router.navigate(['/login']);
-  //           } else {
-  //             const saveInfo = {
-  //               token: token,
-  //               user: user
-  //             };
-  //             this.store.dispatch(setAuthToken(saveInfo));
-  //             this.router.navigate(['/dashboard']);
-  //           }
-  //         }
-  //       })
-  //     )
-  //     .subscribe();
-  // }
-
   
   // sử dụng event storage 
   syncAuthWithLocalStorage() {

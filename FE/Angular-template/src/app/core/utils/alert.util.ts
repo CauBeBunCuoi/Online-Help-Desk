@@ -1,23 +1,5 @@
 import Swal from "sweetalert2";
 
-export const loginSuccessAlert = (title: string, content: string, color: string) => {
-  return Swal.fire({
-    icon: 'success',
-    title: title,
-    text: content,
-    color: color,
-  })
-}
-
-export const loginFailureAlert = (title: string, content: string, color: string) => {
-  return Swal.fire({
-    icon: 'error',
-    title: title,
-    text: content,
-    color: color,
-  })
-}
-
 export const loginRequiredAlert = () => {
   return Swal.fire({
     title: `You haven't login yet`,
@@ -86,3 +68,5 @@ export const successWithConfirmOnlyAlert = (message: string) => {
     showCancelButton: false,
   })
 }
+
+``

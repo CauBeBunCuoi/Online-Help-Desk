@@ -133,8 +133,6 @@ export class LoginComponent {
         ...user
       });
 
-
-
     } else {
       errorAlert(res.message.content ? res.message.content : 'Login failed');
     }
