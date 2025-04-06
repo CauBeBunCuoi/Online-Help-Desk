@@ -30,13 +30,23 @@ namespace OnlineHelpDesk_BE.Common.AppConfigurations.Jwt
 
         public string GetKeyFromFile(string path)
         {
+            try
+            {
+                path = path.Replace("\\", Path.DirectorySeparatorChar.ToString());
+                string basePath = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
+                string relativePath = path.TrimStart(Path.DirectorySeparatorChar);
 
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string relativePath = path.TrimStart(Path.DirectorySeparatorChar);
-            string fullPath = Path.Combine(basePath, relativePath);
-            var key = File.ReadAllText(fullPath);
-            
-            return key;
+                string fullPath = Path.Combine(basePath, relativePath);
+                var key = File.ReadAllText(fullPath);
+
+                return key;
+            } catch (Exception ex)
+            {
+                Console.WriteLine($"\n\n\n\nALOOOOOOOOOOOOOOOOOOO: {ex.Message}");
+                return null;
+            }
+
+
         }
 
         public override string ToString()

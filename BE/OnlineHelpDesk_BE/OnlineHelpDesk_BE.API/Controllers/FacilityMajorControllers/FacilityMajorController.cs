@@ -65,6 +65,18 @@ namespace OnlineHelpDesk_BE.API.Controllers.FacilityMajorControllers
             });
         }
 
+        // [GET] /Major/majors/assignee/{accountId}/majors
+        [HttpGet("assignee/{accountId:int}/majors")]
+        public async Task<IActionResult> GetAssigneeMajors(int accountId)
+        {
+            var majors = await _majorService.GetAssigneeMajors(accountId);
+
+            return Ok(new
+            {
+                Majors = majors
+            });
+        }
+
         // [GET] /Major/majors/major-head/{accountId}/requesters 
         [HttpGet("major-head/{accountId:int}/requesters")]
         public async Task<IActionResult> GetMajorHeadRequesters(int accountId)

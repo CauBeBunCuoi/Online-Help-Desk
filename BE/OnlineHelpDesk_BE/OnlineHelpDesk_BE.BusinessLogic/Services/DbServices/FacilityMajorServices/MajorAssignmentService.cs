@@ -89,10 +89,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
             {
                 throw new HttpRequestException("Account is not exist, id: " + accountId);
             }
-            if (accountExist.Role.Id != 2)
-            {
-                throw new HttpRequestException("Account is not Facility Head, id: " + accountId);
-            }
+            // if (accountExist.Role.Id != 2)
+            // {
+            //     throw new HttpRequestException("Account is not Facility Head, id: " + accountId);
+            // }
             try
             {
                 var majors = await _unitOfWork.AssigneeFacilityMajorAssignmentRepository.FindByAccountId(accountId);

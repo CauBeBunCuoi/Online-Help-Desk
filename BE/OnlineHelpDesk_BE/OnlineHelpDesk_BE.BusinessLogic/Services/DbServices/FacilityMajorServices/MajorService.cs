@@ -172,7 +172,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         OpenScheduleDate = major.OpenScheduleDate,
                         IsDeactivated = major.IsDeactivated,
                         CreatedAt = major.CreatedAt,
-                        BackgroundImageUrl = await GenerateImageUrl(folderPath, major.Id.ToString(), "background"),
+                        // BackgroundImageUrl = await GenerateImageUrl(folderPath, major.Id.ToString(), "background"),
                         ImageUrl = await GenerateImageUrl(folderPath, major.Id.ToString(), "main"),
                     },
                     MajorType = new
@@ -185,7 +185,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         Id = facility.Id,
                         Name = facility.Name,
                         Description = facility.Description,
-                        ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, facility.Id.ToString(), "main"),
+                        // ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, facility.Id.ToString(), "main"),
                         IsDeactivated = facility.IsDeactivated,
                         CreatedAt = facility.CreatedAt
                     },
@@ -294,7 +294,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         OpenScheduleDate = major.OpenScheduleDate,
                         IsDeactivated = major.IsDeactivated,
                         CreatedAt = major.CreatedAt,
-                        BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                        // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
                         ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main"),
                     },
                     MajorType = new
@@ -307,7 +307,65 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         Id = major.Facility.Id,
                         Name = major.Facility.Name,
                         Description = major.Facility.Description,
-                        ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, major.Facility.Id.ToString(), "main"),
+                        // ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, major.Facility.Id.ToString(), "main"),
+                        IsDeactivated = major.Facility.IsDeactivated,
+                        CreatedAt = major.Facility.CreatedAt
+                    }
+
+                });
+            }
+
+            return JArray.FromObject(
+                result
+                , new JsonSerializer
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+        }
+
+        public async Task<JArray> GetAssigneeMajors(int accountId)
+        {
+            var account = await _unitOfWork.AccountRepository.FindById(accountId);
+            if (account == null)
+            {
+                // throw new HttpRequestException("Account không tồn tại");
+                throw new HttpRequestException("Account is not exist, id: " + accountId);
+            }
+
+            var assigneeFacilityMajorAssignments = await _unitOfWork.AssigneeFacilityMajorAssignmentRepository.FindByAccountId(accountId);
+            var result = new List<object>();
+            foreach (var afma in assigneeFacilityMajorAssignments)
+            {
+                var major = afma.FacilityMajor;
+                result.Add(new
+                {
+                    Major = new
+                    {
+                        Id = major.Id,
+                        Name = major.Name,
+                        MainDescription = major.MainDescription,
+                        WorkShiftsDescription = major.WorkShiftsDescription,
+                        FacilityMajorTypeId = major.FacilityMajorTypeId,
+                        FacilityId = major.FacilityId,
+                        IsOpen = major.IsOpen,
+                        CloseScheduleDate = major.CloseScheduleDate,
+                        OpenScheduleDate = major.OpenScheduleDate,
+                        IsDeactivated = major.IsDeactivated,
+                        CreatedAt = major.CreatedAt,
+                        // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                        ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main"),
+                    },
+                    MajorType = new
+                    {
+                        Id = major.FacilityMajorType.Id,
+                        Name = major.FacilityMajorType.Name,
+                    },
+                    Facility = new
+                    {
+                        Id = major.Facility.Id,
+                        Name = major.Facility.Name,
+                        Description = major.Facility.Description,
+                        // ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, major.Facility.Id.ToString(), "main"),
                         IsDeactivated = major.Facility.IsDeactivated,
                         CreatedAt = major.Facility.CreatedAt
                     }

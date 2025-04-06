@@ -16,7 +16,7 @@ namespace OnlineHelpDesk_BE.API
             // Add Layers
             builder.Services.AddCommonLayer();
             builder.Services.AddBusinessLogicLayer();
-            builder.Services.AddDataAccessLayer();
+            builder.Services.AddDataAccessLayer(builder.Configuration);
 
             // appConf
             builder.AddBuilderDefaultConfig();

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OnlineHelpDesk_BE.Common")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+292db279929163821f0184bfb9fe9fe0da01098a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43c2051955fc1999a516f5222fe2fafc8e240444")]
 [assembly: System.Reflection.AssemblyProductAttribute("OnlineHelpDesk_BE.Common")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OnlineHelpDesk_BE.Common")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

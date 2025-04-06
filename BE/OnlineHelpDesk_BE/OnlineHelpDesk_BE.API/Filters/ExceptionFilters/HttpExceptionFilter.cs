@@ -13,8 +13,9 @@ namespace OnlineHelpDesk_BE.API.Filters.ExceptionFilters
             Console.WriteLine(context.Exception);
 
             int status = (int)HttpStatusCode.InternalServerError;
-            string message = "Lỗi hệ thống!";
-
+            // string message = "Lỗi hệ thống!";
+            string message = "Something went wrong!";
+            
             if (context.Exception is HttpRequestException httpRequestException)
             {
                 status = (int)HttpStatusCode.BadRequest; // Hoặc status khác tùy vào lỗi

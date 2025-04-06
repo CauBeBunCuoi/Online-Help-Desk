@@ -96,12 +96,16 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
 
                 return new
                 {
-                    Id = facility.Id,
-                    Name = facility.Name,
-                    Description = facility.Description,
-                    ImageUrl = await GenerateImageUrl(folderPath, facility.Id.ToString(), "main"),
-                    CreatedAt = facility.CreatedAt,
-                    IsDeactivated = facility.IsDeactivated
+                    Facility = new
+                    {
+                        Id = facility.Id,
+                        Name = facility.Name,
+                        Description = facility.Description,
+                        ImageUrl = await GenerateImageUrl(folderPath, facility.Id.ToString(), "main"),
+                        CreatedAt = facility.CreatedAt,
+                        IsDeactivated = facility.IsDeactivated
+                    }
+
                 };
             }));
 

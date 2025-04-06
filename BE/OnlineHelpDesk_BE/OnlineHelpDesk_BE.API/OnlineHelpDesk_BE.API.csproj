@@ -4,6 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\</DockerfileContext>
+    <Dockerfile>Dockerfile</Dockerfile>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

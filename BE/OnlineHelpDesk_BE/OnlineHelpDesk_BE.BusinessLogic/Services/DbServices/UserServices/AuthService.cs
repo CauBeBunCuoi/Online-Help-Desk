@@ -85,7 +85,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.UserServices
                     new Claim("phone", account.Phone ?? string.Empty),
                     new Claim("dayOfBirth", account.DateOfBirth.ToString()),
                     new Claim("address", account.Address ?? string.Empty),
-                    //new Claim("role", account.Role.ToString()),
+                    new Claim("role_id", account.Role.Id.ToString()),
                     new Claim(ClaimTypes.Role, account.Role.Name),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Mã định danh JWT
                 };

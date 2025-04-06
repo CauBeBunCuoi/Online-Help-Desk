@@ -58,14 +58,12 @@ namespace OnlineHelpDesk_BE.API.Configurations.Builder
             {
                 //string basePath = AppDomain.CurrentDomain.BaseDirectory;
                 //string fullPath = Path.Combine(basePath, builder.Configuration["Jwt:OpenSSL_PublicKey_Path"]);
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
-                string relativePath = builder.Configuration["Jwt:OpenSSL_PublicKey_Path"].TrimStart(Path.DirectorySeparatorChar);
+                string basePath = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
+                string relativePath = builder.Configuration["Jwt:OpenSSL_PublicKey_Path"].Replace("\\", Path.DirectorySeparatorChar.ToString()).TrimStart(Path.DirectorySeparatorChar);
                 string fullPath = Path.Combine(basePath, relativePath);
 
                 Console.WriteLine("basePath: " + basePath);
-                //Console.WriteLine("Path: " + builder.Configuration["Jwt:OpenSSL_PublicKey_Path"]);
 
-                //Console.WriteLine("publicKey fullPath: " + fullPath);
 
                 var publicKey = File.ReadAllText(fullPath);
                 // Console.WriteLine("publicKey " + publicKey);

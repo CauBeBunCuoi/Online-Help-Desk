@@ -136,6 +136,18 @@ namespace OnlineHelpDesk_BE.API.Controllers.RequestControllers
             });
         }
 
+        // [GET] /Request/service/requestStatuses
+        [HttpGet("requestStatuses")]
+        public async Task<IActionResult> GetRequestStatuses()
+        {
+            var requestStatuses = await _serviceRequestService.GetRequestStatuses();
+
+            return Ok(new
+            {
+                RequestStatuses = requestStatuses
+            });
+        }
+
         
     }
 }

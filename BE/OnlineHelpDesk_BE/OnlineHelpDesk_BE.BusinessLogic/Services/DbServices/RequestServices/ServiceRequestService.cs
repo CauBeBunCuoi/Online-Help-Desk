@@ -424,7 +424,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                                 Id = requester.Id,
                                 FullName = requester.FullName,
                                 Email = requester.Email,
-                                ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
+                                // ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
                                 DateOfBirth = requester.DateOfBirth,
                                 Phone = requester.Phone,
                                 Address = requester.Address,
@@ -449,7 +449,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                                 CloseScheduleDate = service.CloseScheduleDate,
                                 OpenScheduleDate = service.OpenScheduleDate,
                                 ServiceTypeId = service.ServiceTypeId,
-                                ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
+                                // ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
                                 IsDeactivated = service.IsDeactivated,
                                 CreatedAt = service.CreatedAt
                             },
@@ -466,8 +466,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                                 OpenScheduleDate = major.OpenScheduleDate,
                                 IsDeactivated = major.IsDeactivated,
                                 CreatedAt = major.CreatedAt,
-                                BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
-                                ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
+                                // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                                // ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
                             }
                         });
                     }
@@ -525,7 +525,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             Id = requester.Id,
                             FullName = requester.FullName,
                             Email = requester.Email,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
                             DateOfBirth = requester.DateOfBirth,
                             Phone = requester.Phone,
                             Address = requester.Address,
@@ -550,7 +550,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             CloseScheduleDate = service.CloseScheduleDate,
                             OpenScheduleDate = service.OpenScheduleDate,
                             ServiceTypeId = service.ServiceTypeId,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
                             IsDeactivated = service.IsDeactivated,
                             CreatedAt = service.CreatedAt
                         },
@@ -567,8 +567,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             OpenScheduleDate = major.OpenScheduleDate,
                             IsDeactivated = major.IsDeactivated,
                             CreatedAt = major.CreatedAt,
-                            BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
+                            // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
                         }
                     });
                 }
@@ -742,7 +742,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             Id = requester.Id,
                             FullName = requester.FullName,
                             Email = requester.Email,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
                             DateOfBirth = requester.DateOfBirth,
                             Phone = requester.Phone,
                             Address = requester.Address,
@@ -767,7 +767,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             CloseScheduleDate = service.CloseScheduleDate,
                             OpenScheduleDate = service.OpenScheduleDate,
                             ServiceTypeId = service.ServiceTypeId,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
                             IsDeactivated = service.IsDeactivated,
                             CreatedAt = service.CreatedAt
                         },
@@ -784,8 +784,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             OpenScheduleDate = major.OpenScheduleDate,
                             IsDeactivated = major.IsDeactivated,
                             CreatedAt = major.CreatedAt,
-                            BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
+                            // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
                         }
 
                     });
@@ -844,7 +844,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             Id = requester.Id,
                             FullName = requester.FullName,
                             Email = requester.Email,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.ACCOUNt_IMAGE_PATH, requester.Id.ToString(), "main"),
                             DateOfBirth = requester.DateOfBirth,
                             Phone = requester.Phone,
                             Address = requester.Address,
@@ -869,7 +869,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             CloseScheduleDate = service.CloseScheduleDate,
                             OpenScheduleDate = service.OpenScheduleDate,
                             ServiceTypeId = service.ServiceTypeId,
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.SERVICE_IMAGE_PATH, service.Id.ToString(), "main"),
                             IsDeactivated = service.IsDeactivated,
                             CreatedAt = service.CreatedAt
                         },
@@ -886,8 +886,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             OpenScheduleDate = major.OpenScheduleDate,
                             IsDeactivated = major.IsDeactivated,
                             CreatedAt = major.CreatedAt,
-                            BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
-                            ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
+                            // BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "background"),
+                            // ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Id.ToString(), "main")
                         }
                     });
 
@@ -1053,11 +1053,11 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
 
 
                         break;
-                    case "RejectByAssignee":
+                    case "RejectedByAssignee":
                         serviceRequest.ProgressNote = updateInformations.ProgressNote;
                         serviceRequest.RequestStatusId = 3;
                         break;
-                    case "AcceptByAssignee":
+                    case "AcceptedByAssignee":
                         serviceRequest.ProgressNote = updateInformations.ProgressNote;
                         serviceRequest.RequestStatusId = 5;
                         break;
@@ -1216,6 +1216,31 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                 }
             }
 
+        }
+
+        public async Task<JArray> GetRequestStatuses()
+        {
+            try
+            {
+                var requestStatuses = await _requestStatusRepository.FindAllAsync();
+                var result = new List<object>();
+                foreach (var requestStatus in requestStatuses)
+                {
+                    result.Add(new
+                    {
+                        Id = requestStatus.Id,
+                        Name = requestStatus.Name,
+                    });
+                }
+                return JArray.FromObject(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetRequestStatuses");
+                Console.WriteLine("\n\n\n" + ex.Message.ToString() + "\n\n\n");
+                // throw new HttpRequestException("Lỗi khi lấy danh sách trạng thái yêu cầu: " + ex.Message);
+                throw new HttpRequestException("Failed to get service request status list: " + ex.Message);
+            }   
         }
     }
 }

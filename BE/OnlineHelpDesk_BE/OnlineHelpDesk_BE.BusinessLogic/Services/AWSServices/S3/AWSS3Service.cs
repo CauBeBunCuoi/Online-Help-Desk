@@ -145,7 +145,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.AWSServices.S3
             }
             catch (FormatException ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("\n\n\n"+ex.ToString()+"\n\n\n");
                 throw new HttpRequestException("Invalid base64 string format. " + ex.Message.ToString());
             }
             catch (Exception ex)
