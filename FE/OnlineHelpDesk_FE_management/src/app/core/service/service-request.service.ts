@@ -1,110 +1,88 @@
 import { Injectable } from '@angular/core';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
+import { callApi } from '../../api/main/api_call/api';
+
+const API_PREFIX = '/Request/service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceRequestService {
-  private serviceRequests = [
-    {
-      ServiceRequest: {
-        Id: 1,
-        ServiceId: 1,
-        RequesterId: 101,
-        RequestStatusId: 2,
-        RequestInitDescription: 'Need urgent IT support',
-        RequestResultDescription: '',
-        AssignedAssigneeId: 202,
-        TimeRequest: '14:30',
-        DateRequest: '2024-03-25',
-        IsCancelAutomatically: false,
-        ProgressNote: 'Pending review',
-        CancelReason: '',
-        CreatedAt: '2024-03-24T12:00:00Z',
-        UpdatedAt: '2024-03-24T15:00:00Z'
-      },
-      Requester: {
-        Id: 101,
-        FullName: 'John Doe',
-        Email: 'john.doe@example.com',
-        ImageUrl: '',
-        DateOfBirth: '1990-01-01',
-        Phone: '1234567890',
-        Address: '123 Main St, City',
-        IsDeactivated: false,
-        CreatedAt: '2023-06-15T08:00:00Z'
-      },
-      RequestStatus: {
-        Id: 2,
-        Name: 'Pending'
-      },
-      Service: {
-        Name: 'IT Support',
-        FacilityMajorId: 1,
-        IsInitRequestDescriptionRequired: true,
-        RequestInitHintDescription: 'Provide details about the issue',
-        MainDescription: 'Technical support for IT-related problems',
-        WorkShiftsDescription: 'Available 24/7',
-        IsOpen: true,
-        CloseScheduleDate: '',
-        OpenScheduleDate: '2024-01-01',
-        ServiceTypeId: 1,
-        IsDeactivated: false,
-        CreatedAt: '2024-01-01'
-      },
-      Major: {
-        Id: 1,
-        Name: 'Computer Science',
-        MainDescription: 'Handles software & hardware issues',
-        WorkShiftsDescription: 'Day & Night shifts',
-        FacilityMajorTypeId: 1,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: '',
-        OpenScheduleDate: '2024-01-01',
-        IsDeactivated: false,
-        CreatedAt: '2024-01-01',
-        BackgroundImageUrl: '',
-        ImageUrl: ''
-      }
-    }
-  ];
 
-  constructor() { }
-
-  // ✅ Lấy danh sách tất cả ServiceRequests
-  getAllServiceRequestsByHead(id: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests);
+  // [GET] /Request/service/major-head/{accountId}
+  getServiceRequestsForHead(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/major-head` + `/${accountId}`,
+    }, "Get service request by headId");
   }
 
-  // ✅ Lấy danh sách tất cả ServiceRequests
-  getAllServiceRequestsByAssignee(id: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests);
+  // [GET] /Request/service/majors/{majorId}
+  getServiceRequestsForMajor(majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/majors' + `/${majorId}`,
+    }, "Get service requests by majorId");
   }
 
-  // ✅ Tìm ServiceRequest theo ID
-  findById(requestId: number): Promise<any | null> {
-    const request = this.serviceRequests.find(sr => sr.ServiceRequest.Id === requestId);
-    return Promise.resolve(request || null);
+  // [GET] /Request/service/{requestId}
+  getServiceRequestDetail(requestId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/${requestId}`,
+    }, "Get service requests detail");
   }
 
-  // ✅ Lọc ServiceRequest theo trạng thái
-  getRequestsByStatus(statusId: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests.filter(sr => sr.ServiceRequest.RequestStatusId === statusId));
+  // [PUT] /Request/service/{requestId}
+  updateServiceRequest(
+    requestId: number,
+    actionName: string,
+    updateData: any
+  ): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi,
+      method: 'put',
+      url: API_PREFIX + `/${requestId}` + '?Action=' + actionName,
+      data: updateData,
+    }, "Update Service Request");
   }
 
-  // ✅ Lọc ServiceRequest theo Service ID
-  getRequestsByService(serviceId: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests.filter(sr => sr.ServiceRequest.ServiceId === serviceId));
+  // [GET]/Request/service/assignee/{accountId}
+  getRequestsByAssignee(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axios instance bạn đang dùng
+      method: 'get',
+      url: API_PREFIX + '/assignee' + `/${accountId}`,
+    }, "Get assigned service requests by assignee");
   }
 
-
-  // ✅ Lọc ServiceRequest theo Service ID
-  getRequestsByMajor(majorId: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests.filter(sr => sr.Major.Id === majorId));
+  // [GET] /Request/service/major/{majorId}/assignable-assignee
+  getAssignableAssigneesForMajor(majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/major' + `/${majorId}` + '/assignable-assignee',
+    }, "Get AssignableAssigneesForMajor");
   }
 
-  // ✅ Lọc ServiceRequest theo người yêu cầu (Requester)
-  getRequestsByRequester(requesterId: number): Promise<any[]> {
-    return Promise.resolve(this.serviceRequests.filter(sr => sr.ServiceRequest.RequesterId === requesterId));
+  // [GET] /Request/service/assignee/{accountId}/majors/{majorId}
+  getServiceRequestsForAssigneeInMajor(accountId: number, majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/assignee' + `/${accountId}` + '/majors' + `/${majorId}`,
+    }, "Get getServiceRequestsForAssigneeInMajor");
+  }
+
+  // [GET] /Request/service/requestStatuses
+  getServiceRequestStatuses(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/requestStatuses`
+    }, "Get service request status");
   }
 }

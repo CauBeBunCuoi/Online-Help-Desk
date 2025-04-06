@@ -26,6 +26,8 @@ publicApi.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    config.headers["ngrok-skip-browser-warning"] = '69420';
+
     return config;
   },
   (error) => {
@@ -38,7 +40,7 @@ loginRequiredApi.interceptors.request.use(
     const token = LocalStorageUtil.getAuthTokenFromLocalStorage();
 
     if (token) {
-      if ( JwtUtil.isTokenValid(token) === false) {
+      if (JwtUtil.isTokenValid(token) === false) {
 
         //** CHO HIỆN THÔNG BÁO YÊU CẦU ĐĂNG NHẬP
         await loginRequiredAlert();
@@ -53,7 +55,7 @@ loginRequiredApi.interceptors.request.use(
 
       return Promise.reject(new Error('No token found'));
     }
-
+    config.headers["ngrok-skip-browser-warning"] = '69420';
     return config;
   },
   (error) => {
@@ -81,7 +83,7 @@ adminApi.interceptors.request.use(
 
       return Promise.reject(new Error('No token found'));
     }
-
+    config.headers["ngrok-skip-browser-warning"] = '69420';
     return config;
   },
   (error) => {

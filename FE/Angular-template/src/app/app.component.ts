@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './common/layouts/header/header.component';
 import { FooterComponent } from './common/layouts/footer/footer.component';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { BreadcrumbComponent } from './common/components/breadcrump/breadcrumb.component';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -12,6 +13,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     HeaderComponent,
     RouterOutlet,
     FooterComponent,
+    BreadcrumbComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

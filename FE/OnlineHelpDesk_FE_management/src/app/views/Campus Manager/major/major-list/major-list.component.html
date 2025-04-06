@@ -1,11 +1,16 @@
-<p-toast />
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
 <p-confirmdialog />
 <div class="container">
     <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
 
     <div class="card">
         <p-table #dt2 [value]="facilityMajors" dataKey="Major.Id" [paginator]="true" [rows]="10"
-            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Major.Id"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loadingTable" sortField="Major.Id"
             [globalFilterFields]="['Major.Name', 'MajorType.Name', 'Facility.Name']" [sortOrder]="-1"
             [tableStyle]="{ 'min-width': '100rem' }">
 
@@ -42,7 +47,7 @@
                     <td>{{ facilityMajor.Major.Id }}</td>
                     <td>{{ facilityMajor.Major.Name }}</td>
                     <td>
-                        <img *ngIf="facilityMajor.Major.ImageUrl" [src]="facilityMajor.Major.ImageUrl"
+                        <img *ngIf="facilityMajor.Major.ImageUrl" [src]="facilityMajor.Major.ImageUrl" width="100px"
                             alt="{{ facilityMajor.Major.Name }}" class="table-image">
                         <span *ngIf="!facilityMajor.Major.ImageUrl" class="text-muted">No Image</span>
                     </td>
@@ -63,7 +68,11 @@
 <!-- Dialog Add Thâm -->
 <p-dialog header="Add Facility Major" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
-
+    @if(loadingAdd) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Logo -->
     <div class="text-center mb-3">
         @if (logoUrl) {
@@ -126,7 +135,7 @@
         <div class="mb-3 row">
             <label for="FacilityMajorTypeId" class="col-sm-4 col-form-label fw-semibold">Facility Major Type</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityMajorTypes" optionLabel="label" optionValue="value"
+                <p-select [options]="facilityMajorTypes" optionLabel="name" optionValue="id"
                     formControlName="FacilityMajorTypeId" placeholder="Select Type"></p-select>
             </div>
         </div>
@@ -143,7 +152,7 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
-            <p-button label="Register" (click)="addFacilityMajor()" [disabled]="addFacilityMajorForm.invalid" />
+            <p-button label="Register" (click)="addFacilityMajor($event)" [disabled]="addFacilityMajorForm.invalid" />
         </div>
     </form>
 </p-dialog>
@@ -152,7 +161,11 @@
 <p-dialog header="Update Facility Major" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }"
     [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
-
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Logo -->
     <div class="text-center mb-3">
         @if (logoUrl) {
@@ -234,7 +247,7 @@
         <div class="mb-3 row">
             <label for="FacilityMajorTypeId" class="col-sm-4 col-form-label fw-semibold">Facility Major Type</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityMajorTypes" optionLabel="label" optionValue="value"
+                <p-select [options]="facilityMajorTypes" optionLabel="name" optionValue="id"
                     formControlName="FacilityMajorTypeId" placeholder="Select Type"></p-select>
             </div>
         </div>
@@ -243,7 +256,7 @@
         <div class="mb-3 row">
             <label for="FacilityId" class="col-sm-4 col-form-label fw-semibold">Facility</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityOptions" optionLabel="name" optionValue="id" formControlName="FacilityId"
+                <p-select [options]="facilityOptions" formControlName="FacilityId" optionLabel="name" optionValue="id"
                     placeholder="Select Facility"></p-select>
             </div>
         </div>
@@ -251,7 +264,7 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateFacilityMajor()" [disabled]="updateFacilityMajorForm.invalid" />
+            <p-button label="Update" (click)="updateFacilityMajor($event)" [disabled]="updateFacilityMajorForm.invalid" />
         </div>
     </form>
 </p-dialog>

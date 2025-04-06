@@ -1,4 +1,9 @@
-<p-toast />
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
 <p-confirmdialog />
 <div class="card">
     <p-table #dt2 [value]="serviceRequests" dataKey="ServiceRequest.Id" [paginator]="true" [rows]="10"
@@ -46,8 +51,7 @@
                 </td>
                 <td>{{ request.ServiceRequest.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event, request.ServiceRequest.Id)" label="Delete"
-                        severity="danger" [outlined]="true" />
+                    <p-button (click)="showDetailDialog(request.ServiceRequest.Id)" label="Detail" class="ms-2" />
                     <p-button (click)="showDialogUpdate(request.ServiceRequest.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
@@ -59,24 +63,28 @@
 <p-dialog header="Update Service Request" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }"
     [closable]="false">
     <span class="text-muted d-block mb-3">Select an action and update request</span>
-
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <form [formGroup]="updateServiceRequestForm">
         <!-- 🔽 Select Action -->
         <div class="mb-3 row">
             <label for="Action" class="col-sm-4 col-form-label fw-semibold">Action</label>
             <div class="col-sm-8">
-                <p-select [options]="actions" optionLabel="label" optionValue="value" formControlName="Action"
+                <p-select [options]="actions" optionLabel="Name" optionValue="Id" formControlName="Action"
                     appendTo="body" placeholder="Select Action">
                 </p-select>
             </div>
         </div>
 
         <!-- 🏷 Assign To -->
-        @if (updateServiceRequestForm.get('Action')?.value === 'Assigned') {
+        @if (updateServiceRequestForm.get('Action')?.value === 2) {
         <div class="mb-3 row">
             <label for="AssigneeId" class="col-sm-4 col-form-label fw-semibold">Assign To</label>
             <div class="col-sm-8">
-                <p-select [options]="assignees" optionLabel="name" optionValue="id" formControlName="AssigneeId"
+                <p-select [options]="assigneeOptions" optionLabel="name" optionValue="id" formControlName="AssigneeId"
                     [filter]="true" filterBy="name" appendTo="body" placeholder="Select Assignee">
                 </p-select>
             </div>
@@ -84,18 +92,19 @@
         }
 
         <!-- 📝 Progress Note (bắt buộc cho nhiều trạng thái) -->
-        @if (['Assigned', 'RejectedByAssignee', 'AcceptedByAssignee', 'CompletedByAssignee', 'Finished', 'Canceled']
-            .includes(updateServiceRequestForm.get('Action')?.value)) {
+        @if ([2, 3, 5, 6, 7, 8]
+        .includes(updateServiceRequestForm.get('Action')?.value)) {
         <div class="mb-3 row">
             <label for="ProgressNote" class="col-sm-4 col-form-label fw-semibold">Progress Note</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="ProgressNote" class="form-control" formControlName="ProgressNote"></textarea>
+                <textarea pInputTextarea id="ProgressNote" class="form-control"
+                    formControlName="ProgressNote"></textarea>
             </div>
         </div>
         }
 
         <!-- ✅ Request Result (luôn hiện khi chọn Finished hoặc CompletedByAssignee) -->
-        @if (['Finished', 'CompletedByAssignee'].includes(updateServiceRequestForm.get('Action')?.value)) {
+        @if ([6, 7].includes(updateServiceRequestForm.get('Action')?.value)) {
         <div class="mb-3 row">
             <label for="RequestResultDescription" class="col-sm-4 col-form-label fw-semibold">Result Description</label>
             <div class="col-sm-8">
@@ -110,7 +119,8 @@
         <div class="mb-3 row">
             <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
             <div class="col-sm-8">
-                <textarea pInputTextarea id="CancelReason" class="form-control" formControlName="CancelReason"></textarea>
+                <textarea pInputTextarea id="CancelReason" class="form-control"
+                    formControlName="CancelReason"></textarea>
             </div>
         </div>
         }
@@ -118,8 +128,95 @@
         <!-- 📌 Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateServiceRequest()"
-                [disabled]="updateServiceRequestForm.invalid || !updateServiceRequestForm.get('Action')?.value" />
+            <p-button label="Update" (click)="updateServiceRequest($event)"
+                [disabled]="updateServiceRequestForm.invalid || !updateServiceRequestForm.get('Action')?.value || isActionsDisabled" />
         </div>
     </form>
+</p-dialog>
+
+<p-dialog header="Service Request Details" [modal]="true" [(visible)]="detail" [style]="{ width: '50rem' }"
+    [closable]="false">
+    <span class="text-muted d-block mb-3">Detailed Information</span>
+    @if(loadingDetail) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div *ngIf="serviceRequest" class="container">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="fw-semibold">Service ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ServiceId }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Status:</label>
+                <p class="border rounded p-2 bg-light text-primary">{{ serviceRequest.RequestStatus.Name }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="fw-semibold">Requester Name:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.FullName }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Requester Email:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.Email }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="fw-semibold">Initial Description:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.RequestInitDescription }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="fw-semibold">Result Description:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.RequestResultDescription }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="fw-semibold">Time Requested:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.TimeRequest }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Date Requested:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.DateRequest }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="fw-semibold">Progress Note:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ProgressNote }}</p>
+            </div>
+        </div>
+
+        <div *ngIf="serviceRequest.ServiceRequest.IsCancelAutomatically" class="row mb-3">
+            <div class="col-md-12">
+                <label class="fw-semibold text-danger">Cancel Reason:</label>
+                <p class="border rounded p-2 bg-light text-danger">{{ serviceRequest.ServiceRequest.CancelReason }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="fw-semibold">Created At:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.CreatedAt }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Updated At:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.UpdatedAt }}</p>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Close" severity="secondary" (click)="hideDetailDialog()"></p-button>
+        </div>
+    </div>
 </p-dialog>

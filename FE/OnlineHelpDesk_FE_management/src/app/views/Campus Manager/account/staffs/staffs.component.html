@@ -1,4 +1,9 @@
-<p-toast />
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
 <p-confirmdialog />
 <div class="container">
     <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
@@ -63,6 +68,11 @@
 <!-- Dialog Add Thâm -->
 <p-dialog header="Add Staff" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
+    @if(loadingAdd) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Avatar Upload -->
     <div class="text-center mb-3">
         @if (avatarUrl) {
@@ -164,7 +174,7 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
-            <p-button label="Register" (click)="registerStaff()" [disabled]="addStaffForm.invalid" />
+            <p-button label="Register" (click)="registerStaff($event)" [disabled]="addStaffForm.invalid" />
         </div>
     </form>
 </p-dialog>
@@ -172,7 +182,11 @@
 <!-- Dialog Update Staff -->
 <p-dialog header="Update Staff" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
-    
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <div class="d-flex gap-4">
         <!-- 🏢 Danh sách Majors -->
         <div class="flex-grow-1 card">
@@ -210,8 +224,8 @@
                             </p-tag>
                         </td>
                         <td>
-                            <p-button (click)="confirmDelete($event, major.Id)" label="Delete" severity="danger"
-                                [outlined]="true" />
+                            <p-button (click)="confirmDeleteMajorAssigne($event, major.Id)" label="Delete" severity="danger"
+                            [outlined]="true" />
                         </td>
                     </tr>
                 </ng-template>
@@ -225,7 +239,8 @@
                 } @else {
                 <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
                 }
-                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar" (onSelect)="onFileSelect($event)" />
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+                    (onSelect)="onFileSelect($event)" />
             </div>
             <form [formGroup]="updateStaffForm">
                 <!-- Full Name -->
@@ -233,9 +248,23 @@
                     <label for="FullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
                     <div class="col-sm-8">
                         <input pInputText id="FullName" class="form-control" formControlName="FullName" />
-                        @if (updateStaffForm.controls['FullName'].invalid && updateStaffForm.controls['FullName'].touched) {
+                        @if (updateStaffForm.controls['FullName'].invalid &&
+                        updateStaffForm.controls['FullName'].touched) {
                         <small class="text-danger">
                             Full name is required (Min 3 chars).
+                        </small>
+                        }
+                    </div>
+                </div>
+                <!-- Email -->
+                <div class="mb-3 row">
+                    <label for="Email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+                    <div class="col-sm-8">
+                        <input pInputText id="Email" class="form-control" formControlName="Email" />
+                        @if (updateStaffForm.controls['Email'].invalid &&
+                        updateStaffForm.controls['Email'].touched) {
+                        <small class="text-danger">
+                            Email is required (Min 3 chars).
                         </small>
                         }
                     </div>
@@ -245,7 +274,8 @@
                     <label for="Address" class="col-sm-4 col-form-label fw-semibold">Address</label>
                     <div class="col-sm-8">
                         <input pInputText id="Address" class="form-control" formControlName="Address" />
-                        @if (updateStaffForm.controls['Address'].invalid && updateStaffForm.controls['Address'].touched) {
+                        @if (updateStaffForm.controls['Address'].invalid && updateStaffForm.controls['Address'].touched)
+                        {
                         <small class="text-danger">
                             Address is required.
                         </small>
@@ -270,7 +300,8 @@
                     <div class="col-sm-8">
                         <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
                             placeholder="Select Job Type"></p-select>
-                        @if (updateStaffForm.controls['JobTypeId'].invalid && updateStaffForm.controls['JobTypeId'].touched) {
+                        @if (updateStaffForm.controls['JobTypeId'].invalid &&
+                        updateStaffForm.controls['JobTypeId'].touched) {
                         <small class="text-danger">
                             Job type must be selected.
                         </small>
@@ -281,13 +312,14 @@
                 <div class="mb-3 row">
                     <label for="DateOfBirth" class="col-sm-4 col-form-label fw-semibold">Date of Birth</label>
                     <div class="col-sm-8">
-                        <input pInputText id="DateOfBirth" type="date" class="form-control" formControlName="DateOfBirth" />
+                        <input pInputText id="DateOfBirth" type="date" class="form-control"
+                            formControlName="DateOfBirth" />
                     </div>
                 </div>
                 <!-- Footer -->
                 <div class="d-flex justify-content-end gap-2">
                     <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-                    <p-button label="Update" (click)="updateStaff()" [disabled]="updateStaffForm.invalid" />
+                    <p-button label="Update" (click)="updateStaff($event)" [disabled]="updateStaffForm.invalid" />
                 </div>
             </form>
         </div>
@@ -297,43 +329,56 @@
 <!-- Dialog phân Major -->
 <p-dialog header="Facility majors" [modal]="true" [(visible)]="facilityMajorTable" [style]="{ width: '80%' }"
     [closable]="false">
-    <p-table [value]="facilityMajors" [(selection)]="selectedFacilityMajors" dataKey="Major.Id"
-        [tableStyle]="{'min-width': '50rem'}">
-        <ng-template #header>
-            <tr>
-                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-                <th pSortableColumn="Major.Id">ID</th>
-                <th pSortableColumn="Major.Name">Name</th>
-                <th pSortableColumn="Major.MainDescription">Main Description</th>
-                <th pSortableColumn="Major.WorkShiftsDescription">Work Shift</th>
-                <th pSortableColumn="Major.IsOpen">Status</th>
-                <th>Action</th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-facilityMajor>
-            <tr>
-                <td>
-                    <p-tableCheckbox [value]="facilityMajor" />
-                </td>
-                <td>{{ facilityMajor.Major.Id }}</td>
-                <td>{{ facilityMajor.Major.Name }}</td>
-                <td>{{ facilityMajor.Major.MainDescription }}</td>
-                <td>{{ facilityMajor.Major.WorkShiftsDescription }}</td>
-                <td>
-                    <p-tag [value]="facilityMajor.Major.IsOpen ? 'Open' : 'Closed'"
-                        [severity]="facilityMajor.Major.IsOpen ? 'success' : 'danger'" />
-                </td>
-                <td>
-                    <p-button label="Delete" severity="danger" [outlined]="true" />
-                    <!-- (click)="confirmDelete($event)"  -->
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-
-    <!-- Footer -->
+    <p-table #dt2 [value]="facilityMajors" dataKey="Major.Id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loadingMajorAss" sortField="Major.Id"
+            [globalFilterFields]="['Major.Name', 'MajorType.Name', 'Facility.Name']" [sortOrder]="-1"
+            [tableStyle]="{ 'min-width': '100rem' }" [(selection)]="selectedFacilityMajors">
+            <ng-template #caption>
+                <div class="d-flex justify-content-between">
+                    <h5 class="fw-bold">Facility Majors</h5>
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm Facility Major" />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="Major.Id">ID <p-sortIcon field="Major.Id"></p-sortIcon></th>
+                    <th pSortableColumn="Major.Name">Tên <p-sortIcon field="Major.Name"></p-sortIcon></th>
+                    <th>Hình ảnh</th>
+                    <th>Mô tả</th>
+                    <th pSortableColumn="MajorType.Name">Loại <p-sortIcon field="MajorType.Name"></p-sortIcon></th>
+                    <th pSortableColumn="Facility.Name">Cơ sở <p-sortIcon field="Facility.Name"></p-sortIcon></th>
+                    <th>Hành động</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-facilityMajor>
+                <tr>
+                    <td>
+                        <p-tableCheckbox [value]="facilityMajor" />
+                    </td>
+                    <td>{{ facilityMajor.Major.Id }}</td>
+                    <td>{{ facilityMajor.Major.Name }}</td>
+                    <td>
+                        <img *ngIf="facilityMajor.Major.ImageUrl" [src]="facilityMajor.Major.ImageUrl" width="100px"
+                            alt="{{ facilityMajor.Major.Name }}" class="table-image">
+                        <span *ngIf="!facilityMajor.Major.ImageUrl" class="text-muted">No Image</span>
+                    </td>
+                    <td>{{ facilityMajor.Major.MainDescription }}</td>
+                    <td>{{ facilityMajor.MajorType?.Name || 'N/A' }}</td>
+                    <td>{{ facilityMajor.Facility?.Name || 'N/A' }}</td>
+                    <td>
+                        <p-button (click)="showDialogUpdate(facilityMajor.Major.Id)" label="Update" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
     <div class="d-flex justify-content-end gap-2 mt-3">
         <p-button label="Cancel" severity="secondary" (click)="hideDialogFacilityMajorTable()" class="me-2" />
-        <p-button label="Update" (click)="updateFacilityMajorSelect()" />
+        <p-button label="Update" (click)="updateFacilityMajorSelect($event)" />
     </div>
 </p-dialog>

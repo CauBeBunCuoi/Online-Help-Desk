@@ -1,71 +1,136 @@
 import { Injectable } from '@angular/core';
+import { callApi } from '../../api/main/api_call/api';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
+
+const API_PREFIX = '/User/accounts';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private accounts: any[] = [
-    {
-      Account: {
-        Id: 1,
-        FullName: 'John Doe',
-        Email: 'john.doe@example.com',
-        DateOfBirth: '1990-06-15',
-        Phone: '123456789',
-        Address: '123 Main St, New York, NY',
-        RoleId: 2,
-        JobTypeId: 1,
-        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-      },
-      Role: {
-        Id: 2,
-        Name: 'Admin',
-      },
-      JobType: {
-        Id: 1,
-        Name: 'Software Engineer',
-      },
-    },
-    {
-      Account: {
-        Id: 2,
-        FullName: 'Jane Smith',
-        Email: 'jane.smith@example.com',
-        DateOfBirth: '1995-08-22',
-        Phone: '987654321',
-        Address: '456 Elm St, Los Angeles, CA',
-        RoleId: 3,
-        JobTypeId: 2,
-        ImageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToK4qEfbnd-RN82wdL2awn_PMviy_pelocqQ&s',
-        IsDeactivated: true,
-        CreatedAt: new Date().toISOString(),
-      },
-      Role: {
-        Id: 3,
-        Name: 'User',
-      },
-      JobType: {
-        Id: 2,
-        Name: 'Mechanical Engineer',
-      },
-    },
-  ];
 
-  // ✅ Lấy danh sách tất cả accounts staff
-  getAccountStaff(): Promise<any[]> {
-    return Promise.resolve(this.accounts);
+  // [GET] /User/accounts/staff
+  getStaffs(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/staff',
+    }, "Get Staff");
+  }
+
+  // [POST] User/accounts/staff
+  addStaff(staffData: any): Promise<any> {
+    const Request = {
+      Staff: staffData
+    };
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'post',
+      url: API_PREFIX + '/staff',
+      data: Request,
+    }, "Add Staff");
+  }
+
+  // [GET] /User/accounts/staff/{accountId}
+  getStaffById(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/staff' + '/' + accountId,
+    }, "Get Staff By Id");
+  }
+
+  // [PUT] /User/accounts/staff/{accountId}
+  updateStaff(accountId: number, updatedData: any): Promise<any> {
+    const Request = {
+      Staff: updatedData
+    }
+    console.log('request: ' + JSON.stringify(Request));
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'put',
+      url: API_PREFIX + '/staff' + '/' + accountId,
+      data: Request,
+    }, "Get Staff By Id");
+  }
+
+  // [GET] /User/accounts/member
+  getMembers(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/member',
+    }, "Get member");
+  }
+
+  // [POST] User/accounts/member
+  addMember(memberData: any): Promise<any> {
+    const Request = {
+      Member: memberData
+    }
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'post',
+      url: API_PREFIX + '/member',
+      data: Request,
+    }, "Add Member");
+  }
+
+  // [GET] /User/accounts/member/{accountId}
+  getMemnerById(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/member' + '/' + accountId,
+    }, "Get Member By Id");
+  }
+
+  // [PUT] /User/accounts/member/{accountId}
+  updateMember(accountId: number, updatedData: any): Promise<any> {
+    const Request = {
+      Member: updatedData
+    }
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'put',
+      url: API_PREFIX + '/member' + '/' + accountId,
+      data: Request,
+    }, "Update Member By Id");
+  }
+
+  // [GET] /User/accounts/roles
+  getRoles(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/roles',
+    }, "Get roles");
+  }
+
+  // [GET] /User/accounts/jobTypes
+  getJobTypes(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/jobTypes',
+    }, "Get jobTypes");
   }
   
-  // ✅ Lấy danh sách tất cả accounts member
-  getAccountMember(): Promise<any[]> {
-    return Promise.resolve(this.accounts);
+  // [DELETE] /User/accounts/staff/{accountId}
+  deactivateStaff(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'delete',
+      url: API_PREFIX + '/staff' + '/' + accountId,
+    }, "Delete Staff By Id");
   }
 
-  // ✅ Tìm account theo ID
-  findById(id: number): Promise<any | null> {
-    const account = this.accounts.find(acc => acc.Account.Id === id);
-    return Promise.resolve(account || null);
+  // [DELETE] /User/accounts/member/{accountId}
+  deactivatMember(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'delete',
+      url: API_PREFIX + '/member' + '/' + accountId,
+    }, "Delete Member By Id");
   }
 }

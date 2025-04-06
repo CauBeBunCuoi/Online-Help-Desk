@@ -1,67 +1,64 @@
 import { Component, OnInit } from '@angular/core';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 import { FacilityMajorTableComponent } from './major-table/facility-major-table.component';
-import { Select, SelectModule } from 'primeng/select';
+
 import { FormsModule } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-major-list',
   imports: [
     FormsModule,
     FacilityMajorTableComponent,
-    Select, SelectModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './major-list.component.html',
   styleUrl: './major-list.component.scss'
 })
 export class MajorListComponent implements OnInit {
-  majorOptions: any[] = [];
-  selectedMajorId: number | null = null;
-
-  // filteredFeedbacks: any[] = [];
   filteredFacilityMajors: any[] = [];
+  loading: boolean = false; // Biến để hiển thị spinner
+
+  userId: number;
 
   constructor(
     private facilityMajorService: FacilityMajorService,
   ) { }
 
   ngOnInit() {
-    this.loadFacilityMajors();
-    this.loadMajorOptions();
-  }
+    // Lấy thông tin từ localStorage
+    const authDataString = localStorage.getItem('auth');
 
-  loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(majors => {
-      // Lọc danh sách Major từ majors và loại bỏ trùng lặp theo héad
-      const uniqueMajors = new Map<number, any>();
+    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
+    if (authDataString) {
+      const authData = JSON.parse(authDataString);
+      console.log(authData); // Kiểm tra dữ liệu auth
 
-      majors.forEach(major => {
-        if (!uniqueMajors.has(major.Major.Id)) {
-          uniqueMajors.set(major.Major.Id, {
-            id: major.Major.Id,
-            name: major.Major.Name
-          });
-        }
-      });
-      this.majorOptions = Array.from(uniqueMajors.values());
-    });
-  }
-
-  // ✅ Lấy toàn bộ theo head
-  loadFacilityMajors() {
-    this.facilityMajorService.getFacilityMajorsByAccountId(1).then((data) => {
-      this.filteredFacilityMajors = data;
-    });
-  }
-
-  // ✅ Lọc major theo `selectedMajorId`
-  filterFacilityMajors() {
-    if (this.selectedMajorId) {
-      this.facilityMajorService.getFacilityMajors().then(majors => {
-        this.filteredFacilityMajors = majors.filter(major => major.Major.Id === this.selectedMajorId);
-      });
-    } else {
-      this.loadFacilityMajors(); // Nếu không chọn Major, hiển thị tất cả
+      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
+      if (authData.user && authData.user.id) {
+        this.userId = authData.user.id;
+        console.log('User ID:', this.userId); // In ra userId
+      }
     }
+    this.loadMajors();
+  }
+
+  loadMajors() {
+    this.loading = true; // Bắt đầu hiển thị spinner
+    this.facilityMajorService.getMajorsByHead(this.userId)
+      .then(facilityMajors => {
+        this.filteredFacilityMajors = facilityMajors.data.Majors;
+        console.log(this.filteredFacilityMajors);
+      })
+      .catch(error => {
+        console.error('Error loading Major options:', error);
+      })
+      .finally(() => {
+        this.loading = false; // Kết thúc hiển thị spinner
+      });
+  }
+
+  handleChildEvent(event) {
+    this.loadMajors();
   }
 }

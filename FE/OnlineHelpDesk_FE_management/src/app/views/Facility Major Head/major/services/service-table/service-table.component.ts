@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -23,7 +23,8 @@ import { FacilityMajorService } from '../../../../../core/service/facility-major
 import { Select, SelectModule } from 'primeng/select';
 import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 import { ServiceManagementService } from '../../../../../core/service/service-management.service';
-import { ServiceAvailabilityService } from '../../../../../core/service/service-availability.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-service-table',
@@ -47,6 +48,7 @@ import { ServiceAvailabilityService } from '../../../../../core/service/service-
     HttpClientModule,
     Select, SelectModule,
     CheckboxModule, Checkbox,
+    ProgressSpinnerModule
   ],
   templateUrl: './service-table.component.html',
   styleUrl: './service-table.component.scss',
@@ -55,17 +57,34 @@ import { ServiceAvailabilityService } from '../../../../../core/service/service-
 export class ServiceTableComponent implements OnInit {
   @Input() services: any[] = []; // ✅ Nhận dữ liệu từ component cha
 
+  @Output() actionCompleted = new EventEmitter<any>();  // Khai báo EventEmitter
+
+  // Phương thức xử lý của thằng con
+  handleAction() {
+    // Sau khi xử lý xong, phát sự kiện cho cha
+    this.actionCompleted.emit('Action completed');  // Gửi thông tin hoặc dữ liệu lên cha
+  }
+
+  userId: number;
+
   // all api service type
-  serviceTypes = [
-    { value: 1, label: 'IT Support' },
-    { value: 2, label: 'Maintenance' },
-    { value: 3, label: 'Consultation' },
-    { value: 4, label: 'Cleaning' },
-    { value: 5, label: 'Security' },
-  ];
+  serviceTypeOptions: any[] = [];
+
+  daysOfWeekOptions: any[] = [];
+
+  loadDaysOfWeek() {
+    this.daysOfWeekOptions = [
+      { Id: '1', Name: 'Chủ Nhật' },
+      { Id: '2', Name: 'Thứ Hai' },
+      { Id: '3', Name: 'Thứ Ba' },
+      { Id: '4', Name: 'Thứ Tư' },
+      { Id: '5', Name: 'Thứ Năm' },
+      { Id: '6', Name: 'Thứ Sáu' },
+      { Id: '7', Name: 'Thứ Bảy' },
+    ];
+  }
 
   facilityMajorOptions: any[] = [];
-  selectedMajorId: number | null = null;
 
   serviceSchedules: any[] = [];
 
@@ -82,28 +101,20 @@ export class ServiceTableComponent implements OnInit {
   addServiceAvailableForm: FormGroup;
   addServiceAvailable: boolean = false;
 
-  // goi service lấy day
-  daysOfWeek = [
-    { value: 1, label: 'Sunday' },
-    { value: 2, label: 'Monday' },
-    { value: 3, label: 'Tuesday' },
-    { value: 4, label: 'Wednesday' },
-    { value: 5, label: 'Thursday' },
-    { value: 6, label: 'Friday' },
-    { value: 7, label: 'Saturday' }
-  ];
-
   updateServiceForm: FormGroup;
   update: boolean = false;
 
   loading: boolean = false;
+  loadingAdd: boolean = false;
+  loadingUpdate: boolean = false;
+  loadingServiceAva: boolean = false;
+
   activityValues: number[] = [0, 100];
 
   constructor(
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private serviceManagementService: ServiceManagementService,
     private facilityMajorService: FacilityMajorService,
-    private serviceAvailabilityService: ServiceAvailabilityService,
     private fb: FormBuilder,
   ) {
     this.addServiceForm = this.fb.group({
@@ -136,17 +147,34 @@ export class ServiceTableComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Lấy thông tin từ localStorage
+    const authDataString = localStorage.getItem('auth');
+
+    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
+    if (authDataString) {
+      const authData = JSON.parse(authDataString);
+      console.log(authData); // Kiểm tra dữ liệu auth
+
+      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
+      if (authData.user && authData.user.id) {
+        this.userId = authData.user.id;
+        console.log('User ID:', this.userId); // In ra userId
+      }
+    }
     this.loadMajorOptions();
+    this.loadServiceTypes();
+    this.loadDaysOfWeek();
   }
 
   loadMajorOptions() {
-    // theo head
-    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
-      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+    this.loading = true;  // Bật spinner khi bắt đầu gọi API
+    this.facilityMajorService.getMajorsByHead(this.userId).then(facilityMajors => {
+      console.log(facilityMajors);
+      if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
         this.facilityMajorOptions = [];
         return;
       }
-      this.facilityMajorOptions = facilityMajors.reduce((acc, major) => {
+      this.facilityMajorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
         if (!acc.some(item => item.id === major.Major.Id)) {
           acc.push({
             id: major.Major.Id,
@@ -158,6 +186,28 @@ export class ServiceTableComponent implements OnInit {
     }).catch(error => {
       console.error('Error loading Major options:', error);
       this.facilityMajorOptions = [];
+    }).finally(() => {
+      this.loading = false;  // Tắt spinner sau khi gọi API xong
+    });
+  }
+
+  loadServiceTypes() {
+    this.loading = true; // Bắt đầu loading
+
+    this.serviceManagementService.getServiceTypes().then(serviceTypes => {
+      if (!serviceTypes || !Array.isArray(serviceTypes.data.ServiceTypes)) {
+        this.serviceTypeOptions = [];
+        return;
+      }
+      this.serviceTypeOptions = serviceTypes.data.ServiceTypes.map(type => ({
+        id: type.Id,
+        name: type.Name
+      }));
+    }).catch(error => {
+      console.error('❌ Error loading Service Types:', error);
+      this.serviceTypeOptions = [];
+    }).finally(() => {
+      this.loading = false; // Dừng loading khi hoàn thành
     });
   }
 
@@ -173,17 +223,24 @@ export class ServiceTableComponent implements OnInit {
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
-      rejectButtonProps: {
-        label: 'Cancel',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
-      },
-
+      rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Delete', severity: 'danger' },
       accept: () => {
+        this.loading = true;
+        this.serviceManagementService.deleteService(id).then((response) => {
+          if (response.success) {
+            this.actionCompleted.emit('Action completed');
+            successAlert(response.message.content);
+          }
+          else {
+            errorAlert(response.message.content);
+          }
+        }).catch(error => {
+          console.error('❌ Error fetching service data:', error);
+        })
+          .finally(() => {
+            this.loading = false; // Kết thúc trạng thái loading
+          });
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
       reject: () => {
@@ -194,6 +251,55 @@ export class ServiceTableComponent implements OnInit {
 
   showDialogAdd() {
     this.add = true;
+  }
+
+  addService(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Add this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Add',
+        severity: 'success',
+      },
+      accept: () => {
+        const majorId = this.addServiceForm.get('FacilityMajorId')?.value;
+        if (this.addServiceForm.valid) {
+          this.loadingAdd = true; // Bắt đầu loading
+          this.serviceManagementService.addServiceToMajor(majorId, this.addServiceForm.value)
+            .then((response) => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.actionCompleted.emit('Action completed');
+                this.hideDialogAdd();
+              } else {
+                errorAlert(response.message.content);
+              }
+            })
+            .catch((error) => {
+              console.error('❌ Lỗi khi thêm service:', error);
+              alert('Đã xảy ra lỗi khi thêm dịch vụ.');
+            })
+            .finally(() => {
+              this.loadingAdd = false; // Dừng loading dù thành công hay thất bại
+            });
+        } else {
+          console.log('❌ Form không hợp lệ');
+          this.addServiceForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
   }
 
   hideDialogAdd() {
@@ -208,87 +314,244 @@ export class ServiceTableComponent implements OnInit {
     this.add = false;
   }
 
-  addService() {
-    if (this.addServiceForm.valid) {
-      console.log('Form Data:', this.addServiceForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addServiceForm.markAllAsTouched();
-    }
-  }
-
+  // Hiển thị dialog và gọi API lấy thông tin lịch trình
   showDialogServiceAvailable(id: number) {
     this.addServiceAvailable = true;
     this.selectedServiceId = id;
+    this.loadServiceAvailability(id);
+  }
+
+  loadServiceAvailability(id: number) {
+    this.loadingServiceAva = true;  // Bắt đầu tải dữ liệu
+    this.serviceManagementService.getServiceAvailability(id)
+      .then(schedules => {
+        this.serviceSchedules = schedules.data.Schedules; // Lưu vào biến để hiển thị bảng
+      })
+      .catch(error => {
+        console.error('❌ Error fetching schedules:', error);
+      })
+      .finally(() => {
+        this.loadingServiceAva = false;  // Dừng loading khi hoàn thành
+      });
+  }
+
+  // Thêm lịch trình vào dịch vụ
+  addAvailability(event: any) {
+    if (!this.selectedServiceId) {
+      alert('❌ Vui lòng chọn một dịch vụ trước khi thêm lịch trình.');
+      return;
+    }
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Add this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Add',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.addServiceAvailableForm.valid) {
+          const formData = this.addServiceAvailableForm.value;
+          const Schedule = {
+            Availability: {
+              DayOfWeek: formData.DayOfWeek,
+              StartRequestableTime: formData.StartRequestableTime,
+              EndRequestableTime: formData.EndRequestableTime,
+            }
+          };
+          this.loading = true; // Bắt đầu loading khi gửi dữ liệu
+          this.serviceManagementService.addAvailability(this.selectedServiceId!, Schedule)
+            .then(response => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.actionCompleted.emit('Action completed');
+              } else {
+                errorAlert(response.message.content);
+              }
+            })
+            .catch(error => {
+              console.error('❌ Lỗi khi thêm lịch trình:', error);
+            })
+            .finally(() => {
+              this.loadServiceAvailability(this.selectedServiceId!);
+              this.loading = false; // Dừng loading khi hoàn thành
+            });
+        } else {
+          console.log('❌ Form không hợp lệ');
+          this.addServiceAvailableForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
   }
 
   hideDialogServiceAvailable() {
     this.addServiceAvailableForm.reset();
     this.addServiceAvailable = false;
+    this.serviceSchedules = [];
+    this.selectedServiceId = null;
   }
 
-  addAvailability() {
-    if (this.addServiceAvailableForm.valid) {
-      const newSchedule = {
-        Schedule: this.addServiceAvailableForm.value
-      };
-      // them service id vao tu selectedservice
-      this.serviceAvailabilityService.addSchedule(newSchedule).then(() => {
-        alert('Service Availability Added!');
-        this.addServiceAvailableForm.reset();
-      });
-    }
+  confirmDeleteSchedule(event: any, id: number, schedule: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to delete this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Delete', severity: 'danger' },
+      accept: () => { // check lại chỗ này cho nó nó thành Availability
+        const dayOfWeekMap: { [key: string]: number } = {
+          Sunday: 1,
+          Monday: 2,
+          Tuesday: 3,
+          Wednesday: 4,
+          Thursday: 5,
+          Friday: 6,
+          Saturday: 7
+        };
+        const formattedSchedule = {
+          ...schedule,
+          DayOfWeek: dayOfWeekMap[schedule.DayOfWeek] // Convert "Monday" → 1
+        };
+        this.loading = true;
+        this.serviceManagementService.deleteAvailability(id, formattedSchedule).then((response) => {
+          if (response.success) {
+            this.actionCompleted.emit('Action completed');
+            successAlert(response.message.content);
+          }
+          else {
+            errorAlert(response.message.content);
+          }
+        }).catch(error => {
+          console.error('❌ Error fetching service data:', error);
+        })
+          .finally(() => {
+            this.loadServiceAvailability(this.selectedServiceId!);
+            this.loading = false; // Kết thúc trạng thái loading
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
   }
 
+  // Mở dialog và lấy thông tin dịch vụ
   showDialogUpdate(id: number) {
     console.log('Updating Service ID:', id);
     this.update = true; // Mở dialog
     this.selectedServiceId = id; // Lưu ID của Service được chọn
 
+    this.loadingUpdate = true; // Bắt đầu trạng thái loading
     // 🔥 Gọi API lấy thông tin Service
-    this.serviceManagementService.findById(id)
+    this.serviceManagementService.getServiceDetails(id)
       .then(serviceData => {
-        if (!serviceData || !serviceData.Service) {
+        const ServiceData = serviceData.data;
+        if (!ServiceData || !ServiceData.Service) {
           console.warn('No Service data found for ID:', id);
           return;
         }
-
+        // ✅ Gọi API lấy danh sách lịch trình (`Schedules`) của Service này
+        this.loadServiceAvailability(id);
         // ✅ Chuyển đổi ngày về định dạng `YYYY-MM-DD`
-        const formattedCloseDate = serviceData.Service.CloseScheduleDate
-          ? new Date(serviceData.Service.CloseScheduleDate).toISOString().split('T')[0]
+        const formattedCloseDate = ServiceData.Service.CloseScheduleDate
+          ? new Date(ServiceData.Service.CloseScheduleDate).toISOString().split('T')[0]
           : null;
 
-        const formattedOpenDate = serviceData.Service.OpenScheduleDate
-          ? new Date(serviceData.Service.OpenScheduleDate).toISOString().split('T')[0]
+        const formattedOpenDate = ServiceData.Service.OpenScheduleDate
+          ? new Date(ServiceData.Service.OpenScheduleDate).toISOString().split('T')[0]
           : null;
 
         // ✅ Cập nhật `FormGroup`
         this.updateServiceForm.patchValue({
-          Name: serviceData.Service.Name,
-          FacilityMajorId: serviceData.Major.Id,
-          IsInitRequestDescriptionRequired: serviceData.Service.IsInitRequestDescriptionRequired,
-          RequestInitHintDescription: serviceData.Service.RequestInitHintDescription,
-          MainDescription: serviceData.Service.MainDescription,
-          WorkShiftsDescription: serviceData.Service.WorkShiftsDescription,
+          Name: ServiceData.Service.Name,
+          FacilityMajorId: ServiceData.Major.Id,
+          IsInitRequestDescriptionRequired: ServiceData.Service.IsInitRequestDescriptionRequired,
+          RequestInitHintDescription: ServiceData.Service.RequestInitHintDescription,
+          MainDescription: ServiceData.Service.MainDescription,
+          WorkShiftsDescription: ServiceData.Service.WorkShiftsDescription,
           CloseScheduleDate: formattedCloseDate,
           OpenScheduleDate: formattedOpenDate,
-          ServiceTypeId: serviceData.Service.ServiceTypeId,
-          Image: serviceData.Service.ImageUrl,
+          ServiceTypeId: ServiceData.Service.ServiceTypeId,
+          Image: null,
         });
 
         // ✅ Cập nhật ảnh hiển thị
-        this.logoUrl = serviceData.Service.ImageUrl;
+        this.logoUrl = ServiceData.Service.ImageUrl;
       })
       .catch(error => {
         console.error('❌ Error fetching service data:', error);
-      });
-    // ✅ Gọi API lấy danh sách lịch trình (`Schedules`) của Service này
-    this.serviceAvailabilityService.getSchedulesByServiceId(id)
-      .then(schedules => {
-        this.serviceSchedules = schedules; // Lưu vào biến để hiển thị bảng
       })
-      .catch(error => console.error('❌ Error fetching schedules:', error));
+      .finally(() => {
+        this.loadingUpdate = false; // Kết thúc trạng thái loading
+      });
+  }
+
+  // Cập nhật dịch vụ
+  updateService(event: any) {
+    if (!this.selectedServiceId) {
+      console.error('❌ Service ID không hợp lệ');
+      alert('Vui lòng chọn service cần cập nhật!');
+      return;
+    }
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.updateServiceForm.valid) {
+          this.loading = true; // Bắt đầu trạng thái loading
+          this.serviceManagementService.updateService(this.selectedServiceId!, this.updateServiceForm.value)
+            .then(response => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.actionCompleted.emit('Action completed');
+                this.hideDialogUpdate();
+              } else {
+                errorAlert(response.message.content);
+              }
+            })
+            .catch(error => {
+              console.error('❌ Lỗi cập nhật service:', error);
+              alert('Đã xảy ra lỗi khi cập nhật service.');
+            })
+            .finally(() => {
+              this.loading = false; // Kết thúc trạng thái loading
+            });
+        } else {
+          console.log('❌ Form cập nhật không hợp lệ');
+          this.updateServiceForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
   }
 
   hideDialogUpdate() {
@@ -312,16 +575,6 @@ export class ServiceTableComponent implements OnInit {
         this.updateServiceForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
-    }
-  }
-
-  updateService() {
-    if (this.updateServiceForm.valid) {
-      console.log('Form facility major update Data:', this.updateServiceForm.value); // Gửi lên API
-      this.hideDialogUpdate();
-    } else {
-      console.log('Form update Invalid');
-      this.updateServiceForm.markAllAsTouched();
     }
   }
 }

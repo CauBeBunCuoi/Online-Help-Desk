@@ -26,7 +26,7 @@ export class FacilityMajorDetailComponent {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.facilityMajorService.findById(Number(id))
+    this.facilityMajorService.getMajorDetail(Number(id))
       .then((response) => {
         this.facilityMajor = response;
       })

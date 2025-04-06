@@ -1,4 +1,9 @@
-<p-toast />
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
 <p-confirmdialog />
 <div class="card">
     <p-table #dt2 [value]="reports" dataKey="Report.Id" [paginator]="true" [rows]="10"
@@ -59,6 +64,11 @@
 <!-- Dialog Update detail -->
 <p-dialog header="Report Details" [modal]="true" [(visible)]="update" [closable]="false" [style]="{ width: '50rem' }">
     <form [formGroup]="detailReportForm">
+        @if(loadingUpdate) {
+            <div class="spinner-overlay">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
         <!-- User Info -->
         <div class="mb-3 d-flex align-items-center">
             @if(accountInfo?.ImageUrl) {
@@ -110,7 +120,7 @@
 
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
-            <p-button label="Update" severity="success" (click)="updateReportStatus()" />
+            <p-button label="Update" severity="success" (click)="updateReportStatus($event)" />
             <p-button label="Close" severity="secondary" (click)="hideDialogDetail()" />
         </div>
     </form>

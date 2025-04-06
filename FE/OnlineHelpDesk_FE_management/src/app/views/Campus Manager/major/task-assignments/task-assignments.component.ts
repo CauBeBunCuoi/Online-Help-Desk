@@ -9,13 +9,15 @@ import { InputIconModule } from 'primeng/inputicon';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule, Select } from 'primeng/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { ToastModule } from 'primeng/toast';
 import { TaskRequestService } from '../../../../core/service/task-request.service';
-
+import { TextareaModule } from 'primeng/textarea';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TaskAssignmentsTableComponent } from './task-assignments-table/task-assignments.component'
+import { TaskAssignmentsTableComponent } from './task-assignments-table/task-assignments-table.component'
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
-
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { errorAlert, successAlert } from '../../../../core/utils/alert.util';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 @Component({
   selector: 'app-task-assignments',
   imports: [
@@ -23,14 +25,18 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
+    ConfirmDialogModule,
     Dialog,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
     MultiSelectModule,
+    TextareaModule,
     SelectModule,
     Select,
+    ProgressSpinnerModule,
     TaskAssignmentsTableComponent,
+    ToastModule,
   ],
   templateUrl: './task-assignments.component.html',
   styleUrl: './task-assignments.component.scss',
@@ -41,14 +47,18 @@ export class TaskAssignmentsComponent implements OnInit {
   selectedMajorId: number | null = null;
 
   filteredTaskRequests: any[] = [];
+  loading: boolean = false; // Trạng thái loading
+  loadingAdd: boolean = false; // Trạng thái loading khi thêm Task Request
 
   addTaskRequestForm: FormGroup;
   add: boolean = false;
 
   constructor(
+    private facilityMajorService: FacilityMajorService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private taskRequestService: TaskRequestService,
-    private facilityMajorService: FacilityMajorService,
   ) {
     this.addTaskRequestForm = this.fb.group({
       Description: ['', [Validators.minLength(3)]],
@@ -63,62 +73,115 @@ export class TaskAssignmentsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajors().then(facilityMajors => {
-      if (!facilityMajors || !Array.isArray(facilityMajors)) {
-        this.majorOptions = [];
-        return;
-      }
-
-      this.majorOptions = facilityMajors.reduce((acc, major) => {
-        if (!acc.some(item => item.id === major.Major.Id)) {
-          acc.push({
-            id: major.Major.Id,
-            name: major.Major.Name
-          });
+    this.loading = true; // Hiển thị spinner
+    this.facilityMajorService.getAllMajors()
+      .then(facilityMajors => {
+        if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
+          this.majorOptions = [];
+          return;
         }
-        return acc;
-      }, []);
-    }).catch(error => {
-      console.error('Error loading Major options:', error);
-      this.majorOptions = [];
-    });
-  }
-
-
-  // ✅ Lấy toàn bộ Task Requests
-  loadTaskRequests() {
-    this.taskRequestService.getTaskRequests().then(taskRequests => {
-      this.filteredTaskRequests = taskRequests; // Ban đầu hiển thị tất cả
-    });
-  }
-
-  // ✅ Lọc Task Requests theo `selectedMajorId`
-  filterTaskRequests() {
-    if (this.selectedMajorId) {
-      this.taskRequestService.getTaskRequestsByMajorId(this.selectedMajorId).then(taskRequests => {
-        this.filteredTaskRequests = taskRequests.filter(task => task.Major.Id === this.selectedMajorId);
+        this.majorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
+          if (!acc.some(item => item.id === major.Major.Id)) {
+            acc.push({
+              id: major.Major.Id,
+              name: major.Major.Name
+            });
+          }
+          return acc;
+        }, []);
+      })
+      .catch(error => {
+        console.error('❌ Lỗi khi tải danh sách Major:', error);
+        this.majorOptions = [];
+      })
+      .finally(() => {
+        this.loading = false; // Ẩn spinner khi dữ liệu đã được tải
       });
-    } else {
+  }
+
+  loadTaskRequests() {
+    this.loading = true;
+    this.taskRequestService.getAllTaskRequests()
+      .then(taskRequests => {
+        this.filteredTaskRequests = taskRequests.data.TaskRequests || [];
+      })
+      .catch(error => {
+        console.error('❌ Lỗi khi tải Task Requests:', error);
+        this.filteredTaskRequests = [];
+      })
+      .finally(() => {
+        this.loading = false; // Ẩn spinner khi dữ liệu đã được tải
+      });
+  }
+
+  filterTaskRequests() {
+    this.loading = true;
+    if (!this.selectedMajorId) {
       this.loadTaskRequests(); // Nếu không chọn Major, hiển thị tất cả
+      return;
     }
+    this.taskRequestService.getTaskRequestsByMajor(this.selectedMajorId)
+      .then(taskRequests => {
+        this.filteredTaskRequests = taskRequests.data.TaskRequests?.filter(task => task.Major.Id === this.selectedMajorId) || [];
+      })
+      .catch(error => {
+        console.error('❌ Lỗi khi lọc Task Requests:', error);
+        this.filteredTaskRequests = [];
+      })
+      .finally(() => {
+        this.loading = false; // Ẩn spinner khi dữ liệu đã được tải
+      });
   }
 
   showDialogAdd() {
     this.add = true;
   }
 
+  addTaskRequest(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Add this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Add',
+        severity: 'success',
+      },
+      accept: () => {
+        this.loadingAdd = true; // Hiển thị spinner
+        this.taskRequestService.addTaskRequest(this.addTaskRequestForm.value)
+          .then((response) => {
+            console.log('Thêm Task Request thành công:', response);
+            if (response.success) {
+              successAlert(response.message.content);
+              this.hideDialogAdd(); // Đóng dialog
+              this.loadTaskRequests(); // Tải lại danh sách Task Requests sau khi thêm thành công
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => {
+            console.error('❌ Lỗi khi thêm Task Request:', error);
+          })
+          .finally(() => {
+            this.loadingAdd = false; // Ẩn spinner khi dữ liệu đã được tải
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
+  }
+
   hideDialogAdd() {
     this.addTaskRequestForm.reset();
     this.add = false;
-  }
-
-  addTaskRequest() {
-    if (this.addTaskRequestForm.valid) {
-      console.log('Form Data:', this.addTaskRequestForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addTaskRequestForm.markAllAsTouched();
-    }
   }
 }

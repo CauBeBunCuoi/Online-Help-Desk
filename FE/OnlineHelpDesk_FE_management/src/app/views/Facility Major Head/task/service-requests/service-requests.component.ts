@@ -10,9 +10,9 @@ import { SelectModule, Select } from 'primeng/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ServiceRequestService } from '../../../../core/service/service-request.service';
-
-import { ServiceRequestTableComponent } from './service-request-table/service-request-table.component'
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { ServiceRequestTableComponent } from './service-request-table/service-request-table.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-service-requests',
@@ -28,6 +28,7 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
     SelectModule,
     Select,
     ServiceRequestTableComponent,
+    ProgressSpinnerModule
   ],
   templateUrl: './service-requests.component.html',
   styleUrl: './service-requests.component.scss',
@@ -36,27 +37,44 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
 export class ServiceRequestsComponent implements OnInit {
   majorOptions: any[] = [];
   selectedMajorId: number | null = null;
-
   filteredServiceRequest: any[] = [];
+
+  userId: number;
+
+  loading: boolean = false;  // Flag to control the loading indicator
+
   constructor(
     private serviceRequestService: ServiceRequestService,
     private facilityMajorService: FacilityMajorService,
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
+    // Lấy thông tin từ localStorage
+    const authDataString = localStorage.getItem('auth');
+
+    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
+    if (authDataString) {
+      const authData = JSON.parse(authDataString);
+      console.log(authData); // Kiểm tra dữ liệu auth
+
+      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
+      if (authData.user && authData.user.id) {
+        this.userId = authData.user.id;
+        console.log('User ID:', this.userId); // In ra userId
+      }
+    }
     this.loadMajorOptions();
     this.loadServiceRequest();
   }
 
   loadMajorOptions() {
-    // theo head
-    this.facilityMajorService.getFacilityMajorsByAccountId(1).then(facilityMajors => {
-      if (!facilityMajors || !Array.isArray(facilityMajors)) {
+    this.loading = true;  // Start loading
+    this.facilityMajorService.getMajorsByHead(this.userId).then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
         this.majorOptions = [];
         return;
       }
-      this.majorOptions = facilityMajors.reduce((acc, major) => {
+      this.majorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
         if (!acc.some(item => item.id === major.Major.Id)) {
           acc.push({
             id: major.Major.Id,
@@ -68,25 +86,39 @@ export class ServiceRequestsComponent implements OnInit {
     }).catch(error => {
       console.error('Error loading Major options:', error);
       this.majorOptions = [];
+    }).finally(() => {
+      // this.loading = false;  // Stop loading
     });
   }
 
-  // ✅ Lấy toàn bộ Service Request
   loadServiceRequest() {
-    this.serviceRequestService.getAllServiceRequestsByHead(1).then(serviceRequests => {
-      this.filteredServiceRequest = serviceRequests; // Ban đầu hiển thị tất cả
+    this.loading = true;  // Start loading
+    this.serviceRequestService.getServiceRequestsForHead(this.userId).then(serviceRequests => {
+      console.log(serviceRequests);
+      this.filteredServiceRequest = serviceRequests.data.ServiceRequests;  // Display all initially
+    }).catch(error => {
+      console.error('Error loading Service Requests:', error);
+    }).finally(() => {
+      this.loading = false;  // Stop loading
     });
   }
 
-  // ✅ Lọc Task Requests theo `selectedMajorId`
   filterServiceRequest() {
+    this.loading = true;  // Start loading
     if (this.selectedMajorId) {
-      this.serviceRequestService.getRequestsByMajor(this.selectedMajorId).then(serviceRequests => {
-        this.filteredServiceRequest = serviceRequests.filter(serviceRequest => serviceRequest.Major.Id === this.selectedMajorId);
+      this.serviceRequestService.getServiceRequestsForMajor(this.selectedMajorId).then(serviceRequests => {
+        this.filteredServiceRequest = serviceRequests.data.ServiceRequests;
+      }).catch(error => {
+        console.error('Error filtering Service Requests:', error);
+      }).finally(() => {
+        this.loading = false;  // Stop loading
       });
     } else {
-      this.loadServiceRequest(); // Nếu không chọn Major, hiển thị tất cả
+      this.loadServiceRequest();  // If no Major selected, show all
     }
   }
 
+  handleChildEvent(event) {
+    this.loadServiceRequest();
+  }
 }

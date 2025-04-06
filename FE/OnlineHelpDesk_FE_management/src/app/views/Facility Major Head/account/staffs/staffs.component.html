@@ -1,3 +1,8 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
 <div class="container mt-3">
     <!-- Bộ lọc theo Major + Nút Add -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -5,11 +10,11 @@
             <label for="majorFilter" class="fw-semibold mb-2">Filter by Major</label>
             <p-select [options]="majorOptions" [(ngModel)]="selectedMajorId" optionLabel="name" optionValue="id"
                 [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Major" class="form-control"
-                (onChange)="filterAssigneesByMajor()">
+                (onChange)="filterAssignmentByMajor()">
             </p-select>
         </div>
     </div>
 
     <!-- Bảng staff -->
-    <app-staff-table [filteredAssignees]="filteredAccounts"></app-staff-table>
+    <app-staff-table [filteredAssignees]="filteredAccounts" (actionCompleted)="handleChildEvent($event)"></app-staff-table>
 </div>

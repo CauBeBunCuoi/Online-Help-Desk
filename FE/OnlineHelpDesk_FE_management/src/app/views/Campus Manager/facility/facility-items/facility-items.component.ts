@@ -15,15 +15,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
 import { FacilityItemService } from '../../../../core/service/facility-item.service';
-import { ItemAssignmentService } from '../../../../core/service/item-assignment.service';
+import { SelectModule } from 'primeng/select';
+import { errorAlert, successAlert } from '../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-facility-items',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -34,6 +36,7 @@ import { ItemAssignmentService } from '../../../../core/service/item-assignment.
     ToastModule,
     ButtonModule,
     Dialog,
+    SelectModule,
     InputTextModule,
     AvatarModule,
     IconFieldModule,
@@ -42,71 +45,102 @@ import { ItemAssignmentService } from '../../../../core/service/item-assignment.
     HttpClientModule,
     FileUploadModule,
     InputNumberModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './facility-items.component.html',
-  styleUrl: './facility-items.component.scss',
+  styleUrls: ['./facility-items.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class FacilityItemsComponent implements OnInit {
   facilityItems!: any[];
-
   selectedFacilityItemId: number | null = null;
+
+  actions = [
+    { label: 'add', value: 'add' },
+    { label: 'remove', value: 'remove' }
+  ];
 
   facilityMajors: any[] = [];
   selectedFacilityMajors: any[] = []; // Lưu FacilityMajor được chọn
 
   amount: number = 0; // Số lượng nhập vào
-  count: number = 0; // Tổng số khả dụng
+  count: number = 0;  // Tổng số khả dụng
   remainingAmount: number = 0; // Số lượng còn lại có thể chọn
 
   addFacilityItemForm: FormGroup;
-  add: boolean = false;
-  @ViewChild('fileUploadRef') fileUpload!: FileUpload;
-  imageUrl: string | null = null;
-
   updateFacilityItemForm: FormGroup;
+  updateFacilityItemFormMain: FormGroup;
+  add: boolean = false;
+  updateMain: boolean = false;
   update: boolean = false;
-
   facilityMajorTable: boolean = false;
 
+  imageUrl: string | null = null;
   loading: boolean = false;
+  loadingAdd: boolean = false;
+  loadingMain: boolean = false;
+  loadingDetail: boolean = false;
   activityValues: number[] = [0, 100];
-
   itemMajors: any[] = [];
+
+  @ViewChild('fileUploadRef') fileUpload!: FileUpload;
 
   constructor(
     private facilityItemService: FacilityItemService,
     private facilityMajorService: FacilityMajorService,
-    private itemAssignmentService: ItemAssignmentService,
-    private confirmationService: ConfirmationService, private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
     private fb: FormBuilder
   ) {
     this.addFacilityItemForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(3)]], // Đặt chữ "N" in hoa để khớp JSON
-      Count: [0, [Validators.required, Validators.min(1)]], // Số lượng, tối thiểu là 1
-      Image: [''], // Ảnh dưới dạng Base64 hoặc URL
+      Name: ['', [Validators.required, Validators.minLength(3)]],
+      Count: [0, [Validators.required, Validators.min(1)]],
+      Image: [''],
     });
 
     this.updateFacilityItemForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(3)]], // Đặt chữ "N" in hoa để khớp JSON
-      Count: [0, [Validators.required, Validators.min(1)]], // Số lượng, tối thiểu là 1
-      Image: [''], // Ảnh dưới dạng Base64 hoặc URL
+      Name: ['', [Validators.required, Validators.minLength(3)]],
+      Count: [0, [Validators.required, Validators.min(1)]],
+      Image: [''],
+      Action: '',
+      Amount: [null] // Thêm control Amount vào form group
     });
 
+    this.updateFacilityItemFormMain = this.fb.group({
+      Name: ['', [Validators.required, Validators.minLength(3)]],
+      Count: [0, [Validators.required, Validators.min(1)]],
+      Image: [''],
+    });
   }
 
   ngOnInit() {
-    this.facilityItemService.getItems().then((data) => {
-      this.facilityItems = data;
-    });
-    this.facilityMajorService.getFacilityMajors().then(data => {
-      this.facilityMajors = data;
-    });
+    this.loadFacilityItem();
+    this.loadMajors();
+  }
+
+  loadFacilityItem() {
+    this.loading = true;
+    this.facilityItemService.getItems()
+      .then((data) => {
+        this.facilityItems = data.data.Items;
+      })
+      .catch(error => console.error('Lỗi khi lấy danh sách item:', error))
+      .finally(() => this.loading = false);
+  }
+
+  loadMajors() {
+    this.loading = true;
+    this.facilityMajorService.getAllMajors()
+      .then(data => {
+        this.facilityMajors = data.data.Majors;
+      })
+      .catch(error => console.error('Lỗi khi lấy danh sách major:', error))
+      .finally(() => this.loading = false);
   }
 
   onGlobalFilter(event: Event, dt: any) {
     const inputElement = event.target as HTMLInputElement;
-    dt.filterGlobal(inputElement?.value, 'contains');
+    dt.filterGlobal(inputElement.value, 'contains');
   }
 
   confirmDelete(event: Event, id: number) {
@@ -116,16 +150,8 @@ export class FacilityItemsComponent implements OnInit {
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
-      rejectButtonProps: {
-        label: 'Cancel',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
-      },
-
+      rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Delete', severity: 'danger' },
       accept: () => {
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
@@ -139,127 +165,325 @@ export class FacilityItemsComponent implements OnInit {
     this.add = true;
   }
 
-  showDialogUpdate(id: number) {
-    this.update = true; // Mở dialog
-
-    // 🔥 Gọi API lấy thông tin FacilityItem
-    this.facilityItemService.findById(id).then(item => {
-      if (item) {
-        this.updateFacilityItemForm.patchValue({
-          Name: item.Item.Name,
-          Count: item.Item.Count,
-          Image: item.Item.ImageUrl, // Load ảnh nếu có
-        });
-        console.log(this.updateFacilityItemForm);
-        this.imageUrl = item.Item.ImageUrl; // Cập nhật ảnh hiển thị
-        this.selectedFacilityItemId = item.Item.Id; // Lưu ID để cập nhật
-      }
-    });
-
-    this.facilityItemService.getMajorsByFacilityItemId(id).then(assignments => {
-      this.itemMajors = assignments.map(a => a.Major);
+  addFacilityItem(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Add this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Add',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.addFacilityItemForm.valid) {
+          this.loadingAdd = true;
+          this.facilityItemService.addItem(this.addFacilityItemForm.value)
+            .then((response) => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.loadFacilityItem();
+              } else {
+                errorAlert(response.message.content);
+              }
+              this.hideDialogAdd();
+            })
+            .catch(error => console.error('Lỗi khi thêm item:', error))
+            .finally(() => this.loading = false);
+        } else {
+          console.log('Form Invalid');
+          this.addFacilityItemForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
   }
-
 
   hideDialogAdd() {
     this.addFacilityItemForm.reset();
-    this.imageUrl = null; // Xóa ảnh hiển thị
-
-    // 🔥 Reset PrimeNG FileUpload
+    this.imageUrl = null;
     setTimeout(() => {
       if (this.fileUpload) {
-        this.fileUpload.clear(); // Reset fileUpload về trạng thái ban đầu
+        this.fileUpload.clear();
       }
     }, 100);
-
     this.add = false;
   }
 
-  hideDialogUpdate() {
-    this.updateFacilityItemForm.reset(); // Reset form
-    this.imageUrl = null; // Xóa ảnh hiển thị
+  showDialogUpdateMain(id: number) {
+    this.updateMain = true;
+    this.selectedFacilityItemId = id;
+    this.updateFacilityItemForm.reset();
+    // thêm loadingDetail để hiển thị spinner
+    this.loadingDetail = true;
+    this.facilityItemService.getItemById(id)
+      .then(item => {
+        const Item = item.data;
+        if (Item) {
+          this.updateFacilityItemFormMain.patchValue({
+            Name: Item.Item.Name,
+            Count: Item.Item.Count,
+            Image: null,
+          });
+          this.count = Item.Item.Count,
+            console.log(this.count);
+          this.imageUrl = Item.Item.ImageUrl;
+          this.selectedFacilityItemId = Item.Item.Id;
+        }
+        // Lấy thông tin Major đã được gán cho item
+        this.facilityItemService.getItemMajors(id)
+          .then(response => {
+            if (response.success && response.data.FacilityItemAssignments) {
+              this.itemMajors = response.data.FacilityItemAssignments;
+            } else {
+              console.warn('⚠ Không tìm thấy danh sách Major nào.');
+              this.itemMajors = [];
+            }
+          })
+          .catch(error => console.error('Lỗi khi lấy major của item:', error));
+      })
+      .catch(error => console.error('Lỗi khi lấy thông tin item:', error))
+      .finally(() => this.loadingDetail = false);
+  }
 
-    // 🔥 Reset PrimeNG FileUpload
+  updateFacilityItemMain(event: any) {
+    if (!this.selectedFacilityItemId) {
+      console.error('❌ Item ID không hợp lệ');
+      alert('Vui lòng chọn item cần cập nhật!');
+      return;
+    }
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        this.loadingMain = true;
+        const formValue = this.updateFacilityItemFormMain.value;
+        console.log('Count Value:', formValue.Count);
+        if (formValue.Count < this.count) {
+          alert('Số lượng không được nhỏ hơn count!');
+          return;
+        }
+        this.facilityItemService.updateItem(this.selectedFacilityItemId!, this.updateFacilityItemFormMain.value)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadFacilityItem();
+              this.hideDialogUpdateMain();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => {
+            console.error('❌ Lỗi cập nhật thông tin item:', error);
+          })
+          .finally(() => {
+            this.loadingMain = false;
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
+  }
+
+  hideDialogUpdateMain() {
+    this.updateFacilityItemForm.reset();
+    this.imageUrl = null;
+    this.count = 0;
     setTimeout(() => {
       if (this.fileUpload) {
-        this.fileUpload.clear(); // Reset fileUpload về trạng thái ban đầu
+        this.fileUpload.clear();
       }
     }, 100);
+    this.updateMain = false;
+  }
 
-    this.update = false; // Đóng dialog
+  showDialogUpdate(id: number) {
+    this.update = true;
+    this.selectedFacilityItemId = id;
+    this.updateFacilityItemForm.reset();
+    this.loadingDetail = true;
+    this.facilityItemService.getItemById(id)
+      .then(item => {
+        const Item = item.data;
+        if (Item) {
+          this.updateFacilityItemForm.patchValue({
+            Name: Item.Item.Name,
+            Count: Item.Item.Count,
+            Image: null,
+          });
+          this.imageUrl = Item.Item.ImageUrl;
+          this.selectedFacilityItemId = Item.Item.Id;
+        }
+        // Lấy thông tin Major đã được gán cho item
+        this.facilityItemService.getItemMajors(id)
+          .then(response => {
+            if (response && response.data.FacilityItemAssignments) {
+              this.itemMajors = response.data.FacilityItemAssignments;
+            } else {
+              console.warn('⚠ Không tìm thấy danh sách Major nào.');
+              this.itemMajors = [];
+            }
+          })
+          .catch(error => console.error('Lỗi khi lấy major của item:', error));
+      })
+      .catch(error => console.error('Lỗi khi lấy thông tin item:', error))
+      .finally(() => this.loadingDetail = false);
+  }
+
+  updateFacilityItem() {
+    if (!this.selectedFacilityItemId) {
+      console.error('❌ Item ID không hợp lệ');
+      alert('Vui lòng chọn item cần cập nhật!');
+      return;
+    }
+
+    const formValue = this.updateFacilityItemForm.value;
+    const action = formValue.Action; // Lấy action từ form
+
+    // Kiểm tra nếu action là "add" hoặc "remove" thì amount phải có giá trị
+    if (action === 'add' || action === 'remove') {
+      if (formValue.Amount == null || formValue.Amount <= 0) {
+        alert('Vui lòng nhập Amount hợp lệ (lớn hơn 0)!');
+        return;
+      }
+      // Nếu action là remove, kiểm tra Amount không vượt quá Count
+      if (action === 'remove' && formValue.Amount > formValue.Count) {
+        alert('Amount không được lớn hơn Count!');
+        return;
+      }
+    }
+    // Nếu action là 'add'
+    if (action === 'add') {
+      const payload = formValue.Amount;
+      this.loading = true;
+      this.facilityItemService.increaseItemCount(this.selectedFacilityItemId, payload)
+        .then(response => {
+          if (response.success) {
+            successAlert(response.message.content);
+            this.loadFacilityItem();
+            this.hideDialogUpdate();
+          }
+          else {
+            errorAlert(response.message.content);
+          }
+        })
+        .catch(error => {
+          console.error('❌ Lỗi khi tăng số lượng:', error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
+    // Nếu action là 'remove'
+    else if (action === 'remove') {
+      const payload = formValue.Amount;
+      this.loading = true;
+      this.facilityItemService.decreaseItemCount(this.selectedFacilityItemId, payload)
+        .then(response => {
+          if (response.success) {
+            successAlert(response.message.content);
+            this.loadFacilityItem();
+            this.hideDialogUpdate();
+          }
+          else {
+            errorAlert(response.message.content);
+          }
+        })
+        .catch(error => {
+          console.error('❌ Lỗi khi giảm số lượng:', error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
+    else {
+      console.error('❌ Hành động không hợp lệ:', action);
+    }
+  }
+
+  hideDialogUpdate() {
+    this.updateFacilityItemForm.reset();
+    this.imageUrl = null;
+    this.amount = 0;
+    setTimeout(() => {
+      if (this.fileUpload) {
+        this.fileUpload.clear();
+      }
+    }, 100);
+    this.update = false;
   }
 
   onFileSelect(event: any) {
-    const file = event.files[0]; // Lấy file đầu tiên
+    const file = event.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.imageUrl = e.target.result; // Hiển thị ảnh trước
-        this.addFacilityItemForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.imageUrl = e.target.result;
+        this.addFacilityItemForm.patchValue({ Image: e.target.result });
       };
       reader.readAsDataURL(file);
     }
   }
 
-  addFacilityItem() {
-    if (this.addFacilityItemForm.valid) {
-      console.log('Form Data:', this.addFacilityItemForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addFacilityItemForm.markAllAsTouched();
-    }
-  }
-
-  updateFacilityItem() {
-    if (this.updateFacilityItemForm.valid) {
-      console.log('Form update Data:', this.updateFacilityItemForm.value); // Gửi lên API
-      this.hideDialogUpdate();
-    } else {
-      console.log('Form update Invalid');
-      this.updateFacilityItemForm.markAllAsTouched();
-    }
-  }
-
-  // ✅ Mở dialog với số lượng tối đa (count)
+  // Mở dialog hiển thị bảng FacilityMajor với số lượng tối đa (count)
   showDialogFacilityMajorTable(id: number, count: number) {
     this.selectedFacilityItemId = id;
-    this.count = count; // Tổng số khả dụng
-    this.amount = 0; // Reset số lượng nhập
-    this.remainingAmount = count; // Reset số lượng có thể chọn
-    this.selectedFacilityMajors = []; // Reset danh sách đã chọn
+    this.count = count;
+    this.amount = 0;
+    this.remainingAmount = count;
+    this.selectedFacilityMajors = [];
     this.facilityMajorTable = true;
   }
 
-  // ✅ Khi người dùng nhập số lượng
+  // Khi người dùng nhập số lượng
   onAmountInput() {
     if (this.amount == null) {
-      this.amount = 0; // reset nếu amount == null
+      this.amount = 0;
     }
     if (this.amount > this.count) {
-      this.amount = this.count; // Giới hạn số lượng nhập không lớn hơn `count`
+      this.amount = this.count;
     }
-    this.selectedFacilityMajors = []; // 🔥 Reset danh sách đã chọn khi nhập mới
-    this.remainingAmount = this.count; // 🔥 Cập nhật lại số lượng còn lại
+    this.selectedFacilityMajors = [];
+    this.remainingAmount = this.count;
   }
 
-  // ✅ Hàm cập nhật lại số lượng khả dụng (handle khi nhập lại `amount`)
+  // Cập nhật số lượng còn lại
   updateRemainingAmount() {
     let totalUsed = 0;
     this.selectedFacilityMajors.forEach(() => {
-      totalUsed += this.amount; // Lấy tổng số lượng đã chọn
+      totalUsed += this.amount;
     });
-
-    this.remainingAmount = this.count - totalUsed; // Cập nhật số lượng còn lại
+    this.remainingAmount = this.count - totalUsed;
   }
 
-  // ✅ Khi chọn `FacilityMajor`
+  // Khi chọn FacilityMajor
   onFacilityMajorSelect(event: any) {
     if (this.amount <= this.remainingAmount) {
-      this.remainingAmount -= this.amount
+      this.remainingAmount -= this.amount;
     } else {
-      // ❌ Nếu không đủ số lượng, bỏ chọn ngay lập tức
       const index = this.selectedFacilityMajors.indexOf(event);
       if (index !== -1) {
         this.selectedFacilityMajors.splice(index, 1);
@@ -267,42 +491,72 @@ export class FacilityItemsComponent implements OnInit {
     }
   }
 
-  // ✅ Khi bỏ chọn `FacilityMajor`
+  // Khi bỏ chọn FacilityMajor
   onFacilityMajorUnselect(event: any) {
-    this.remainingAmount += this.amount; // Tăng lại số lượng còn lại
+    this.remainingAmount += this.amount;
   }
 
   hideDialogFacilityMajorTable() {
     this.facilityMajorTable = false;
     this.selectedFacilityItemId = null;
-    this.selectedFacilityMajors = []; // 🔥 Reset danh sách đã chọn
-    this.count = 0; // 🔥 Reset amount
+    this.selectedFacilityMajors = [];
+    this.count = 0;
   }
 
-  updateFacilityMajorSelect() {
+  updateFacilityMajorSelect(event: any) {
     if (!this.selectedFacilityItemId) {
-      console.warn('No account selected.');
+      console.warn('❌ No Item selected.');
       return;
     }
-
     if (this.selectedFacilityMajors.length === 0) {
-      console.warn('No FacilityMajor selected.');
+      console.warn('❌ No FacilityMajor selected.');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('Count', this.amount.toString());
-
-    this.selectedFacilityMajors.forEach(fm => {
-      formData.append('MajorIds', fm.Major.Id.toString());
+    if (!this.amount || this.amount <= 0) {
+      console.warn('❌ Invalid Count.');
+      return;
+    }
+    const majorIds = this.selectedFacilityMajors.map(fm => fm.Major.Id);
+    console.log('📤 Sending Data:', {
+      itemId: this.selectedFacilityItemId,
+      count: this.amount,
+      majorIds: majorIds
+    });
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        this.facilityItemService.assignItemToMajors(this.selectedFacilityItemId!, this.amount, majorIds)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadFacilityItem();
+              this.hideDialogFacilityMajorTable();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => {
+            console.error('❌ Assignment Failed:', error);
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
 
-    console.log('FormData Values:');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    console.log('Majors ID:', formData.getAll('MajorIds'));
-    this.hideDialogFacilityMajorTable()
   }
-
 }

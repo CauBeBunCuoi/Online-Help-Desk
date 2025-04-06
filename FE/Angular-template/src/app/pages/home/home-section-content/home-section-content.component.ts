@@ -9,10 +9,10 @@ import { FormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { CarouselModule } from 'primeng/carousel';
-import { FacilityMajorTopFeedbackComponent } from '../../../common/components/major-top-feedback/facility-major-top-feedback.component';
-import { FacilityMajorService } from '../../../core/services/facility-major.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RouterLink } from '@angular/router';
+import { ServiceManagementService } from '../../../core/services/service-management.service';
+import { FacilityMajorService } from '../../../core/services/facility-major.service';
 
 @Component({
   selector: 'app-home-section-content',
@@ -27,7 +27,6 @@ import { RouterLink } from '@angular/router';
     AvatarModule,
     AvatarGroupModule,
     CarouselModule,
-    FacilityMajorTopFeedbackComponent,
     ProgressSpinnerModule,
     RouterLink,
   ],
@@ -35,20 +34,25 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home-section-content.component.scss'
 })
 export class HomeSectionContentComponent implements OnInit, OnDestroy {
+  services: any[] = [];
 
-  facilitiesMajor!: any[];
+  facilitiesMajor: any[] = [];
+
+  feedbacks: any[] = [];
+
   showFullDescription: { [key: number]: boolean } = {};
   maxLength = 100;
   isLoading = true; // Biến kiểm soát hiển thị spinner
 
   constructor(
+    private serviceManagementService: ServiceManagementService,
     private facilityMajorService: FacilityMajorService,
   ) { }
 
   ngOnInit() {
-    this.facilityMajorService.getFacilityMajors().then(
+    this.facilityMajorService.getAllMajors().then(
       (data) => {
-        this.facilitiesMajor = data;
+        this.facilitiesMajor = data.Majors;
       }
     )
       .catch(error => {
@@ -58,6 +62,32 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
       .finally(() => {
         this.isLoading = false; // Ẩn spinner khi có kết quả
       });
+
+    this.serviceManagementService.getServicesByHead(1).then(
+      (data) => {
+        this.services = data.Services;
+      }
+    )
+      .catch(error => {
+        console.error('Error:', error);
+        this.services = [];
+      })
+      .finally(() => {
+        this.isLoading = false; // Ẩn spinner khi có kết quả
+      })
+
+    this.facilityMajorService.getAllMajorFeedbacks().then(
+      (data) => {
+        this.feedbacks = data.Feedbacks;
+      }
+    )
+      .catch(error => {
+        console.error('Error:', error);
+        this.feedbacks = [];
+      })
+      .finally(() => {
+        this.isLoading = false; // Ẩn spinner khi có kết quả
+      })
   }
 
   ngOnDestroy() {

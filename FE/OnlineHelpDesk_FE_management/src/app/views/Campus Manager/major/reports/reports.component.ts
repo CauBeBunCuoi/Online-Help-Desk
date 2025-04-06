@@ -8,15 +8,14 @@ import { InputIconModule } from 'primeng/inputicon';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule, Select } from 'primeng/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { ReportService } from '../../../../core/service/report.service';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReportTableComponent } from './report-table/report-table.component';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-reports',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -28,29 +27,31 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
     MultiSelectModule,
     SelectModule,
     Select,
+    ProgressSpinnerModule,
     ReportTableComponent,
   ],
   templateUrl: './reports.component.html',
-  styleUrl: './reports.component.scss',
+  styleUrls: ['./reports.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class ReportsComponent implements OnInit {
   majorOptions: any[] = [];
   selectedMajorId: number | null = null;
-
   filteredReports: any[] = [];
 
   addReportForm: FormGroup;
 
+  // Loading state
+  loading: boolean = false;
+
   constructor(
     private fb: FormBuilder,
-    private reportService: ReportService,
-    private facilityMajorService: FacilityMajorService,
+    private facilityMajorService: FacilityMajorService
   ) {
     this.addReportForm = this.fb.group({
-      Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung tối thiểu 3 ký tự
-      Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]], // Đánh giá từ 1-5
-      IsDeactivated: [false], // Trạng thái kích hoạt
+      Content: ['', [Validators.required, Validators.minLength(3)]],
+      Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]],
+      IsDeactivated: [false],
     });
   }
 
@@ -60,41 +61,59 @@ export class ReportsComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajors().then(facilityMajors => {
-      if (!facilityMajors || !Array.isArray(facilityMajors)) {
-        this.majorOptions = [];
-        return;
-      }
-      this.majorOptions = facilityMajors.reduce((acc, major) => {
-        if (!acc.some(item => item.id === major.Major.Id)) {
-          acc.push({
-            id: major.Major.Id,
-            name: major.Major.Name
-          });
+    this.loading = true;
+    this.facilityMajorService.getAllMajors()
+      .then(facilityMajors => {
+        if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
+          this.majorOptions = [];
+          return;
         }
-        return acc;
-      }, []);
-    }).catch(error => {
-      console.error('Error loading Major options:', error);
-      this.majorOptions = [];
-    });
+        this.majorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
+          if (!acc.some(item => item.id === major.Major.Id)) {
+            acc.push({
+              id: major.Major.Id,
+              name: major.Major.Name
+            });
+          }
+          return acc;
+        }, []);
+      })
+      .catch(error => {
+        console.error('Error loading Major options:', error);
+        this.majorOptions = [];
+      })
+      .finally(() => this.loading = false);
   }
 
-  // ✅ Lấy toàn bộ feedback
   loadReports() {
-    this.reportService.getAllReports().then(reports => {
-      this.filteredReports = reports; // Ban đầu hiển thị tất cả
-    });
+    this.loading = true;
+    this.facilityMajorService.getAllMajorReports()
+      .then(reports => {
+        this.filteredReports = reports.data.Reports; // Ban đầu hiển thị tất cả
+      })
+      .catch(error => {
+        console.error('Error loading reports:', error);
+      })
+      .finally(() => this.loading = false);
   }
 
-  // ✅ Lọc feedback theo `selectedMajorId`
   filterReports() {
     if (this.selectedMajorId) {
-      this.reportService.getReportsByFacilityMajor(this.selectedMajorId).then(reports => {
-        this.filteredReports = reports;
-      });
+      this.loading = true;
+      this.facilityMajorService.getReportsByMajor(this.selectedMajorId)
+        .then(reports => {
+          this.filteredReports = reports.data.Reports;
+        })
+        .catch(error => {
+          console.error('Error filtering reports:', error);
+        })
+        .finally(() => this.loading = false);
     } else {
-      this.loadReports(); // Nếu không chọn Major, hiển thị tất cả
+      this.loadReports();
     }
+  }
+  
+  handleChildEvent(event) {
+    this.loadReports();
   }
 }

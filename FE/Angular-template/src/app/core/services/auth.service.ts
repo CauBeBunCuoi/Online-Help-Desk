@@ -1,69 +1,286 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { callApi } from "../../api/main/api_call/api";
-import { loginRequiredApi, publicApi } from "../../api/instance/axiosInstance";
-import { response_with_mess } from "../../api/main/responseGenerator"; // Import MessResponse
+import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthService {
-    private emailSubject = new BehaviorSubject<string>(localStorage.getItem("email") || "");
-    email$ = this.emailSubject.asObservable();
 
-    constructor() { }
-
-    setEmail(email: string) {
-        localStorage.setItem("email", email);
-        this.emailSubject.next(email);
-    }
-
-    async register(formData: FormData) {
-        try {
-            const response = await callApi({ instance: publicApi, method: "post", url: "/account/register", data: formData }, "Đăng ký");
-            return response_with_mess(true, false, "Đăng ký thành công", "Tài khoản đã được tạo!", response.data);
-        } catch (error: any) {
-            return response_with_mess(false, true, "Đăng ký thất bại", error.response?.data?.message || "Lỗi không xác định", null);
+  // [GET] /User/accounts/staff
+  getStaffs(): Promise<any> {
+    const mockResponse = {
+      Accounts: [
+        {
+          Account: {
+            Id: 1,
+            FullName: 'Nguyễn Văn A',
+            Email: 'nguyenvana@example.com',
+            DateOfBirth: '1990-01-01',
+            Phone: '0123456789',
+            Address: '123 Đường ABC, Quận 1, TP.HCM',
+            RoleId: 0,
+            JobTypeId: 1,
+            ImageUrl: 'https://example.com/avatar1.jpg',
+            IsDeactivated: false,
+            CreatedAt: '2024-03-22T08:00:00Z'
+          },
+          Role: {
+            Id: 0,
+            Name: 'Admin'
+          },
+          JobType: {
+            Id: 1,
+            Name: 'Developer'
+          }
+        },
+        {
+          Account: {
+            Id: 2,
+            FullName: 'Trần Thị B',
+            Email: 'tranthib@example.com',
+            DateOfBirth: '1995-05-15',
+            Phone: '0987654321',
+            Address: '456 Đường XYZ, Quận 2, TP.HCM',
+            RoleId: 1,
+            JobTypeId: 2,
+            ImageUrl: 'https://example.com/avatar2.jpg',
+            IsDeactivated: true,
+            CreatedAt: '2023-12-10T10:30:00Z'
+          },
+          Role: {
+            Id: 1,
+            Name: 'User'
+          },
+          JobType: {
+            Id: 2,
+            Name: 'Designer'
+          }
         }
+      ]
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(mockResponse), 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [POST] User/accounts/staff
+  addStaff(staffData: any): Promise<any> {
+    const Request = {
+      Staff: staffData
+    };
+    console.log('request: ' + JSON.stringify(Request));
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockResponse = { message: "Success." }; // Giả lập response chỉ có message
+        resolve(mockResponse); // Trả về dữ liệu
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [GET] /User/accounts/staff/{accountId}
+  getStaffById(accountId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Giả lập một nhân viên cụ thể
+        const mockResponse = {
+          Account: {
+            Id: accountId,
+            FullName: 'Nguyễn Văn A',
+            Email: 'nguyenvana@example.com',
+            DateOfBirth: '1990-01-15',
+            Phone: '0123456789',
+            Address: 'Hà Nội, Việt Nam',
+            RoleId: 1,
+            JobTypeId: 2,
+            ImageUrl: 'https://example.com/avatar1.jpg',
+            IsDeactivated: false,
+            CreatedAt: '2024-03-10T08:00:00Z'
+          },
+          Role: {
+            Id: 1,
+            Name: 'Admin'
+          },
+          JobType: {
+            Id: 2,
+            Name: 'Developer'
+          }
+        };
+        resolve(mockResponse);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [PUT] /User/accounts/staff/{accountId}
+  updateStaff(accountId: number, updatedData: any): Promise<any> {
+    console.log('request: ' + accountId);
+    const Request = {
+      Staff: updatedData
     }
+    console.log('request: ' + JSON.stringify(Request));
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Giả lập dữ liệu sau khi cập nhật thành công
+        const updatedStaff = {
+          message: "Success.",
+        };
+        resolve(updatedStaff);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
 
-    async login(email: string, password: string) {
-        const credentials = { email, password }
-        try {
-            const response = await callApi({ instance: publicApi, method: "post", url: "/account/login", data: credentials }, "Đăng nhập");
-
-            if (response.success && response.data.access_token) {
-                localStorage.setItem("access_token", response.data.access_token);
-                this.setEmail(response.data.user.email);
-            }
-            return response_with_mess(true, false, "Đăng nhập thành công", "Bạn đã đăng nhập thành công!", response.data);
-        } catch (error: any) {
-            return response_with_mess(false, true, "Đăng nhập thất bại", error.response?.data?.message || "Lỗi không xác định", null);
+  // [GET] /User/accounts/member
+  getMembers(): Promise<any> {
+    const mockResponse = {
+      Accounts: [
+        {
+          Account: {
+            Id: 1,
+            FullName: 'Nguyễn Văn A',
+            Email: 'nguyenvana@example.com',
+            DateOfBirth: '1990-01-01',
+            Phone: '0123456789',
+            Address: '123 Đường ABC, Quận 1, TP.HCM',
+            RoleId: 0,
+            JobTypeId: 1,
+            ImageUrl: 'https://example.com/avatar1.jpg',
+            IsDeactivated: false,
+            CreatedAt: '2024-03-22T08:00:00Z'
+          },
+          Role: {
+            Id: 0,
+            Name: 'Admin'
+          },
+          JobType: {
+            Id: 1,
+            Name: 'Developer'
+          }
+        },
+        {
+          Account: {
+            Id: 2,
+            FullName: 'Trần Thị B',
+            Email: 'tranthib@example.com',
+            DateOfBirth: '1995-05-15',
+            Phone: '0987654321',
+            Address: '456 Đường XYZ, Quận 2, TP.HCM',
+            RoleId: 1,
+            JobTypeId: 2,
+            ImageUrl: 'https://example.com/avatar2.jpg',
+            IsDeactivated: true,
+            CreatedAt: '2023-12-10T10:30:00Z'
+          },
+          Role: {
+            Id: 1,
+            Name: 'User'
+          },
+          JobType: {
+            Id: 2,
+            Name: 'Designer'
+          }
         }
-    }
+      ]
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(mockResponse), 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
 
-    async findByEmail(email: string) {
-        try {
-            const response = await callApi({ instance: loginRequiredApi, method: "get", url: `/account/find-by-email/${email}` }, "Tải thông tin người dùng");
-            return response_with_mess(true, false, "Tải thông tin thành công", "Dữ liệu tài khoản đã được lấy.", response.data);
-        } catch (error: any) {
-            return response_with_mess(false, true, "Tải thông tin thất bại", error.response?.data?.message || "Lỗi không xác định", null);
+  // [POST] User/accounts/member
+  addMember(memberData: any): Promise<any> {
+    const Request = {
+      Member: memberData
+    }
+    console.log('request: ' + JSON.stringify(Request));
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockResponse = {
+          message: "Success.",
+        };
+        resolve(mockResponse);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [GET] /User/accounts/member/{accountId}
+  getMemnerById(accountId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Giả lập một nhân viên cụ thể
+        const mockResponse = {
+          Account: {
+            Id: accountId,
+            FullName: 'Nguyễn Văn A',
+            Email: 'nguyenvana@example.com',
+            DateOfBirth: '1990-01-15',
+            Phone: '0123456789',
+            Address: 'Hà Nội, Việt Nam',
+            RoleId: 1,
+            JobTypeId: 2,
+            ImageUrl: 'https://example.com/avatar1.jpg',
+            IsDeactivated: false,
+            CreatedAt: '2024-03-10T08:00:00Z'
+          },
+          Role: {
+            Id: 1,
+            Name: 'Admin'
+          },
+          JobType: {
+            Id: 2,
+            Name: 'Developer'
+          }
+        };
+
+        resolve(mockResponse);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [PUT] /User/accounts/member/{accountId}
+  updateMember(accountId: number, updatedData: any): Promise<any> {
+    const Request = {
+      Member: updatedData
+    }
+    console.log('request: ' + JSON.stringify(Request));
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (!accountId || !updatedData) {
+          reject({ error: 'Invalid data' });
+          return;
         }
-    }
+        // Giả lập dữ liệu sau khi cập nhật thành công
+        const updatedMember = {
+          message: "Success.",
+        };
 
-    async updateAccount(id: string, formData: FormData) {
-        try {
-            const response = await callApi({ instance: loginRequiredApi, method: "put", url: `/account/update/${id}`, data: formData }, "Cập nhật tài khoản");
-            return response_with_mess(true, false, "Cập nhật thành công", "Thông tin tài khoản đã được cập nhật!", response.data);
-        } catch (error: any) {
-            return response_with_mess(false, true, "Cập nhật thất bại", error.response?.data?.message || "Lỗi không xác định", null);
-        }
-    }
+        resolve(updatedMember);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
 
-    logout() {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("email");
-        this.emailSubject.next("");
-    }
+  // [GET] /User/accounts/roles
+  getRoles(): Promise<any> {
+    const mockResponse = {
+      Roles: [
+        { Id: 0, Name: 'Admin' },
+        { Id: 1, Name: 'User' },
+        { Id: 2, Name: 'Guest' }
+      ]
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(mockResponse), 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [GET] /User/accounts/jobTypes
+  getJobTypes(): Promise<any> {
+    const mockResponse = {
+      JobTypes: [
+        { Id: 0, Name: 'Developer' },
+        { Id: 1, Name: 'Designer' },
+        { Id: 2, Name: 'Project Manager' }
+      ]
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(mockResponse), 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
 }

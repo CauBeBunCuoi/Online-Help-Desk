@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -15,12 +15,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReportService } from '../../../../../core/service/report.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { FacilityMajorService } from '../../../../../core/service/facility-major.service';
+import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-report-table',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -38,15 +40,24 @@ import { ReportService } from '../../../../../core/service/report.service';
     MultiSelectModule,
     RatingModule,
     HttpClientModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './report-table.component.html',
-  styleUrl: './report-table.component.scss',
+  styleUrls: ['./report-table.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class ReportTableComponent implements OnInit {
-  @Input() reports: any[] = []; // ✅ Nhận dữ liệu từ component cha
+  @Input() reports: any[] = []; // Nhận dữ liệu từ component cha
 
-  selectedReport: number | null = null;
+  @Output() actionCompleted = new EventEmitter<any>();  // Khai báo EventEmitter
+
+  // Phương thức xử lý của thằng con
+  handleAction() {
+    // Sau khi xử lý xong, phát sự kiện cho cha
+    this.actionCompleted.emit('Action completed');  // Gửi thông tin hoặc dữ liệu lên cha
+  }
+
+  selectedReportId: number | null = null;
   reportType: any;
   accountInfo: any;
   majorInfo: any;
@@ -54,23 +65,23 @@ export class ReportTableComponent implements OnInit {
 
   updateReportForm: FormGroup;
 
-  // updateStaffForm: FormGroup
   update: boolean = false;
-
   loading: boolean = false;
+  loadingUpdate: boolean = false;
   activityValues: number[] = [0, 100];
 
   constructor(
-    private confirmationService: ConfirmationService, private messageService: MessageService,
-    private reportService: ReportService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private facilityMajorService: FacilityMajorService,
     private fb: FormBuilder
   ) {
     this.updateReportForm = this.fb.group({
-      Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung báo cáo (tối thiểu 3 ký tự)
-      ReportTypeId: [null, Validators.required], // Loại báo cáo
-      FacilityMajorId: [null, Validators.required], // Major liên quan
-      IsResolved: [false], // Trạng thái xử lý
-      IsDeactivated: [{ value: false, disabled: true }] // ✅ Không cho chỉnh sửa
+      Content: [''],
+      ReportTypeId: [null],
+      FacilityMajorId: [null],
+      IsResolved: [false],
+      IsDeactivated: [{ value: false, disabled: true }],
     });
   }
 
@@ -79,13 +90,53 @@ export class ReportTableComponent implements OnInit {
 
   onGlobalFilter(event: Event, dt: any) {
     const inputElement = event.target as HTMLInputElement;
-    dt.filterGlobal(inputElement?.value, 'contains');
+    dt.filterGlobal(inputElement.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  showDialogUpdate(id: number) {
+    this.update = true;
+    this.loadingUpdate = true;
+    // Gọi API lấy thông tin Report
+    this.facilityMajorService.getReportDetail(id)
+      .then(report => {
+        console.log(report);
+        if (report) {
+          // Lưu lại report (có thể lưu report.Id nếu cần)
+          this.selectedReportId = id;
+          const Report = report.data;
+          this.updateReportForm.patchValue({
+            Content: Report.Report.Content,
+            ReportTypeId: Report.Report.ReportTypeId,
+            IsResolved: Report.Report.IsResolved,
+            IsDeactivated: Report.Report.IsDeactivated,
+          });
+          // Cập nhật thông tin hiển thị
+          this.accountInfo = Report.Account;
+          this.majorInfo = Report.Major;
+          this.reportType = Report.ReportType;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching report:', error);
+      })
+      .finally(() => {
+        this.loadingUpdate = false;
+      });
+  }
+
+  hideDialogDetail() {
+    this.updateReportForm.reset();
+    this.selectedReportId = null;
+    this.accountInfo = null;
+    this.majorInfo = null;
+    this.reportType = null;
+    this.update = false;
+  }
+
+  updateReportStatus(event: any) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: 'Do you want to delete this record?',
+      message: 'Do you want to Update this record?',
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
@@ -95,54 +146,37 @@ export class ReportTableComponent implements OnInit {
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
+        label: 'Update',
+        severity: 'success',
       },
-
       accept: () => {
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+        if (this.updateReportForm.valid) {
+          this.loading = true;
+          this.facilityMajorService.resolveReport(this.selectedReportId!)
+            .then((response) => {
+              if (response.success) {
+                this.actionCompleted.emit('Action completed');
+                successAlert(response.message.content);
+                this.hideDialogDetail();
+              } else {
+                errorAlert(response.message.content);
+              }
+            })
+            .catch(error => {
+              console.error('Error resolving report:', error);
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        } else {
+          console.log('Form update Invalid');
+          this.updateReportForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
       },
       reject: () => {
         this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
       },
     });
-  }
-
-  showDialogUpdate(id: number) {
-    this.update = true; // Mở dialog
-
-    // 🔥 Gọi API lấy thông tin Report
-    this.reportService.findById(id).then(report => {
-      if (report) {
-        this.selectedReport = report; // Lưu Report được chọn
-
-        this.updateReportForm.patchValue({
-          Content: report.Report.Content,
-          ReportTypeId: report.Report.ReportTypeId,
-          IsResolved: report.Report.IsResolved,
-          IsDeactivated: report.Report.IsDeactivated
-        });
-
-        // ✅ Cập nhật thông tin hiển thị
-        this.accountInfo = report.Account;
-        this.majorInfo = report.Major;
-        this.reportType = report.ReportType;
-      }
-    }).catch(error => {
-      console.error('Error fetching report:', error);
-    });
-  }
-
-  hideDialogDetail() {
-    this.updateReportForm.reset();
-    this.selectedReport = null;
-    this.accountInfo = null;
-    this.majorInfo = null;
-    this.reportType = null;
-    this.update = false;
-  }
-
-  updateReportStatus() {
-    console.log(this.selectedReport);
   }
 }

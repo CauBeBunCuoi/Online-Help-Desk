@@ -8,15 +8,14 @@ import { InputIconModule } from 'primeng/inputicon';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule, Select } from 'primeng/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { FeedbackService } from '../../../../core/service/feedback.service';
-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FeedbackTableComponent } from './feedback-table/feedback-table.component';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-feedbacks',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -28,29 +27,30 @@ import { FacilityMajorService } from '../../../../core/service/facility-major.se
     MultiSelectModule,
     SelectModule,
     Select,
+    ProgressSpinnerModule,
     FeedbackTableComponent,
   ],
   templateUrl: './feedbacks.component.html',
-  styleUrl: './feedbacks.component.scss',
+  styleUrls: ['./feedbacks.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class FeedbacksComponent implements OnInit {
   majorOptions: any[] = [];
   selectedMajorId: number;
-
   filteredFeedbacks: any[] = [];
-
   addFeedbackForm: FormGroup;
+
+  // Loading spinner state
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private feedbackService: FeedbackService,
     private facilityMajorService: FacilityMajorService,
   ) {
     this.addFeedbackForm = this.fb.group({
-      Content: ['', [Validators.required, Validators.minLength(3)]], // Nội dung tối thiểu 3 ký tự
-      Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]], // Đánh giá từ 1-5
-      IsDeactivated: [false], // Trạng thái kích hoạt
+      Content: ['', [Validators.required, Validators.minLength(3)]],
+      Rate: [null, [Validators.required, Validators.min(1), Validators.max(5)]],
+      IsDeactivated: [false],
     });
   }
 
@@ -60,41 +60,66 @@ export class FeedbacksComponent implements OnInit {
   }
 
   loadMajorOptions() {
-    this.facilityMajorService.getFacilityMajors().then(facilityMajors => {
-      if (!facilityMajors || !Array.isArray(facilityMajors)) {
-        this.majorOptions = [];
-        return;
-      }
-      this.majorOptions = facilityMajors.reduce((acc, major) => {
-        if (!acc.some(item => item.id === major.Major.Id)) {
-          acc.push({
-            id: major.Major.Id,
-            name: major.Major.Name
-          });
+    this.loading = true;
+    this.facilityMajorService.getAllMajors()
+      .then(facilityMajors => {
+        if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
+          this.majorOptions = [];
+          return;
         }
-        return acc;
-      }, []);
-    }).catch(error => {
-      console.error('Error loading Major options:', error);
-      this.majorOptions = [];
-    });
+        this.majorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
+          if (!acc.some(item => item.id === major.Major.Id)) {
+            acc.push({
+              id: major.Major.Id,
+              name: major.Major.Name
+            });
+          }
+          return acc;
+        }, []);
+      })
+      .catch(error => {
+        console.error('Error loading Major options:', error);
+        this.majorOptions = [];
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
-  // ✅ Lấy toàn bộ feedback
   loadFeedbacks() {
-    this.feedbackService.getFeedbacks().then(feedbacks => {
-      this.filteredFeedbacks = feedbacks; // Ban đầu hiển thị tất cả
-    });
+    this.loading = true;
+    this.facilityMajorService.getAllMajorFeedbacks()
+      .then(feedbacks => {
+        this.filteredFeedbacks = feedbacks.data.Feedbacks;
+        console.log('Feedbacks:', this.filteredFeedbacks);
+      })
+      .catch(error => {
+        console.error('Error loading feedbacks:', error);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
-  // ✅ Lọc feedback theo `selectedMajorId`
   filterFeedbacks() {
     if (this.selectedMajorId) {
-      this.feedbackService.getFeedbacksByMajor(this.selectedMajorId).then(feedbacks => {
-        this.filteredFeedbacks = feedbacks;
-      });
+      this.loading = true;
+      this.facilityMajorService.getMajorFeedbacks(this.selectedMajorId)
+        .then(feedbacks => {
+          this.filteredFeedbacks = feedbacks.data.Feedbacks;
+        })
+        .catch(error => {
+          console.error('Error filtering feedbacks:', error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     } else {
-      this.loadFeedbacks(); // Nếu không chọn Major, hiển thị tất cả
+      this.loadFeedbacks();
     }
+  }
+  
+  handleChildEvent(event) {
+    this.loadFeedbacks();
   }
 }

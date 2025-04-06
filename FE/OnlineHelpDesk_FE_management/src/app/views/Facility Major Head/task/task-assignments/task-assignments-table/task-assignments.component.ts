@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -18,6 +18,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskRequestService } from '../../../../../core/service/task-request.service';
+import { FacilityMajorService } from '../../../../../core/service/facility-major.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-task-assignments-table',
@@ -38,7 +41,8 @@ import { TaskRequestService } from '../../../../../core/service/task-request.ser
     MultiSelectModule,
     SelectModule,
     HttpClientModule,
-    Select
+    Select,
+    ProgressSpinnerModule
   ],
   templateUrl: './task-assignments-table.component.html',
   styleUrl: './task-assignments-table.component.scss',
@@ -46,33 +50,45 @@ import { TaskRequestService } from '../../../../../core/service/task-request.ser
 })
 export class TaskAssignmentsTableComponent implements OnInit {
   @Input() taskRequests: any[] = []; // ✅ Nhận dữ liệu từ component cha
+
+  @Output() actionCompleted = new EventEmitter<any>();  // Khai báo EventEmitter
+
+  // Phương thức xử lý của thằng con
+  handleAction() {
+    // Sau khi xử lý xong, phát sự kiện cho cha
+    this.actionCompleted.emit('Action completed');  // Gửi thông tin hoặc dữ liệu lên cha
+  }
+  majorOptions: any[] = [];
   actions = [
-    { label: 'Finished', value: 'Finished' },
-    { label: 'Canceled', value: 'Canceled' }
+    { name: 'Finished', value: 'Finished' },
+    { name: 'Cancelled', value: 'Cancelled' }
   ];
 
   selectedTaskRequestId: number;
-
   updateTaskRequestForm: FormGroup;
 
-  // updateStaffForm: FormGroup
   update: boolean = false;
 
-  loading: boolean = false;
+  loading: boolean = false;  // Biến để theo dõi trạng thái loading
+  loadingUpdate: boolean = false;
   activityValues: number[] = [0, 100];
 
   constructor(
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private taskRequestService: TaskRequestService,
+    private facilityMajorService: FacilityMajorService,
     private fb: FormBuilder
   ) {
     this.updateTaskRequestForm = this.fb.group({
+      Description: ['', [Validators.minLength(3)]],
       Action: [null, Validators.required], // Thêm action
+      MajorId: [{ value: null, disabled: true }, [Validators.required]], // Vô hiệu hóa ban đầu
       CancelReason: ['', Validators.minLength(3)], // Chỉ yêu cầu khi Cancel
     });
   }
 
   ngOnInit() {
+    this.loadMajorOptions();
   }
 
   onGlobalFilter(event: Event, dt: any) {
@@ -106,24 +122,105 @@ export class TaskAssignmentsTableComponent implements OnInit {
     });
   }
 
-  showDialogUpdate(id: number) {
-    this.update = true; // Mở dialog
-    this.selectedTaskRequestId = id; // Lưu ID request
-    // ✅ Reset form trước khi điền dữ liệu mới
-    this.updateTaskRequestForm.reset();
-
-    // 🔥 Gọi API lấy dữ liệu
-    this.taskRequestService.findById(id).then(taskRequest => {
-      if (!taskRequest || !taskRequest.TaskRequest) {
-        console.warn(`⚠️ Không tìm thấy dữ liệu Service Request cho ID: ${id}`);
+  loadMajorOptions() {
+    this.loading = true;  // Bắt đầu loading
+    this.facilityMajorService.getAllMajors().then(facilityMajors => {
+      if (!facilityMajors || !Array.isArray(facilityMajors.data.Majors)) {
+        this.majorOptions = [];
         return;
       }
-      // ✅ Điền dữ liệu vào form
-      this.updateTaskRequestForm.patchValue({
-        CancelReason: taskRequest.TaskRequest.CancelReason || '',
-      });
+
+      this.majorOptions = facilityMajors.data.Majors.reduce((acc, major) => {
+        if (!acc.some(item => item.id === major.Major.Id)) {
+          acc.push({
+            id: major.Major.Id,
+            name: major.Major.Name
+          });
+        }
+        return acc;
+      }, []);
     }).catch(error => {
-      console.error('❌ Lỗi khi lấy dữ liệu Service Request:', error);
+      console.error('Error loading Major options:', error);
+      this.majorOptions = [];
+    }).finally(() => {
+      this.loading = false;  // Kết thúc loading
+    });
+  }
+
+  showDialogUpdate(id: number) {
+    this.update = true; // Mở dialog
+    this.selectedTaskRequestId = id; // Lưu ID của task request được chọn
+    this.loadingUpdate = true;  // Bắt đầu loading khi lấy chi tiết task request
+    this.taskRequestService.getTaskRequestDetail(id).then(task => {
+      const Task = task.data;
+      if (task) {
+        this.updateTaskRequestForm.patchValue({
+          Description: Task.TaskRequest.Description,
+          MajorId: Task.Major.Id,
+          CancelReason: Task.TaskRequest.CancelReason,
+        });
+      }
+    }).catch(error => {
+      console.error('Error loading Task Request Detail:', error);
+    }).finally(() => {
+      this.loadingUpdate = false;  // Kết thúc loading
+    });
+  }
+
+  updateTaskRequest(event: any) {
+    if (!this.selectedTaskRequestId) {
+      console.warn('❌ Không có Task ID được chọn.');
+      return;
+    }
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.updateTaskRequestForm.valid) {
+          const formData = this.updateTaskRequestForm.getRawValue(); // Lấy cả field disabled
+
+          const requestData = {
+            CancelReason: formData.CancelReason || null, // Nếu không có, gửi null
+          };
+
+          this.loadingUpdate = true;  // Bắt đầu loading khi cập nhật task request
+          this.taskRequestService.updateTaskStatus(this.selectedTaskRequestId, formData.Action, requestData)
+            .then(response => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.actionCompleted.emit('Action completed');
+                this.hideDialogUpdate();
+              } else {
+                errorAlert(response.message.content);
+              }
+            }
+            )
+            .catch(error => {
+              console.error('❌ Lỗi cập nhật Task:', error);
+            }).finally(() => {
+              this.loadingUpdate = false;  // Kết thúc loading
+            });
+        } else {
+          console.warn('❌ Form không hợp lệ.');
+          this.updateTaskRequestForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
   }
 
@@ -131,14 +228,5 @@ export class TaskAssignmentsTableComponent implements OnInit {
     this.updateTaskRequestForm.reset();
     this.update = false;
   }
-
-  updateTaskRequest() {
-    if (this.updateTaskRequestForm.valid) {
-      console.log('Form update Data:', this.updateTaskRequestForm.value); // Gửi lên API
-      this.hideDialogUpdate();
-    } else {
-      console.log('Form update Invalid');
-      this.updateTaskRequestForm.markAllAsTouched();
-    }
-  }
 }
+

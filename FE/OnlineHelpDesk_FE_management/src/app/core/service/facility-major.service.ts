@@ -1,190 +1,189 @@
 import { Injectable } from '@angular/core';
+import { callApi } from '../../api/main/api_call/api';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
+
+const API_PREFIX = '/Major/majors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FacilityMajorService {
-  private majors: any[] = [
-    {
-      Major: {
-        Id: 1,
-        Name: 'Computer Science',
-        MainDescription: 'Handles all CS-related subjects',
-        WorkShiftsDescription: 'Morning and Evening Shifts',
-        FacilityMajorTypeId: 2,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: null,
-        OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-        BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-      },
-      MajorType: {
-        Id: 1,
-        Name: 'Technology',
-      },
-      Facility: {
-        Id: 1,
-        Name: 'Tech Campus',
-        Description: 'A hub for IT and engineering students',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-      },
-    },
-    {
-      Major: {
-        Id: 2,
-        Name: 'Mechanical Engineering',
-        MainDescription: 'Focuses on mechanical systems',
-        WorkShiftsDescription: 'Day Shifts',
-        FacilityMajorTypeId: 3,
-        FacilityId: 2,
-        IsOpen: false,
-        CloseScheduleDate: new Date(2024, 8, 1).toISOString(),
-        OpenScheduleDate: new Date(2024, 9, 1).toISOString(),
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-        BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-      },
-      MajorType: {
-        Id: 2,
-        Name: 'Engineering',
-      },
-      Facility: {
-        Id: 2,
-        Name: 'Engineering Campus',
-        Description: 'A place for mechanical and electrical studies',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-      },
-    },
-    {
-      Major: {
-        Id: 3,
-        Name: 'Computer Science',
-        MainDescription: 'Handles all CS-related subjects',
-        WorkShiftsDescription: 'Morning and Evening Shifts',
-        FacilityMajorTypeId: 2,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: null,
-        OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-        BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-      },
-      MajorType: {
-        Id: 1,
-        Name: 'Technology',
-      },
-      Facility: {
-        Id: 1,
-        Name: 'Tech Campus',
-        Description: 'A hub for IT and engineering students',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-      },
-    },
-    {
-      Major: {
-        Id: 4,
-        Name: 'Computer Science',
-        MainDescription: 'Handles all CS-related subjects',
-        WorkShiftsDescription: 'Morning and Evening Shifts',
-        FacilityMajorTypeId: 2,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: null,
-        OpenScheduleDate: new Date(2024, 5, 15).toISOString(),
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-        BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-      },
-      MajorType: {
-        Id: 1,
-        Name: 'Technology',
-      },
-      Facility: {
-        Id: 1,
-        Name: 'Tech Campus',
-        Description: 'A hub for IT and engineering students',
-        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-        IsDeactivated: false,
-        CreatedAt: new Date().toISOString(),
-      },
-    },
-  ];
 
-  private majorAssignments = [
-    {
-      MajorAssignment: {
-        AccountId: 1,
-        FacilityMajorId: 1,
-        IsHead: true,
-        WorkDescription: 'Lead IT Department'
-      },
-      Major: {
-        Id: 1,
-        Name: 'Computer Science',
-        MainDescription: 'Handles software & hardware issues',
-        WorkShiftsDescription: 'Day & Night shifts',
-        FacilityMajorTypeId: 1,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: '',
-        OpenScheduleDate: '2024-01-01',
-        IsDeactivated: false,
-        CreatedAt: '2024-01-01',
-        BackgroundImageUrl: 'https://example.com/bg1.jpg',
-        ImageUrl: 'https://example.com/logo1.jpg'
-      }
-    },
-    {
-      MajorAssignment: {
-        AccountId: 2,
-        FacilityMajorId: 2,
-        IsHead: false,
-        WorkDescription: 'Maintenance Engineer'
-      },
-      Major: {
-        Id: 2,
-        Name: 'Mechanical Engineering',
-        MainDescription: 'Maintenance of machines & equipment',
-        WorkShiftsDescription: 'Morning shifts',
-        FacilityMajorTypeId: 2,
-        FacilityId: 1,
-        IsOpen: true,
-        CloseScheduleDate: '',
-        OpenScheduleDate: '2024-01-01',
-        IsDeactivated: false,
-        CreatedAt: '2024-01-01',
-        BackgroundImageUrl: 'https://example.com/bg2.jpg',
-        ImageUrl: 'https://example.com/logo2.jpg'
-      }
-    }
-  ];
+  // [GET] /Major/majors
+  getAllMajors(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX
+    }, "Get Majors");
+  }
 
-  // ✅ Lấy danh sách tất cả Majors
-  getFacilityMajors(): Promise<any[]> {
-    return Promise.resolve(this.majors);
+  // [POST] /Major/majors
+  addMajor(newMajor: any): Promise<any> {
+    const Request = {
+      Major: newMajor
+    };
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'post',
+      url: API_PREFIX,
+      data: Request,
+    }, "Add Major");
+  }
+
+  // [GET] /Major/majors/{majorId}
+  getMajorDetail(majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/${majorId}`,
+    }, "Get major detail");
+  }
+
+  // [GET] /Major/majors/major-head/{accountId}/majors
+  getMajorsByHead(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/major-head` + `/${accountId}` + '/majors',
+    }, "Get majors by headId");
   }
   
-  // ✅ Lấy danh sách tất cả Majors
-  getFacilityMajorsByAccountId(id: number): Promise<any[]> {
-    return Promise.resolve(this.majors);
+  // [GET] /Major/majors/assignee/{accountId}/majors
+  getMajorsByAssignee(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/assignee` + `/${accountId}` + '/majors',
+    }, "Get majors by headId");
   }
 
-  // ✅ Tìm Major theo ID
-  findById(id: number): Promise<any | null> {
-    const major = this.majors.find(m => m.Major.Id === id);
-    return Promise.resolve(major || null);
+  // [PUT] /Major/majors/{majorId}
+  updateMajor(majorId: number, updatedMajor: any): Promise<any> {
+    const Request = {
+      Major: updatedMajor
+    };
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'put',
+      url: API_PREFIX + `/${majorId}`,
+      data: Request,
+    }, "Update Major"); // Giả lập độ trễ API 1 giây
   }
+
+  // [GET] /Major/majors/feedbacks
+  getAllMajorFeedbacks(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/feedbacks',
+    }, "Get Feedbacks");
+  }
+
+  // [GET] /Major/majors/{majorId}/feedbacks
+  getMajorFeedbacks(majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/${majorId}` + '/feedbacks',
+    }, "Get feedbacks by majorId");
+  }
+
+  // [GET] /Major/majors/major-head/{accountId}/feedbacks
+  getHeadMajorFeedbacks(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/major-head' + `/${accountId}` + '/feedbacks',
+    }, "Get feedbacks by majorId");
+  }
+
+  // [GET] /Major/majors/reports
+  getAllMajorReports(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/reports',
+    }, "Get Reports");
+  }
+
+  // [GET] /Major/majors/major-head/{accountId}/reports
+  getReportsByHead(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/major-head' + `/${accountId}` + '/reports',
+    }, "Get reports by majorId");
+  }
+
+  // [GET] /Major/majors/{majorId}/reports
+  getReportsByMajor(majorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + `/${majorId}` + '/reports',
+    }, "Get reports by majorId");
+  }
+
+  // [POST] /Major/majors/{majorId}/account/{accountId}/reports
+  createReport(majorId: number, accountId: number, reportData: { ReportTypeId: number; Content: string }): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (!majorId || !accountId || !reportData || !reportData.ReportTypeId || !reportData.Content.trim()) {
+        reject('❌ Dữ liệu không hợp lệ. Vui lòng nhập đầy đủ thông tin.');
+        return;
+      }
+      setTimeout(() => {
+        const mockResponse = {
+          message: '✅ Report đã được tạo thành công!',
+        };
+        resolve(mockResponse);
+      }, 1000); // Giả lập độ trễ API 1 giây
+    });
+  }
+
+  // [GET] /Major/majors/reports/{reportId}
+  getReportDetail(reportId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/reports' + `/${reportId}`,
+    }, "Get Report detail"); // Giả lập độ trễ API 1 giây
+  }
+
+  // [PUT] /Major/majors/reports/{reportId}
+  resolveReport(reportId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'put',
+      url: API_PREFIX + `/reports` + `/${reportId}`,
+    }, "Update resolve");
+  }
+
+  // [GET] /Major/majors/facilityMajorTypes
+  getFacilityMajorTypes(): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/facilityMajorTypes'
+    }, "Get Major Types");
+  }
+
+  // [DELETE] /Major/majors/{majorId}
+  deleteMajor(MajorId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'delete',
+      url: API_PREFIX + `/${MajorId}`,
+    }, "Delete major");
+  }
+
+  // [DELETE] /Major/majors/feedbacks/{feedbackId}
+  deleteFeedback(feedbackId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'delete',
+      url: API_PREFIX + `/feedbacks` + `/${feedbackId}`,
+    }, "DELETE Feedback");
+  }
+
 }

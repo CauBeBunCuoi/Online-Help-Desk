@@ -1,144 +1,107 @@
 <section class="">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 mb-3">
-                <div class="section-introduce">
-                    <h3 class="title rounded-top">Giới thiệu lĩnh vực</h3>
-                    <div class="content p-3">
-                        <div class="description">
-                            description is here
+            <div class="row">
+                <!-- Khung Giới thiệu lĩnh vực -->
+                <div class="col-md-8 mb-3">
+                    <div class="section-introduce">
+                        <h3 class="title rounded-top">Giới thiệu lĩnh vực</h3>
+                        <div class="content p-3">
+                            <div class="description">
+                                <!-- Hiển thị mô tả chính -->
+                                <p>{{ mainDescription }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Khung Thông tin liên quan -->
+                <div class="col-md-4 mb-3">
+                    <div class="section-introduce">
+                        <h3 class="title rounded-top">Thông tin liên quan</h3>
+                        <div class="content p-3">
+                            <div class="description">
+                                <ul class="list-unstyled">
+                                    <li><strong>Ca làm việc: </strong>{{ workShifstDescription }}</li>
+                                    <li><strong>Trạng thái mở: </strong>{{ isOpen }}</li>
+                                    <li><strong>Ngày mở: </strong>{{ openScheduleDate }}</li>
+                                    <li><strong>Ngày đóng: </strong>{{ closeScheduleDate }}</li>
+                                    <li><strong>Loại lĩnh vực: </strong>{{ facilityMajorTypeId }}</li>
+                                    <li><strong>Trạng thái vô hiệu: </strong>{{ isDeactivated }}</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <div class="section-introduce">
-                    <h3 class="title rounded-top">Thông tin liên quan</h3>
-                    <div class="content p-3">
-                        <div class="description">
-                            description is here
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="col-md-8 mb-3">
                 <div class="section-introduce">
                     <h3 class="title rounded-top">Danh sách Service</h3>
                     <div class="content p-3">
-                        <p-tabs value="0">
+                        <!-- Top-level Tabs: Service và Contact -->
+                        <p-tabs [value]="selectedTopTab" (onChange)="onTopTabChange($event)">
                             <p-tablist>
-                                <p-tab value="0">Service</p-tab>
-                                <p-tab value="1">Contact</p-tab>
+                                @for (tab of topTabs; track $index) {
+                                <p-tab [value]="tab.value">{{ tab.label }}</p-tab>
+                                }
                             </p-tablist>
                             <p-tabpanels>
-                                <p-tabpanel value="0">
-                                    <!-- lits service is here -->
-                                    <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                                        <p-card class="service-card">
-                                            <div class="d-flex align-items-center">
-                                                <!-- Logo công ty -->
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Yakult_logo.svg"
-                                                    class="major-logo" />
-
-                                                <div class="ms-3 flex-grow-1">
-                                                    <!-- Tiêu đề công việc -->
-                                                    <h5 class="service-title">
-                                                        Nhân Viên Kinh Doanh Khu Vực Miền Tây
-                                                        <i class="pi pi-check-circle verified-icon"></i>
-                                                    </h5>
-                                                    <p class="major-name">CÔNG TY TNHH YAKULT VN</p>
-
-                                                    <div class="location-and-deadline">
-                                                        <span class="badge bg-light text-dark">Cà Mau & 5 nơi
-                                                            khác</span>
-                                                        <span class="badge bg-light text-dark">Còn 28 ngày để ứng
-                                                            tuyển</span>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Mức lương -->
-                                                <span class="salary">11 - 20 triệu</span>
-
-                                                <!-- Nút ứng tuyển -->
-                                                <button pButton label="Ứng tuyển"
-                                                    class="p-button-success apply-btn"></button>
-                                            </div>
-                                        </p-card>
-                                    </a>
-
-                                    <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                                        <p-card class="service-card">
-                                            <div class="d-flex align-items-center">
-                                                <!-- Logo công ty -->
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Yakult_logo.svg"
-                                                    class="major-logo" />
-
-                                                <div class="ms-3 flex-grow-1">
-                                                    <!-- Tiêu đề công việc -->
-                                                    <h5 class="service-title">
-                                                        Nhân Viên Kinh Doanh Khu Vực Miền Tây
-                                                        <i class="pi pi-check-circle verified-icon"></i>
-                                                    </h5>
-                                                    <p class="major-name">CÔNG TY TNHH YAKULT VN</p>
-
-                                                    <div class="location-and-deadline">
-                                                        <span class="badge bg-light text-dark">Cà Mau & 5 nơi
-                                                            khác</span>
-                                                        <span class="badge bg-light text-dark">Còn 28 ngày để ứng
-                                                            tuyển</span>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Mức lương -->
-                                                <span class="salary">11 - 20 triệu</span>
-
-                                                <!-- Nút ứng tuyển -->
-                                                <button pButton label="Ứng tuyển"
-                                                    class="p-button-success apply-btn"></button>
-                                            </div>
-                                        </p-card>
-                                    </a>
+                                <!-- TabPanel cho Service (gom 1 & 2) -->
+                                <p-tabpanel [value]="0">
+                                    <p-tabs [value]="selectedServiceSubTab" (onChange)="onServiceSubTabChange($event)">
+                                        <p-tablist>
+                                            @for (subTab of serviceSubTabs; track $index) {
+                                            <p-tab [value]="subTab.value">{{ subTab.label }}</p-tab>
+                                            }
+                                        </p-tablist>
+                                        <p-tabpanels>
+                                            @for (subTab of serviceSubTabs; track $index) {
+                                            <p-tabpanel [value]="subTab.value">
+                                                @for (service of filteredServices; track $index) {
+                                                <a [routerLink]="['/service-major-detail', service.Service.Id]"
+                                                    class="text-decoration-none">
+                                                    <p-card class="service-card w-100">
+                                                        <div class="d-flex align-items-center">
+                                                            <img [src]="service.Service.ImageUrl" class="major-logo" />
+                                                            <div class="ms-3 flex-grow-1">
+                                                                <h5 class="service-title">{{ service.Service.Name }}
+                                                                </h5>
+                                                                <p class="major-name">{{ service.Major.Name }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </p-card>
+                                                </a>
+                                                }
+                                            </p-tabpanel>
+                                            }
+                                        </p-tabpanels>
+                                    </p-tabs>
                                 </p-tabpanel>
-                                <p-tabpanel value="1">
-                                    <!-- list contact is here -->
-                                    <a [routerLink]="['/service-major-detail/1']" class="text-decoration-none">
-                                        <p-card class="service-card">
+                                <!-- TabPanel cho Contact -->
+                                <p-tabpanel [value]="3">
+                                    @for (service of filteredServices; track $index) {
+                                    <a [routerLink]="['/service-major-detail', service.Service.Id]"
+                                        class="text-decoration-none">
+                                        <p-card class="service-card w-100">
                                             <div class="d-flex align-items-center">
-                                                <!-- Logo công ty -->
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Yakult_logo.svg"
-                                                    class="major-logo" />
-
+                                                <img [src]="service.Service.ImageUrl" class="major-logo" />
                                                 <div class="ms-3 flex-grow-1">
-                                                    <!-- Tiêu đề công việc -->
-                                                    <h5 class="service-title">
-                                                        Nhân Viên Kinh Doanh Khu Vực Miền Tây
-                                                        <i class="pi pi-check-circle verified-icon"></i>
-                                                    </h5>
-                                                    <p class="major-name">CÔNG TY TNHH YAKULT VN</p>
-
-                                                    <div class="location-and-deadline">
-                                                        <span class="badge bg-light text-dark">Cà Mau & 5 nơi
-                                                            khác</span>
-                                                        <span class="badge bg-light text-dark">Còn 28 ngày để ứng
-                                                            tuyển</span>
-                                                    </div>
+                                                    <h5 class="service-title">{{ service.Service.Name }}</h5>
+                                                    <p class="major-name">{{ service.Major.Name }}</p>
                                                 </div>
-
-                                                <!-- Mức lương -->
-                                                <span class="salary">11 - 20 triệu</span>
-
-                                                <!-- Nút ứng tuyển -->
-                                                <button pButton label="Ứng tuyển"
-                                                    class="p-button-success apply-btn"></button>
                                             </div>
                                         </p-card>
                                     </a>
+                                    }
                                 </p-tabpanel>
                             </p-tabpanels>
                         </p-tabs>
+
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- review.component.html -->
@@ -199,17 +162,24 @@
             </div>
             @for(feedback of paginatedFeedbacks; track feedback) {
             <div class="mb-3">
-                <p-card>
+                <p-card class="mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <p-avatar [label]="feedback.name[0]" shape="circle"
-                            styleClass="bg-primary text-white"></p-avatar>
+                        <!-- Avatar -->
+                        <p-avatar [image]="feedback.Account.ImageUrl" shape="circle" styleClass="bg-primary text-white">
+                        </p-avatar>
                         <div>
-                            <h6 class="mb-0">{{ feedback.name }}</h6>
-                            <small class="text-muted">{{ feedback.date }}</small>
+                            <h6 class="mb-0">{{ feedback.Account.FullName }}</h6>
+                            <small class="text-muted">{{ feedback.Feedback.CreatedAt }}</small>
                         </div>
                     </div>
-                    <p-rating [(ngModel)]="feedback.rating" [readonly]="true" [disabled]="true" class="mt-2"></p-rating>
-                    <p class="mt-2">{{ feedback.comment }}</p>
+
+                    <!-- Rating -->
+                    <p-rating [(ngModel)]="feedback.Feedback.Rate" [readonly]="true" class="mt-2"></p-rating>
+
+                    <!-- Nội dung feedback -->
+                    <p class="mt-2">
+                        {{ feedback.Feedback.Content }}
+                    </p>
                 </p-card>
             </div>
             }

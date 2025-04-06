@@ -1,4 +1,12 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
 <div class="container mt-3">
+
+    <p-confirmdialog />
     <!-- Bộ lọc theo Major + Nút Add -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -13,6 +21,7 @@
         </button>
     </div>
 
+    <p-confirmdialog />
     <!-- Bảng Task Assignments -->
     <app-task-assignments-table [taskRequests]="filteredTaskRequests"></app-task-assignments-table>
 </div>
@@ -21,6 +30,11 @@
 <!-- Dialog Add Thâm -->
 <p-dialog header="Add Task Request" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
+    @if(loadingAdd) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <form [formGroup]="addTaskRequestForm">
         <!-- Description -->
         <div class="mb-3 row">
@@ -53,7 +67,7 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
-            <p-button label="Add" (click)="addTaskRequest()" [disabled]="addTaskRequestForm.invalid" />
+            <p-button label="Add" (click)="addTaskRequest($event)" [disabled]="addTaskRequestForm.invalid" />
         </div>
     </form>
 </p-dialog>

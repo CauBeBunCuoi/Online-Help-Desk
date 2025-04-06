@@ -1,4 +1,9 @@
-<p-toast />
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast> </p-toast>
 <p-confirmdialog />
 <div class="card">
     <p-table #dt2 [value]="facilityMajors" dataKey="Major.Id" [paginator]="true" [rows]="10"
@@ -47,7 +52,8 @@
                 <td>{{ facilityMajor.Facility.Name }}</td>
                 <td>{{ facilityMajor.MajorType.Name }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
+                    <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" label="Delete" severity="danger"
+                        [outlined]="true" />
                     <p-button (click)="showDialogUpdate(facilityMajor.Major.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
@@ -59,7 +65,11 @@
 <p-dialog header="Update Facility Major" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }"
     [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
-
+    @if(loadingUpdate) {
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
     <!-- Logo -->
     <div class="text-center mb-3">
         @if (logoUrl) {
@@ -141,7 +151,7 @@
         <div class="mb-3 row">
             <label for="FacilityMajorTypeId" class="col-sm-4 col-form-label fw-semibold">Facility Major Type</label>
             <div class="col-sm-8">
-                <p-select [options]="facilityMajorTypes" optionLabel="label" optionValue="value"
+                <p-select [options]="facilityMajorTypes" optionLabel="name" optionValue="id"
                     formControlName="FacilityMajorTypeId" placeholder="Select Type"></p-select>
             </div>
         </div>
@@ -158,7 +168,8 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateFacilityMajor()" [disabled]="updateFacilityMajorForm.invalid" />
+            <p-button label="Update" (click)="updateFacilityMajor($event)"
+                [disabled]="updateFacilityMajorForm.invalid" />
         </div>
     </form>
 </p-dialog>

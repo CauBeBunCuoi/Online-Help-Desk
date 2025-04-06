@@ -4,105 +4,306 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class ServiceManagementService {
-    private services = [
-        {
-            Service: {
-                Id: 1, // ✅ Thêm ID để dễ tìm kiếm
-                Name: 'IT Support',
-                FacilityMajorId: 1,
-                IsInitRequestDescriptionRequired: true,
-                RequestInitHintDescription: 'Provide details about the issue',
-                MainDescription: 'Technical support for IT-related problems',
-                WorkShiftsDescription: 'Available 24/7',
-                IsOpen: true,
-                CloseScheduleDate: '2024-01-01',
-                OpenScheduleDate: '2024-01-01',
-                ServiceTypeId: 1,
-                IsDeactivated: false,
-                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-                CreatedAt: '2024-01-01'
-            },
-            Major: {
-                Id: 1,
-                Name: 'Computer Science',
-                MainDescription: 'Handles software & hardware issues',
-                WorkShiftsDescription: 'Day & Night shifts',
-                FacilityMajorTypeId: 1,
-                FacilityId: 1,
-                IsOpen: true,
-                CloseScheduleDate: '2024-01-01',
-                OpenScheduleDate: '2024-01-01',
-                IsDeactivated: false,
-                CreatedAt: '2024-01-01',
-                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg'
-            },
-            ServiceType: {
-                Id: 1,
-                Name: 'Support'
-            }
-        },
-        {
-            Service: {
-                Id: 2,
-                Name: 'Maintenance Request',
-                FacilityMajorId: 2,
-                IsInitRequestDescriptionRequired: false,
-                RequestInitHintDescription: '',
-                MainDescription: 'Request for facility maintenance',
-                WorkShiftsDescription: 'Weekdays 8 AM - 6 PM',
-                IsOpen: true,
-                CloseScheduleDate: '',
-                OpenScheduleDate: '2024-01-01',
-                ServiceTypeId: 2,
-                IsDeactivated: false,
-                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg',
-                CreatedAt: '2024-01-01'
-            },
-            Major: {
-                Id: 2,
-                Name: 'Mechanical Engineering',
-                MainDescription: 'Maintenance of machines & equipment',
-                WorkShiftsDescription: 'Morning shifts',
-                FacilityMajorTypeId: 2,
-                FacilityId: 1,
-                IsOpen: true,
-                CloseScheduleDate: '',
-                OpenScheduleDate: '2024-01-01',
-                IsDeactivated: false,
-                CreatedAt: '2024-01-01',
-                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/normal-company/cover/company_cover_1.jpg',
-                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/van-phong-kotra-dai-su-quan-han-quoc-e6bad0ce387831cddaa5aa71c402723a-65b87e998bb76.jpg'
-            },
-            ServiceType: {
-                Id: 2,
-                Name: 'Maintenance'
-            }
-        }
-    ];
-
-    constructor() { }
-
-    // ✅ Lấy danh sách tất cả Services
-    getAllServices(): Promise<any[]> {
-        return Promise.resolve(this.services);
+    // [GET] /Major/services/major-head/{accountId}
+    getServicesByHead(accountId: number): Promise<any> {
+        console.log('accountId: ' + accountId);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockResponse = {
+                    Services: [
+                        {
+                            Service: {
+                                Id: 1,
+                                Name: 'Dịch vụ phát triển phần mềm',
+                                FacilityMajorId: 101,
+                                IsInitRequestDescriptionRequired: true,
+                                RequestInitHintDescription: 'Cung cấp mô tả chi tiết về yêu cầu phát triển',
+                                MainDescription: 'Dịch vụ lập trình ứng dụng web và di động',
+                                WorkShiftsDescription: 'Ca sáng, ca tối',
+                                IsOpen: true,
+                                CloseScheduleDate: null,
+                                OpenScheduleDate: '2024-03-01T08:00:00Z',
+                                ServiceTypeId: 2,
+                                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpg',
+                                IsDeactivated: false,
+                                CreatedAt: '2023-11-01T10:00:00Z'
+                            },
+                            Major: {
+                                Id: 101,
+                                Name: 'Công nghệ thông tin',
+                                MainDescription: 'Phát triển phần mềm và hệ thống',
+                                WorkShiftsDescription: 'Ca sáng, ca chiều',
+                                FacilityMajorTypeId: 2,
+                                FacilityId: 5,
+                                IsOpen: true,
+                                CloseScheduleDate: null,
+                                OpenScheduleDate: '2023-01-01T08:00:00Z',
+                                IsDeactivated: false,
+                                CreatedAt: '2023-06-10T10:00:00Z',
+                                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_covers/TwbATRACNCwWa6ZkuI8k.jpg',
+                                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpgg'
+                            },
+                            ServiceType: {
+                                Id: 2,
+                                Name: 'Dịch vụ lập trình'
+                            }
+                        }
+                    ]
+                };
+                resolve(mockResponse);
+            }, 1000); // Giả lập API delay 1 giây
+        });
     }
 
-    // ✅ Lấy danh sách tất cả Services
-    getAllServicesByAccountId(id: number): Promise<any[]> {
-        return Promise.resolve(this.services);
+    // [GET] /Major/services/majors/{majorId}
+    getServicesByMajor(majorId: number): Promise<any> {
+        console.log('majorId: ' + majorId);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockResponse = {
+                    Services: [
+                        {
+                            Service: {
+                                Id: 1,
+                                Name: 'Dịch vụ kiểm thử phần mềm',
+                                FacilityMajorId: majorId,
+                                IsInitRequestDescriptionRequired: true,
+                                RequestInitHintDescription: 'Nhập mô tả chi tiết về yêu cầu kiểm thử',
+                                MainDescription: 'Dịch vụ kiểm thử và đảm bảo chất lượng phần mềm',
+                                WorkShiftsDescription: 'Ca sáng, ca tối',
+                                IsOpen: true,
+                                CloseScheduleDate: null,
+                                OpenScheduleDate: '2024-03-01T08:00:00Z',
+                                ServiceTypeId: 3,
+                                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpg',
+                                IsDeactivated: false,
+                                CreatedAt: '2023-12-01T10:00:00Z'
+                            },
+                            Major: {
+                                Id: majorId,
+                                Name: 'Kiểm thử phần mềm',
+                                MainDescription: 'Kiểm tra chất lượng phần mềm',
+                                WorkShiftsDescription: 'Ca sáng, ca chiều',
+                                FacilityMajorTypeId: 2,
+                                FacilityId: 5,
+                                IsOpen: true,
+                                CloseScheduleDate: null,
+                                OpenScheduleDate: '2023-01-01T08:00:00Z',
+                                IsDeactivated: false,
+                                CreatedAt: '2023-06-10T10:00:00Z',
+                                BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_covers/TwbATRACNCwWa6ZkuI8k.jpg',
+                                ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpg'
+                            },
+                            ServiceType: {
+                                Id: 3,
+                                Name: 'Dịch vụ kiểm thử'
+                            }
+                        }
+                    ]
+                }; resolve(mockResponse);
+            }, 1000); // Giả lập API delay 1 giây
+        });
     }
 
-    // ✅ Tìm Service theo ID của FacilityMajor
-    getServicesByFacilityMajor(FacilityMajorId: number): Promise<any[]> {
-        return Promise.resolve(
-            this.services.filter(service => service.Service.FacilityMajorId === FacilityMajorId)
-        );
+    // [POST] /Request/service
+    addServiceRequest(requestData: any): Promise<any> {
+        const Request = {
+            ServiceRequest: requestData
+        };
+        console.log('request: ' + JSON.stringify(Request));
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockResponse = {
+                    Message: 'Yêu cầu dịch vụ đã được tạo thành công!',
+                };
+                resolve(mockResponse);
+            }, 1000); // Giả lập API delay 1 giây
+        });
     }
 
-    // ✅ Tìm Service theo ID
-    findById(serviceId: number): Promise<any | null> {
-        const service = this.services.find(s => s.Service.Id === serviceId);
-        return Promise.resolve(service || null);
+    // [GET] /Major/services/{serviceId}
+    getServiceDetails(serviceId: number): Promise<any> {
+        console.log('serviceId: ' + serviceId);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockResponse = {
+                    Service: {
+                        Id: serviceId,
+                        Name: 'Dịch vụ kiểm thử phần mềm',
+                        FacilityMajorId: 1,
+                        IsInitRequestDescriptionRequired: true,
+                        RequestInitHintDescription: 'Nhập mô tả chi tiết về yêu cầu kiểm thử',
+                        MainDescription: 'Dịch vụ kiểm thử và đảm bảo chất lượng phần mềm',
+                        WorkShiftsDescription: 'Ca sáng, ca tối',
+                        IsOpen: true,
+                        CloseScheduleDate: null,
+                        OpenScheduleDate: '2024-03-01T08:00:00Z',
+                        ServiceTypeId: 3,
+                        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpg',
+                        IsDeactivated: false,
+                        CreatedAt: '2023-12-01T10:00:00Z'
+                    },
+                    Major: {
+                        Id: 1,
+                        Name: 'Kiểm thử phần mềm',
+                        MainDescription: 'Kiểm tra chất lượng phần mềm',
+                        WorkShiftsDescription: 'Ca sáng, ca chiều',
+                        FacilityMajorTypeId: 2,
+                        FacilityId: 5,
+                        IsOpen: true,
+                        CloseScheduleDate: null,
+                        OpenScheduleDate: '2023-01-01T08:00:00Z',
+                        IsDeactivated: false,
+                        CreatedAt: '2023-06-10T10:00:00Z',
+                        BackgroundImageUrl: 'https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/company_covers/TwbATRACNCwWa6ZkuI8k.jpg',
+                        ImageUrl: 'https://cdn-new.topcv.vn/unsafe/140x/https://static.topcv.vn/company_logos/cong-ty-tnhh-quoc-te-unilever-viet-nam-5d6f6b70c381c.jpg'
+                    },
+                    ServiceType: {
+                        Id: 3,
+                        Name: 'Dịch vụ kiểm thử'
+                    }
+                };
+                resolve(mockResponse);
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    // [POST] /Major/services/major/{majorId}
+    addServiceToMajor(majorId: number, serviceData: any): Promise<any> {
+        const Request = {
+            Service: serviceData
+        };
+        console.log('majorId: ' + majorId);
+        console.log('request: ' + JSON.stringify(Request));
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const newService = {
+                    message: "Success."
+                };
+                resolve({ message: 'Thêm service thành công!', service: newService });
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    // [GET] /Major/services/serviceTypes
+    getServiceTypes(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockServiceTypes = {
+                    ServiceTypes: [
+                        { Id: 1, Name: 'Bảo trì' },
+                        { Id: 2, Name: 'Hỗ trợ kỹ thuật' },
+                        { Id: 3, Name: 'Tư vấn' },
+                        { Id: 4, Name: 'Nâng cấp hệ thống' }
+                    ]
+                };
+                resolve(mockServiceTypes);
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    // [GET] /Major/services/{serviceId}/availability
+    getServiceAvailability(serviceId: number): Promise<any> {
+        console.log('serviceId: ' + serviceId);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const mockServiceAvailability = {
+                    Schedules: [
+                        {
+                            Schedule: {
+                                ServiceId: serviceId,
+                                DayOfWeek: 'Thứ Hai',
+                                StartRequestableTime: '08:00',
+                                EndRequestableTime: '17:00'
+                            }
+                        },
+                        {
+                            Schedule: {
+                                ServiceId: serviceId,
+                                DayOfWeek: 'Thứ Ba',
+                                StartRequestableTime: '09:00',
+                                EndRequestableTime: '18:00'
+                            }
+                        },
+                        {
+                            Schedule: {
+                                ServiceId: serviceId,
+                                DayOfWeek: 'Thứ Tư',
+                                StartRequestableTime: '08:30',
+                                EndRequestableTime: '16:30'
+                            }
+                        }
+                    ]
+                };
+                resolve(mockServiceAvailability);
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    // [PUT] /Major/services/{serviceId}
+    updateService(serviceId: number, serviceData: any): Promise<any> {
+        const Request = {
+            Service: serviceData
+        };
+        console.log('serviceId: ' + serviceId);
+        console.log('request: ' + JSON.stringify(Request));
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const updatedService = {
+                    message: "Success."
+                };
+                resolve({ message: 'Cập nhật service thành công!', service: updatedService });
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    // [POST] /Major/services/{serviceId}/add-availability
+    addAvailability(serviceId: number, availabilityData: any): Promise<any> {
+        console.log('serviceId: ' + serviceId);
+        console.log('request: ' + JSON.stringify(availabilityData));
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const updatedService = {
+                    message: "Success."
+                };
+                resolve({ message: 'Thêm Availability thành công!', updatedService });
+            }, 1000); // Giả lập API delay 1 giây
+        });
+    }
+
+    getBookableSchedules(serviceId: number): Promise<any> {
+        console.log(serviceId);
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const today = new Date();
+                const schedules = [];
+
+                for (let i = 0; i < 14; i++) {
+                    const date = new Date();
+                    date.setDate(today.getDate() + i);
+
+                    schedules.push({
+                        Date: date.toISOString().split('T')[0], // YYYY-MM-DD format
+                        Times: ['08:00', '10:00', '14:00', '16:00'] // Giả lập 4 slot mỗi ngày
+                    });
+                }
+
+                resolve({ Schedules: schedules });
+            }, 1000); // Chờ 1 giây
+        });
+    }
+
+    // [POST] /Major/services/{serviceId}/delete-availability
+    deleteAvailability(serviceId: number, availabilityData: any): Promise<any> {
+        const Request = {
+            Schedule: availabilityData
+        };
+        console.log('serviceId: ' + serviceId);
+        console.log('request: ' + JSON.stringify(Request));
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve({ message: 'Xóa Availability thành công!' });
+            }, 1000); // Giả lập API delay 1 giây
+        });
     }
 }

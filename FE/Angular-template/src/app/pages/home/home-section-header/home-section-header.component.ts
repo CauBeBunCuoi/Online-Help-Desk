@@ -16,6 +16,7 @@ export class HomeSectionHeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
   }
+  
   ngOnDestroy() {
   }
 

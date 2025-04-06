@@ -1,7 +1,11 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
 <p-toast />
 <p-confirmdialog />
-<div class="container">
-    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+<div class="container"><button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
     <div class="card">
         <p-table #dt2 [value]="facilities" dataKey="Facility.Id" [paginator]="true" [rows]="10"
             [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Facility.CreatedAt"
@@ -58,13 +62,17 @@
 <!-- Dialog Add Thâm -->
 <p-dialog header="Add Facility" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
-
+    @if(loadingAdd) {
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
     <!-- Ảnh Facility -->
     <div class="text-center mb-3">
         @if (logoUrl) {
-        <p-avatar [image]="logoUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
         } @else {
-        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar icon="pi pi-image" class="custom-avatar mb-3"></p-avatar>
         }
         <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
             (onSelect)="onFileSelect($event)" />
@@ -86,18 +94,19 @@
         <div class="mb-3 row">
             <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
             <div class="col-sm-8">
-                <input pInputText id="Description" class="form-control" formControlName="Description" />
+                <textarea pInputTextarea id="Description" class="form-control" formControlName="Description"></textarea>
                 @if (addFacilityForm.controls['Description'].invalid && addFacilityForm.controls['Description'].touched)
                 {
-                <small class="text-danger">Enter a valid description.</small>
+                <small class="text-danger">Description is required (Min 3 chars).</small>
                 }
+
             </div>
         </div>
 
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
-            <p-button label="Add" (click)="addFacility()" [disabled]="addFacilityForm.invalid" />
+            <p-button label="Add" (click)="addFacility($event)" [disabled]="addFacilityForm.invalid" />
         </div>
     </form>
 </p-dialog>
@@ -106,7 +115,11 @@
 <!-- Dialog Update cập nhật -->
 <p-dialog header="Update Facility" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
-
+    @if(loadingDetail) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <div class="row">
         <!-- Danh sách Majors -->
         <div class="col-md-7">
@@ -166,7 +179,7 @@
 
                 <div class="d-flex justify-content-end gap-2">
                     <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-                    <p-button label="Update" (click)="updateFacility()" [disabled]="updateFacilityForm.invalid" />
+                    <p-button label="Update" (click)="updateFacility($event)" [disabled]="updateFacilityForm.invalid" />
                 </div>
             </form>
         </div>

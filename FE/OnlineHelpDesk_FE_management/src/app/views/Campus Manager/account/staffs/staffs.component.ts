@@ -15,12 +15,12 @@ import { InputIconModule } from 'primeng/inputicon';
 import { HttpClientModule } from '@angular/common/http';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule, Select } from 'primeng/select';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { FacilityMajorService } from '../../../../core/service/facility-major.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MajorAssignmentService } from '../../../../core/service/major-assignment.service';
+import { errorAlert, successAlert } from '../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-staffs',
@@ -43,88 +43,100 @@ import { MajorAssignmentService } from '../../../../core/service/major-assignmen
     SelectModule,
     HttpClientModule,
     FileUploadModule,
-    Select
+    Select,
+    ProgressSpinnerModule // Import spinner module
   ],
   templateUrl: './staffs.component.html',
-  styleUrl: './staffs.component.scss',
+  styleUrls: ['./staffs.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class StaffsComponent implements OnInit {
   staffs!: any[];
-  // goi api lấy role và job
-  roleTypes = [
-    { Name: 'Facility Major Head', Id: 2 },
-    { Name: 'Nô lệ', Id: 3 },
-  ];
-  jobTypes = [
-    { Name: 'Đa cấp', Id: 1 },
-    { Name: 'Nô lệ', Id: 2 },
-    { Name: 'Bác sĩ', Id: 3 },
-    { Name: 'Công an', Id: 4 },
-    { Name: 'Bảo vệ', Id: 5 },
-    { Name: 'Giáo viên', Id: 6 },
-    { Name: 'Học sinh', Id: 7 },
-  ];
-  // lấy major của nhân viên
+  roleTypes: any;
+  jobTypes: any;
   selectedEmployeeMajors: any[] = [];
-
   selectedAccountId: number | null = null;
-
   facilityMajors: any[] = [];
-  selectedFacilityMajors: any[] = []; // Lưu FacilityMajor được chọn
-
+  selectedFacilityMajors: any[] = [];
   addStaffForm: FormGroup;
   updateStaffForm: FormGroup;
-
   add: boolean = false;
-  @ViewChild('fileUploadRef') fileUpload!: FileUpload;
-  avatarUrl: string | null = null;
-
-  // updateStaffForm: FormGroup
   update: boolean = false;
-
   facilityMajorTable: boolean = false;
-
-  loading: boolean = false;
+  loading: boolean = false; // Loading state
+  loadingAdd: boolean = false; // Loading state for add staff
+  loadingUpdate: boolean = false; // Loading state for update staff
+  loadingMajorAss: boolean = false; // Loading state for major assignment
   activityValues: number[] = [0, 100];
+  avatarUrl: string | null = null;
+  @ViewChild('fileUploadRef') fileUpload!: FileUpload;
 
   constructor(
     private authService: AuthService,
     private facilityMajorService: FacilityMajorService,
     private majorAssignmentService: MajorAssignmentService,
-    private confirmationService: ConfirmationService, private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
     private fb: FormBuilder
   ) {
     this.addStaffForm = this.fb.group({
       FullName: ['', [Validators.required, Validators.minLength(3)]],
       Email: ['', [Validators.required, Validators.email]],
       Password: ['', [Validators.required, Validators.minLength(6)]],
-      JobTypeId: [null, Validators.required], // Chuyển thành `null` thay vì chuỗi rỗng
+      JobTypeId: [null, Validators.required],
       RoleId: [null, Validators.required],
       Address: ['', Validators.required],
       DateOfBirth: ['', Validators.required],
       Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
-      Image: [''] // Avatar dưới dạng Base64
+      Image: ['']
     });
     this.updateStaffForm = this.fb.group({
-      FullName: ['', [Validators.required, Validators.minLength(3)]], // Họ và tên (bắt buộc, tối thiểu 3 ký tự)
-      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]], // Số điện thoại (10-11 số)
-      Address: ['', Validators.required], // Địa chỉ (bắt buộc)
-      JobTypeId: [null, Validators.required], // Mã loại công việc (bắt buộc)
-      DateOfBirth: [null, Validators.required], // Ngày sinh (dạng Date hoặc string ISO 8601)
-      Image: [''] // Ảnh dưới dạng Base64 (không bắt buộc)
+      FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Email: ['', [Validators.required, Validators.email]],
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      Address: ['', Validators.required],
+      JobTypeId: [null, Validators.required],
+      DateOfBirth: [null, Validators.required],
+      Image: ['']
     });
   }
 
   ngOnInit() {
-    this.authService.getAccountStaff().then((data) => {
-      this.staffs = data;
-    });
+    this.loadStaff();
+    this.loadRoles();
+    this.loadJobTypes();
+  }
+
+  loadRoles() {
+    this.loading = true;
+    this.authService.getRoles().then(rolesData => {
+      this.roleTypes = rolesData.data.Roles;
+    })
+      .catch(error => console.error('Lỗi khi load dữ liệu:', error))
+      .finally(() => (this.loading = false));
+  }
+
+  loadStaff() {
+    this.loading = true;
+    this.authService.getStaffs().then(jobTypesData => {
+      this.staffs = jobTypesData.data.Accounts;
+    })
+      .catch(error => console.error('Lỗi khi load dữ liệu:', error))
+      .finally(() => (this.loading = false));
+  }
+
+  loadJobTypes() {
+    this.loading = true;
+    this.authService.getJobTypes().then(jobTypesData => {
+      this.jobTypes = jobTypesData.data.JobTypes;
+    })
+      .catch(error => console.error('Lỗi khi load dữ liệu:', error))
+      .finally(() => (this.loading = false));
   }
 
   onGlobalFilter(event: Event, dt: any) {
     const inputElement = event.target as HTMLInputElement;
-    dt.filterGlobal(inputElement?.value, 'contains');
+    dt.filterGlobal(inputElement.value, 'contains');
   }
 
   confirmDelete(event: Event, id: number) {
@@ -143,8 +155,19 @@ export class StaffsComponent implements OnInit {
         label: 'Delete',
         severity: 'danger',
       },
-
       accept: () => {
+        this.loading = true;
+        this.authService.deactivateStaff(id)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadStaff();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => console.error('Lỗi xóa nhân viên:', error))
+          .finally(() => (this.loading = false));
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
       reject: () => {
@@ -153,147 +176,290 @@ export class StaffsComponent implements OnInit {
     });
   }
 
-  showDialogAdd() {
-    this.add = true;
-    this.addStaffForm.get('RoleId')?.enable(); // 🔥 Bật lại RoleId để chọn
-  }
-
-  showDialogUpdate(id: number) {
-    this.update = true; // Mở dialog
-
-    this.authService.findById(id).then(staff => {
-      if (!staff || !staff.Account) {
-        console.warn(`⚠️ Không tìm thấy thông tin nhân viên với ID: ${id}`);
-        return;
-      }
-
-      // ✅ Xử lý ngày sinh (convert string -> Date)
-      const formattedDateOfBirth = staff.Account.DateOfBirth
-        ? new Date(staff.Account.DateOfBirth).toISOString().split('T')[0]
-        : null;
-
-      // ✅ Cập nhật ảnh hiển thị
-      this.avatarUrl = staff.Account.ImageUrl || null;
-
-      // ✅ Cập nhật dữ liệu vào form
-      this.updateStaffForm.patchValue({
-        FullName: staff.Account.FullName || '',
-        Phone: staff.Account.Phone || '',
-        Address: staff.Account.Address || '',
-        JobTypeId: staff.Account.JobTypeId || null, // Định danh loại công việc
-        DateOfBirth: formattedDateOfBirth, // Chuyển đổi ngày sinh sang định dạng phù hợp
-        Image: staff.Account.ImageUrl || '' // Lưu lại ảnh nếu có
-      });
-    }).catch(error => {
-      console.error('❌ Lỗi khi lấy thông tin nhân viên:', error);
+  confirmDeleteMajorAssigne(event: Event, id: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to delete this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Delete',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.loading = true;
+        this.majorAssignmentService.deleteStaffFromMajor(this.selectedAccountId!, id)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadStaff();
+              this.hideDialogFacilityMajorTable();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => console.error('Lỗi xóa nhân viên:', error))
+          .finally(() => (this.loading = false));
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
-
-    this.majorAssignmentService.getMajorAssignmentsByStaff(id).then(assignments => {
-      this.selectedEmployeeMajors = assignments.map(a => a.Major);
-    });
-  }
-
-  hideDialogAdd() {
-    this.addStaffForm.reset();
-    this.avatarUrl = null; // X
-    // 🔥 Reset PrimeNG FileUpload
-    setTimeout(() => {
-      if (this.fileUpload) {
-        this.fileUpload.clear(); // Reset fileUpload về trạng thái ban đầu
-      }
-    }, 100);
-    this.add = false;
-  }
-
-  hideDialogUpdate() {
-    this.addStaffForm.reset();
-    this.avatarUrl = null; // X
-    // 🔥 Reset PrimeNG FileUpload
-    setTimeout(() => {
-      if (this.fileUpload) {
-        this.fileUpload.clear(); // Reset fileUpload về trạng thái ban đầu
-      }
-    }, 100);
-    this.update = false;
   }
 
   onFileSelect(event: any) {
-    const file = event.files[0]; // Lấy file đầu tiên
+    const file = event.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.avatarUrl = e.target.result; // Hiển thị ảnh trước
-        this.addStaffForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
-        this.updateStaffForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.avatarUrl = e.target.result;
+        this.addStaffForm.patchValue({ Image: e.target.result });
+        this.updateStaffForm.patchValue({ Image: e.target.result });
       };
       reader.readAsDataURL(file);
     }
   }
 
-  registerStaff() {
-    if (this.addStaffForm.valid) {
-      console.log('Form Data:', this.addStaffForm.value); // Gửi lên API
-      this.hideDialogAdd();
-    } else {
-      console.log('Form Invalid');
-      this.addStaffForm.markAllAsTouched();
-    }
+  showDialogAdd() {
+    this.add = true;
+    this.addStaffForm.get('RoleId')?.enable();
   }
 
-  updateStaff() {
-    if (this.updateStaffForm.valid) {
-      console.log('Form update Data:', this.updateStaffForm.value); // Gửi lên API
-      this.hideDialogUpdate();
-    } else {
-      console.log('Form update Invalid');
-      this.updateStaffForm.markAllAsTouched();
-    }
+  registerStaff(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Add this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Add',
+        severity: 'success',
+      },
+      accept: () => {
+        this.loadingAdd = true;
+        this.authService.addStaff(this.addStaffForm.value)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadStaff();
+              this.hideDialogAdd();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => console.error('Lỗi thêm nhân viên:', error))
+          .finally(() => (this.loadingAdd = false));
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
+  }
+
+  hideDialogAdd() {
+    this.addStaffForm.reset();
+    this.avatarUrl = null;
+    setTimeout(() => {
+      if (this.fileUpload) {
+        this.fileUpload.clear();
+      }
+    }, 100);
+    this.add = false;
+  }
+
+  showDialogUpdate(id: number) {
+    this.update = true;
+    this.selectedAccountId = id;
+    this.updateStaffForm.reset();
+    this.loadingUpdate = true;
+    this.majorAssignmentService.getMajorAssignmentsByStaff(this.selectedAccountId).then(
+      majorsAssignments => {
+        this.selectedEmployeeMajors = majorsAssignments.data.MajorAssignments.map(assignment => assignment.Major);
+        this.authService.getStaffById(id)
+          .then(staff => {
+            if (!staff || !staff.data.Account) {
+              console.warn(`Không tìm thấy thông tin nhân viên với ID: ${id}`);
+              return;
+            }
+            const Staff = staff.data.Account;
+            const formattedDateOfBirth = Staff.DateOfBirth
+              ? new Date(Staff.DateOfBirth).toISOString().split('T')[0]
+              : null;
+            this.avatarUrl = Staff.ImageUrl || null;
+            this.updateStaffForm.patchValue({
+              FullName: Staff.FullName || '',
+              Email: Staff.Email || '',
+              Phone: Staff.Phone || '',
+              Address: Staff.Address || '',
+              JobTypeId: Staff.JobTypeId || null,
+              DateOfBirth: formattedDateOfBirth,
+              Image: null,
+            });
+          })
+          .catch(error => console.error('Lỗi lấy thông tin nhân viên:', error))
+          .finally(() => (this.loadingUpdate = false));
+      }
+    )
+      .catch(error => console.error('Lỗi ', error))
+      .finally(() => (this.loadingUpdate = false));
+  }
+
+  updateStaff(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.updateStaffForm.valid) {
+          this.loadingUpdate = true;
+          this.authService.updateStaff(this.selectedAccountId!, this.updateStaffForm.value)
+            .then(response => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.loadStaff();
+                this.hideDialogUpdate();
+              } else {
+                errorAlert(response.message.content);
+              }
+            })
+            .catch(error => console.error('Lỗi cập nhật nhân viên:', error))
+            .finally(() => (this.loadingUpdate = false));
+          console.log('Form update Data:', this.updateStaffForm.value);
+        } else {
+          this.updateStaffForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
+  }
+
+  hideDialogUpdate() {
+    this.updateStaffForm.reset();
+    this.avatarUrl = null;
+    this.selectedEmployeeMajors = [];
+    setTimeout(() => {
+      if (this.fileUpload) {
+        this.fileUpload.clear();
+      }
+    }, 100);
+    this.update = false;
   }
 
   showDialogFacilityMajorTable(id: number) {
     this.facilityMajorTable = true;
     this.selectedAccountId = id;
+    this.loadingMajorAss = true;
     Promise.all([
-      this.majorAssignmentService.getMajorAssignmentsByStaff(id),
-      this.facilityMajorService.getFacilityMajors()
-    ]).then(([assignments, allMajors]) => {
-      this.selectedEmployeeMajors = assignments.map(a => a.Major);
-
-      // ✅ Lọc ra những major chưa được phân công
-      this.facilityMajors = allMajors.filter(major =>
-        !this.selectedEmployeeMajors.some(assigned => assigned.Id === major.Major.Id)
+      this.majorAssignmentService.getMajorsForHead(id), // API #1
+      this.facilityMajorService.getAllMajors() // API #2
+    ]).then(([assignedMajorsRes, allMajorsRes]) => {
+      const assignedMajors = assignedMajorsRes.data.Majors.map(m => m.Major); // đã assign
+      const allMajors = allMajorsRes.data.Majors; // toàn bộ major
+      // lọc ra những major chưa assign
+      this.facilityMajors = allMajors.filter(m =>
+        !assignedMajors.some(am => am.Id === m.Major.Id)
       );
+      console.log("Unassigned majors:", this.facilityMajors);
+    })
+      .catch(error => console.error('Lỗi load:', error))
+      .finally(() => (this.loadingMajorAss = false));
+  }
+
+  updateFacilityMajorSelect(event: any) {
+    if (!this.selectedAccountId) {
+      console.warn('No account selected.');
+      return;
+    }
+    if (this.selectedFacilityMajors.length === 0) {
+      console.warn('No FacilityMajor selected.');
+      return;
+    }
+    const formData = new FormData();
+    this.selectedFacilityMajors.forEach(fm => {
+      formData.append('facilityMajorsId', fm.Major.Id);
     });
+
+    // Chuyển dữ liệu FormData thành mảng chuỗi các ID
+    const facilityMajorsIds: string[] = [];
+    formData.forEach((value, key) => {
+      if (key === 'facilityMajorsId') {
+        facilityMajorsIds.push(value.toString()); // Chuyển giá trị thành chuỗi
+      }
+    });
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        this.loadingMajorAss = false;
+        this.majorAssignmentService.addStaffMajors(this.selectedAccountId!, facilityMajorsIds).then(
+          response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.loadStaff();
+              this.hideDialogFacilityMajorTable();
+            } else {
+              errorAlert(response.message.content);
+            }
+          }
+        )
+          .catch(error => {
+            console.error('Error updating facility major:', error);
+          })
+          .finally(() => {
+            this.loadingMajorAss = false;
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
+    });
+    console.log('FacilityMajors ID:', formData.getAll('facilityMajorsId'));
   }
 
   hideDialogFacilityMajorTable() {
     this.facilityMajorTable = false;
     this.selectedAccountId = null;
-    this.selectedFacilityMajors = []; // 🔥 Reset danh sách đã chọn
+    this.selectedFacilityMajors = [];
   }
-
-  updateFacilityMajorSelect() {
-    if (!this.selectedAccountId) {
-      console.warn('No account selected.');
-      return;
-    }
-
-    if (this.selectedFacilityMajors.length === 0) {
-      console.warn('No FacilityMajor selected.');
-      return;
-    }
-
-    const formData = new FormData();
-    this.selectedFacilityMajors.forEach(fm => {
-      formData.append('facilityMajorsId', fm.Major.Id.toString());
-    });
-
-    console.log('FormData Values:');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    console.log('FacilityMajors ID:', formData.getAll('facilityMajorsId'));
-
-  }
-
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -16,10 +16,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { RatingModule } from 'primeng/rating';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FacilityMajorService } from '../../../../../core/service/facility-major.service';
 import { MajorAssignmentService } from '../../../../../core/service/major-assignment.service';
+import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-staff-table',
@@ -40,6 +41,7 @@ import { MajorAssignmentService } from '../../../../../core/service/major-assign
     MultiSelectModule,
     FileUploadModule,
     RatingModule,
+    ProgressSpinnerModule,
     HttpClientModule,
   ],
   templateUrl: './staff-table.component.html',
@@ -48,6 +50,14 @@ import { MajorAssignmentService } from '../../../../../core/service/major-assign
 })
 export class StaffTableComponent implements OnInit {
   @Input() filteredAssignees: any[] = []; // ✅ Nhận dữ liệu từ component cha
+
+  @Output() actionCompleted = new EventEmitter<any>();  // Khai báo EventEmitter
+
+  // Phương thức xử lý của thằng con
+  handleAction() {
+    // Sau khi xử lý xong, phát sự kiện cho cha
+    this.actionCompleted.emit('Action completed');  // Gửi thông tin hoặc dữ liệu lên cha
+  }
   majorAssignments: any[] = [];
 
   updateMajorAssignmentForm: FormGroup;
@@ -56,7 +66,8 @@ export class StaffTableComponent implements OnInit {
   selectedAccountId: number | null = null;
   selectedMajorId: number | null = null;
 
-  loading: boolean = false;
+  loading: boolean = false;  // Biến loading để hiển thị spinner
+  loadingUpdate: boolean = false;
   activityValues: number[] = [0, 100];
 
   // lấy major của nhân viên
@@ -71,7 +82,6 @@ export class StaffTableComponent implements OnInit {
     this.updateMajorAssignmentForm = this.fb.group({
       WorkDescription: ['', [Validators.required, Validators.minLength(3)]], // Mô tả công việc
     });
-
   }
 
   ngOnInit() {
@@ -98,8 +108,20 @@ export class StaffTableComponent implements OnInit {
         label: 'Delete',
         severity: 'danger',
       },
-
       accept: () => {
+        this.loading = true;
+        this.majorAssignmentService.deleteStaffFromMajor(this.selectedAccountId!, id)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.actionCompleted.emit('Action completed');
+              this.hideDialogUpdate();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => console.error('Lỗi xóa nhân viên:', error))
+          .finally(() => (this.loading = false));
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
       reject: () => {
@@ -111,12 +133,78 @@ export class StaffTableComponent implements OnInit {
   // ✅ Hiển thị danh sách Major của Staff
   showDialogUpdate(accountId: number) {
     this.selectedAccountId = accountId;
-    this.update = true;
+    this.update = true; // Mở Dialog
+    this.loadingUpdate = true; // Hiển thị spinner khi đang tải dữ liệu
 
     this.majorAssignmentService.getMajorAssignmentsByStaff(accountId).then(assignments => {
-      this.majorAssignments = assignments;
-      this.selectedEmployeeMajors = assignments.map(a => a.Major);
+      const Assignments = assignments.data;
+      this.majorAssignments = Assignments.MajorAssignments;
+      this.selectedEmployeeMajors = Assignments.MajorAssignments.map(a => a.Major);
+
+      // Lấy WorkDescription của Major đầu tiên (nếu có)
+      if (Assignments.MajorAssignments.length > 0) {
+        const firstAssignment = Assignments.MajorAssignments[0]; // Lấy phần tử đầu tiên
+        this.selectedMajorId = firstAssignment.Major.Id; // Gán ID Major
+        this.updateMajorAssignmentForm.patchValue({
+          WorkDescription: firstAssignment.MajorAssignment.WorkDescription || '',
+        });
+      } else {
+        this.updateMajorAssignmentForm.patchValue({ WorkDescription: '' });
+      }
+    }).catch(error => {
+      console.error("⚠️ Lỗi khi lấy danh sách Major Assignments:", error);
+    })
+      .finally(() => {
+        this.loadingUpdate = false;
+      });
+  }
+
+  updateMajorAssignment(event: any) {
+    if (!this.selectedAccountId || !this.selectedMajorId) {
+      console.error('⚠️ Vui lòng chọn đủ thông tin trước khi cập nhật!');
+      return;
+    }
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        this.loadingUpdate = true;
+        this.majorAssignmentService.updateWorkDescription(this.selectedAccountId!, this.selectedMajorId!, this.updateMajorAssignmentForm.value)
+          .then(response => {
+            if (response.success) {
+              successAlert(response.message.content);
+              this.actionCompleted.emit('Action completed');
+              this.hideDialogUpdate();
+            } else {
+              errorAlert(response.message.content);
+            }
+          })
+          .catch(error => {
+            console.error('⚠️ Lỗi khi cập nhật:', error);
+            alert('Cập nhật thất bại!');
+          })
+          .finally(() => {
+            this.loadingUpdate = false;
+          });
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
+
   }
 
   // ✅ Ẩn Dialog
@@ -125,20 +213,4 @@ export class StaffTableComponent implements OnInit {
     this.update = false;
   }
 
-  updateMajorAssignment() {
-    if (!this.selectedAccountId || !this.selectedMajorId) return;
-
-    const body = {
-      WorkDescription: this.updateMajorAssignmentForm.value.WorkDescription
-    };
-
-    // this.facilityMajorService.updateMajorAssignment(this.selectedAccountId, this.selectedMajorId, body)
-    //   .then(response => {
-    //     console.log('✅ Cập nhật thành công:', response);
-    //     this.hideDialogUpdate();
-    //   })
-    //   .catch(error => {
-    //     console.error('❌ Lỗi cập nhật:', error);
-    //   });
-  }
 }

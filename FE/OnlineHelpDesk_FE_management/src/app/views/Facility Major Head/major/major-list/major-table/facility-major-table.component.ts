@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -22,7 +22,8 @@ import { FacilityService } from '../../../../../core/service/facility.service';
 import { FileUpload } from 'primeng/fileupload';
 import { FacilityMajorService } from '../../../../../core/service/facility-major.service';
 import { Select, SelectModule } from 'primeng/select';
-import { Checkbox, CheckboxModule } from 'primeng/checkbox';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
 
 @Component({
   selector: 'app-facility-major-table',
@@ -42,10 +43,10 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
     InputIconModule,
     MultiSelectModule,
     FileUploadModule,
+    ProgressSpinnerModule,
     RatingModule,
     HttpClientModule,
     Select, SelectModule,
-    CheckboxModule, Checkbox,
   ],
   templateUrl: './facility-major-table.component.html',
   styleUrl: './facility-major-table.component.scss',
@@ -54,18 +55,19 @@ import { Checkbox, CheckboxModule } from 'primeng/checkbox';
 export class FacilityMajorTableComponent implements OnInit {
   @Input() facilityMajors: any[] = []; // ✅ Nhận dữ liệu từ component cha
 
+  @Output() actionCompleted = new EventEmitter<any>();  // Khai báo EventEmitter
+
+  // Phương thức xử lý của thằng con
+  handleAction() {
+    // Sau khi xử lý xong, phát sự kiện cho cha
+    this.actionCompleted.emit('Action completed');  // Gửi thông tin hoặc dữ liệu lên cha
+  }
   // gọi service api lấy facility và type major
   facilityOptions: any[] = [];
   selectedFacilityMajorId: number | null = null;
 
-  // đợi lấy api service
-  facilityMajorTypes = [
-    { label: 'Engineering', value: 1 },
-    { label: 'Science', value: 2 },
-    { label: 'Arts', value: 3 },
-    { label: 'Medicine', value: 4 },
-    { label: 'Business', value: 5 }
-  ];
+  // Facility major types
+  facilityMajorTypes: any[] = [];
 
   selectedFacilityMajor: number | null = null;
 
@@ -79,6 +81,8 @@ export class FacilityMajorTableComponent implements OnInit {
   update: boolean = false;
 
   loading: boolean = false;
+  loadingUpdate: boolean = false;
+
   activityValues: number[] = [0, 100];
 
   constructor(
@@ -98,28 +102,55 @@ export class FacilityMajorTableComponent implements OnInit {
       BackgroundImage: [''], // Ảnh nền dưới dạng Base64
       Image: [''] // Logo dưới dạng Base64
     });
-
   }
 
   ngOnInit() {
     this.loadFacilityOptions();
+    this.loadFacilityMajorTypeOptions()
   }
 
   loadFacilityOptions() {
-    this.facilityService.getFacilities().then(facilities => {
-      // Lọc danh sách Major từ facilities và loại bỏ trùng lặp
-      const uniqueFacilities = new Map<number, any>();
+    this.loading = true; // Bắt đầu hiển thị spinner
 
-      facilities.forEach(facility => {
-        if (!uniqueFacilities.has(facility.Facility.Id)) {
-          uniqueFacilities.set(facility.Facility.Id, {
+    this.facilityService.getFacilities().then(facilities => {
+      console.log(facilities);
+      if (!facilities || !Array.isArray(facilities.data.Facilities)) {
+        this.facilityOptions = [];
+        return;
+      }
+      this.facilityOptions = facilities.data.Facilities.reduce((acc, facility) => {
+        if (!acc.some(item => item.id === facility.Facility.Id)) {
+          acc.push({
             id: facility.Facility.Id,
             name: facility.Facility.Name
           });
         }
-      });
-      this.facilityOptions = Array.from(uniqueFacilities.values());
+        return acc;
+      }, []);
+    }).catch(error => {
+      console.error('Error loading Facility options:', error);
+      this.facilityOptions = [];
+    }).finally(() => {
+      this.loading = false; // Dừng spinner khi API kết thúc (thành công hay thất bại)
     });
+  }
+
+  loadFacilityMajorTypeOptions() {
+    this.facilityMajorService.getFacilityMajorTypes()
+      .then(response => {
+        if (!response || !Array.isArray(response.data.FacilityMajorTypes)) {
+          this.facilityMajorTypes = [];
+          return;
+        }
+        this.facilityMajorTypes = response.data.FacilityMajorTypes.map(type => ({
+          id: type.Id,
+          name: type.Name
+        }));
+      })
+      .catch(error => {
+        console.error('Error loading Facility Major Type options:', error);
+        this.facilityMajorTypes = [];
+      });
   }
 
   onGlobalFilter(event: Event, dt: any) {
@@ -127,24 +158,26 @@ export class FacilityMajorTableComponent implements OnInit {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event, id: number) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
-      rejectButtonProps: {
-        label: 'Cancel',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
-      },
-
+      rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Delete', severity: 'danger' },
       accept: () => {
+        this.facilityMajorService.deleteMajor(id).then((response) => {
+          if (response.success) {
+            this.actionCompleted.emit('Action completed');
+            successAlert(response.message.content);
+            this.loadFacilityOptions();
+          }
+          else {
+            errorAlert(response.message.content);
+          }
+        })
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
       reject: () => {
@@ -154,41 +187,89 @@ export class FacilityMajorTableComponent implements OnInit {
   }
 
   showDialogUpdate(id: number) {
-    console.log(id);
     this.update = true; // Mở dialog
     this.selectedFacilityMajorId = id; // Lưu ID FacilityMajor được chọn
+    this.loading = true; // Bắt đầu hiển thị spinner
 
     // 🔥 Gọi API lấy thông tin FacilityMajor
-    this.facilityMajorService.findById(id).then(facilityMajor => {
+    this.facilityMajorService.getMajorDetail(id).then(facilityMajor => {
       if (facilityMajor) {
+        const FacilityMajor = facilityMajor.data;
         // 🔹 Định dạng ngày cho input type="date"
-        const formattedCloseDate = facilityMajor.Major.CloseScheduleDate
-          ? new Date(facilityMajor.Major.CloseScheduleDate).toISOString().split('T')[0]
+        const formattedCloseDate = FacilityMajor.Major.CloseScheduleDate
+          ? new Date(FacilityMajor.Major.CloseScheduleDate).toISOString().split('T')[0]
           : null;
 
-        const formattedOpenDate = facilityMajor.Major.OpenScheduleDate
-          ? new Date(facilityMajor.Major.OpenScheduleDate).toISOString().split('T')[0]
+        const formattedOpenDate = FacilityMajor.Major.OpenScheduleDate
+          ? new Date(FacilityMajor.Major.OpenScheduleDate).toISOString().split('T')[0]
           : null;
 
         // 🔹 Cập nhật formControl với dữ liệu chính xác từ API
         this.updateFacilityMajorForm.patchValue({
-          Name: facilityMajor.Major.Name,
-          MainDescription: facilityMajor.Major.MainDescription,
-          WorkShiftsDescription: facilityMajor.Major.WorkShiftsDescription,
+          Name: FacilityMajor.Major.Name,
+          MainDescription: FacilityMajor.Major.MainDescription,
+          WorkShiftsDescription: FacilityMajor.Major.WorkShiftsDescription,
           CloseScheduleDate: formattedCloseDate, // Định dạng ngày
           OpenScheduleDate: formattedOpenDate, // Định dạng ngày
-          FacilityMajorTypeId: facilityMajor.MajorType.Id,
-          FacilityId: facilityMajor.Facility.Id,
-          Image: facilityMajor.Major.ImageUrl,
-          BackgroundImage: facilityMajor.Major.BackgroundImageUrl,
+          FacilityMajorTypeId: FacilityMajor.MajorType.Id,
+          FacilityId: FacilityMajor.Facility.Id,
+          Image: null,
+          BackgroundImage: null
         });
 
         // 🔹 Cập nhật hình ảnh hiển thị
-        this.logoUrl = facilityMajor.Major.ImageUrl;
-        this.backgroundUrl = facilityMajor.Major.BackgroundImageUrl;
+        this.logoUrl = FacilityMajor.Major.ImageUrl;
+        this.backgroundUrl = FacilityMajor.Major.BackgroundImageUrl;
       }
     }).catch(error => {
       console.error('Error fetching facility major:', error);
+    }).finally(() => {
+      this.loading = false; // Dừng spinner khi API kết thúc (thành công hay thất bại)
+    });
+  }
+
+  updateFacilityMajor(event: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to Update this record?',
+      header: 'Danger Zone',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Update',
+        severity: 'success',
+      },
+      accept: () => {
+        if (this.updateFacilityMajorForm.valid) {
+          this.loadingUpdate = true; // Bắt đầu hiển thị spinner
+          this.facilityMajorService.updateMajor(this.selectedFacilityMajorId!, this.updateFacilityMajorForm.value).then(
+            (response) => {
+              if (response.success) {
+                successAlert(response.message.content);
+                this.actionCompleted.emit('Action completed');
+                this.hideDialogUpdate();
+              } else {
+                errorAlert(response.message.content);
+              }
+            }).catch(error => {
+              console.error('Error updating facility major:', error);
+            }).finally(() => {
+              this.loadingUpdate = false; // Dừng spinner khi API kết thúc (thành công hay thất bại)
+            });
+        } else {
+          console.log('Form update Invalid');
+          this.updateFacilityMajorForm.markAllAsTouched();
+        }
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record update' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      },
     });
   }
 
@@ -230,13 +311,4 @@ export class FacilityMajorTableComponent implements OnInit {
     }
   }
 
-  updateFacilityMajor() {
-    if (this.updateFacilityMajorForm.valid) {
-      console.log('Form facility major update Data:', this.updateFacilityMajorForm.value); // Gửi lên API
-      this.hideDialogUpdate();
-    } else {
-      console.log('Form update Invalid');
-      this.updateFacilityMajorForm.markAllAsTouched();
-    }
-  }
 }

@@ -34,9 +34,10 @@ export class ServiceMajorSectionContentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceManagementService.getAllServices().then(
+    this.serviceManagementService.getServicesByHead(1).then(
       (data) => {
-        this.services = data;
+        console.log(data);
+        this.services = data.Services;
       }
     )
       .catch(error => {
