@@ -9,7 +9,6 @@ export interface MessResponse {
     data: any | null;
 }
 
-
 export function response_with_mess (
     isSuccess: boolean,
     isAppError: boolean,

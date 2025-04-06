@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { SearchMajorComponent } from '../../../common/components/search-major/search-major.component';
 
 @Component({
@@ -17,6 +16,7 @@ export class HomeSectionHeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
   }
+  
   ngOnDestroy() {
   }
 

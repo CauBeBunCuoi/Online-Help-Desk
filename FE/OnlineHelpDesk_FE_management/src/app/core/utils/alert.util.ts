@@ -68,3 +68,5 @@ export const successWithConfirmOnlyAlert = (message: string) => {
     showCancelButton: false,
   })
 }
+
+``

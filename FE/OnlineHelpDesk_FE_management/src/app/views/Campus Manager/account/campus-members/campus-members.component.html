@@ -1,1 +1,253 @@
-<p>campus-members works!</p>
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
+<p-confirmdialog />
+<div class="container">
+    <button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="card">
+        <p-table #dt2 [value]="members" dataKey="Account.Id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Account.FullName"
+            [globalFilterFields]="['Account.FullName', 'Account.Email', 'Role.Name', 'JobType.Name', 'Account.IsDeactivated']"
+            [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+            <!-- Thanh tìm kiếm chung -->
+            <ng-template #caption>
+                <div class="d-flex justify-content-end">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm nhân viên" />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="Account.Id">ID</th>
+                    <th pSortableColumn="Account.FullName">Họ và tên</th>
+                    <th pSortableColumn="Account.Email">Email</th>
+                    <th pSortableColumn="Role.Name">Vai trò</th>
+                    <th pSortableColumn="JobType.Name">Nghề nghiệp</th>
+                    <th pSortableColumn="Account.IsDeactivated">Trạng thái</th>
+                    <th pSortableColumn="Account.CreatedAt">Ngày tạo</th>
+                    <th>Hành động</th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-member>
+                <tr>
+                    <td>{{ member.Account.Id }}</td>
+                    <td>{{ member.Account.FullName }}</td>
+                    <td>{{ member.Account.Email }}</td>
+                    <td>{{ member.Role.Name }}</td>
+                    <td>{{ member.JobType.Name }}</td>
+                    <td>
+                        <p-tag [value]="member.Account.IsDeactivated ? 'Bị khóa' : 'Hoạt động'"
+                            [severity]="member.Account.IsDeactivated ? 'danger' : 'success'" />
+                    </td>
+                    <td>{{ member.Account.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-button (click)="confirmDelete($event, member.Account.Id)" label="Delete" severity="danger"
+                            [outlined]="true" />
+                        <p-button (click)="showDialogUpdate(member.Account.Id)" label="Update" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Dialog Add Thâm -->
+<p-dialog header="Add Member" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+    @if(loadingAdd) {
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
+    <!-- Avatar Upload -->
+    <div class="text-center mb-3">
+        @if (avatarUrl) {
+        <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar" (onSelect)="onFileSelect($event)" />
+    </div>
+    <form [formGroup]="addMemberForm">
+        <!-- Full Name -->
+        <div class="mb-3 row">
+            <label for="FullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
+            <div class="col-sm-8">
+                <input pInputText id="FullName" class="form-control" formControlName="FullName" />
+                @if (addMemberForm.controls['FullName'].invalid && addMemberForm.controls['FullName'].touched) {
+                <small class="text-danger">
+                    Full name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Email -->
+        <div class="mb-3 row">
+            <label for="Email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+            <div class="col-sm-8">
+                <input pInputText id="Email" class="form-control" formControlName="Email" />
+                @if (addMemberForm.controls['Email'].invalid && addMemberForm.controls['Email'].touched) {
+                <small class="text-danger">
+                    Enter a valid email.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Password -->
+        <div class="mb-3 row">
+            <label for="Password" class="col-sm-4 col-form-label fw-semibold">Password</label>
+            <div class="col-sm-8">
+                <input pInputText id="Password" type="password" class="form-control" formControlName="Password" />
+                @if (addMemberForm.controls['Password'].invalid && addMemberForm.controls['Password'].touched) {
+                <small class="text-danger">
+                    Password must be at least 6 characters.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Address -->
+        <div class="mb-3 row">
+            <label for="Address" class="col-sm-4 col-form-label fw-semibold">Address</label>
+            <div class="col-sm-8">
+                <input pInputText id="Address" class="form-control" formControlName="Address" />
+            </div>
+        </div>
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="Phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+            <div class="col-sm-8">
+                <input pInputText id="Phone" class="form-control" formControlName="Phone" />
+                @if (addMemberForm.controls['Phone'].invalid && addMemberForm.controls['Phone'].touched) {
+                <small class="text-danger">
+                    Phone must be 10-11 digits.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Job Type Selection -->
+        <div class="mb-3 row">
+            <label for="JobTypeId" class="col-sm-4 col-form-label fw-semibold">Job Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
+                    placeholder="Select Job Type"></p-select>
+                @if (addMemberForm.controls['JobTypeId'].invalid && addMemberForm.controls['JobTypeId'].touched) {
+                <small class="text-danger">
+                    Job type must be selected.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Date of Birth -->
+        <div class="mb-3 row">
+            <label for="DateOfBirth" class="col-sm-4 col-form-label fw-semibold">Date of Birth</label>
+            <div class="col-sm-8">
+                <input pInputText id="DateOfBirth" type="date" class="form-control" formControlName="DateOfBirth" />
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Register" (click)="registerMember($event)" [disabled]="addMemberForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<!-- Dialog Update Staff -->
+<p-dialog header="Update Member" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update information</span>
+    @if(loadingUpdate) {
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
+    <!-- Avatar Upload -->
+    <div class="text-center mb-3">
+        @if (avatarUrl) {
+        <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar" (onSelect)="onFileSelect($event)" />
+    </div>
+    <form [formGroup]="updateMemberForm">
+        <!-- Full Name -->
+        <div class="mb-3 row">
+            <label for="FullName" class="col-sm-4 col-form-label fw-semibold">Full name</label>
+            <div class="col-sm-8">
+                <input pInputText id="FullName" class="form-control" formControlName="FullName" />
+                @if (updateMemberForm.controls['FullName'].invalid && updateMemberForm.controls['FullName'].touched) {
+                <small class="text-danger">
+                    Full name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Email -->
+        <div class="mb-3 row">
+            <label for="Email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+            <div class="col-sm-8">
+                <input pInputText id="Email" class="form-control" formControlName="Email" />
+                @if (updateMemberForm.controls['Email'].invalid && updateMemberForm.controls['Email'].touched) {
+                <small class="text-danger">
+                    Email is required.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Address -->
+        <div class="mb-3 row">
+            <label for="Address" class="col-sm-4 col-form-label fw-semibold">Address</label>
+            <div class="col-sm-8">
+                <input pInputText id="Address" class="form-control" formControlName="Address" />
+                @if (updateMemberForm.controls['Address'].invalid && updateMemberForm.controls['Address'].touched) {
+                <small class="text-danger">
+                    Address is required.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Phone -->
+        <div class="mb-3 row">
+            <label for="Phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+            <div class="col-sm-8">
+                <input pInputText id="Phone" class="form-control" formControlName="Phone" />
+                @if (updateMemberForm.controls['Phone'].invalid && updateMemberForm.controls['Phone'].touched) {
+                <small class="text-danger">
+                    Phone must be 10-11 digits.
+                </small>
+                }
+            </div>
+        </div>
+        <!-- Job Type Selection -->
+        <div class="mb-3 row">
+            <label for="JobTypeId" class="col-sm-4 col-form-label fw-semibold">Job Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
+                    placeholder="Select Job Type"></p-select>
+                @if (updateMemberForm.controls['JobTypeId'].invalid && updateMemberForm.controls['JobTypeId'].touched) {
+                <small class="text-danger">
+                    Job type must be selected.
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateMember($event)" [disabled]="updateMemberForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

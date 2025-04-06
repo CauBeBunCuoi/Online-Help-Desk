@@ -1,0 +1,339 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
+<p-confirmdialog />
+
+<button type="button" class="btn btn-success" (click)="showDialogAdd()">Add</button>
+<div class="card">
+    <p-table #dt2 [value]="services" dataKey="Service.Name" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="Service.Name" [globalFilterFields]="[
+        'Service.Id',
+            'Service.Name',
+            'Service.MainDescription',
+            'Service.WorkShiftsDescription',
+            'Major.Name',
+            'ServiceType.Name',
+            'Service.IsOpen'
+        ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '70rem' }">
+
+        <!-- Thanh tìm kiếm chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-end">
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                        placeholder="Tìm kiếm Service" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Service.Id">Id</th>
+                <th pSortableColumn="Service.Name">Name</th>
+                <th pSortableColumn="Service.MainDescription">Main Description</th>
+                <th pSortableColumn="Service.WorkShiftsDescription">Work Shift</th>
+                <th pSortableColumn="Major.Name">Major</th>
+                <th pSortableColumn="ServiceType.Name">Service Type</th>
+                <th pSortableColumn="Service.IsOpen">Status</th>
+                <th pSortableColumn="Service.IsDeactivated">Status</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-service>
+            <tr>
+                <td>{{ service.Service.Id }}</td>
+                <td>{{ service.Service.Name }}</td>
+                <td>{{ service.Service.MainDescription }}</td>
+                <td>{{ service.Service.WorkShiftsDescription }}</td>
+                <td>{{ service.Major.Name }}</td>
+                <td>{{ service.ServiceType.Name }}</td>
+                <td>
+                    <p-tag [value]="service.Service.IsOpen ? 'Open' : 'Closed'"
+                        [severity]="service.Service.IsOpen ? 'success' : 'danger'">
+                    </p-tag>
+                </td>
+                <td><p-tag [value]="service.Service.IsDeactivated ? 'Open' : 'Closed'"
+                    [severity]="service.Service.IsDeactivated ? 'success' : 'danger'">
+                </p-tag></td>
+                <td>
+                    <p-button (click)="confirmDelete($event, service.Service.Id)" label="Delete" severity="danger"
+                        [outlined]="true" />
+                    <p-button (click)="showDialogServiceAvailable(service.Service.Id)" label="Update 1" class="ms-2" />
+                    <p-button (click)="showDialogUpdate(service.Service.Id)" label="Update" class="ms-2" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog header="Add Service" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add service information</span>
+    @if(loadingAdd) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <!-- Logo -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-cog" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadLogo mode="basic" accept="image/*" chooseLabel="Choose Logo"
+            (onSelect)="onFileSelectLogo($event)" />
+    </div>
+
+    <form [formGroup]="addServiceForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="Name" class="col-sm-4 col-form-label fw-semibold">Service Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="Name" class="form-control" formControlName="Name" />
+                @if (addServiceForm.controls['Name'].invalid && addServiceForm.controls['Name'].touched) {
+                <small class="text-danger">
+                    Service name is required (Min 3 chars).
+                </small>
+                }
+            </div>
+        </div>
+
+        <!-- Main Description -->
+        <div class="mb-3 row">
+            <label for="MainDescription" class="col-sm-4 col-form-label fw-semibold">Main Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="MainDescription" class="form-control"
+                    formControlName="MainDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Work Shift Description -->
+        <div class="mb-3 row">
+            <label for="WorkShiftsDescription" class="col-sm-4 col-form-label fw-semibold">Work Shift
+                Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="WorkShiftsDescription" class="form-control"
+                    formControlName="WorkShiftsDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Facility Major -->
+        <div class="mb-3 row">
+            <label for="FacilityMajorId" class="col-sm-4 col-form-label fw-semibold">Facility Major</label>
+            <div class="col-sm-8">
+                <p-select [options]="facilityMajorOptions" optionLabel="name" optionValue="id"
+                    formControlName="FacilityMajorId" placeholder="Select Facility Major"></p-select>
+            </div>
+        </div>
+
+        <!-- Service Type -->
+        <div class="mb-3 row">
+            <label for="ServiceTypeId" class="col-sm-4 col-form-label fw-semibold">Service Type</label>
+            <div class="col-sm-8">
+                <p-select [options]="serviceTypeOptions" optionLabel="name" optionValue="id"
+                    formControlName="ServiceTypeId" placeholder="Select Service Type"></p-select>
+            </div>
+        </div>
+
+        <!-- Request Init Description -->
+        <div class="mb-3 row">
+            <label for="RequestInitHintDescription" class="col-sm-4 col-form-label fw-semibold">Request Init
+                Hint</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="RequestInitHintDescription" class="form-control"
+                    formControlName="RequestInitHintDescription"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Init Request Description Required -->
+        <div class="mb-3 row">
+            <label for="IsInitRequestDescriptionRequired" class="col-sm-4 col-form-label fw-semibold">Require Init
+                Request Description</label>
+            <div class="col-sm-8">
+                <p-checkbox binary="true" inputId="IsInitRequestDescriptionRequired"
+                    formControlName="IsInitRequestDescriptionRequired"></p-checkbox>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Add" (click)="addService($event)" [disabled]="addServiceForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog header="Add Service Availability" [modal]="true" [(visible)]="addServiceAvailable"
+    [style]="{ width: '50rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add Service Availability</span>
+    @if(loadingServiceAva) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div class="row">
+        <!-- 🔹 Bảng hiển thị Service Available -->
+        <div class="col-md-7">
+            <div class="card">
+                <h5 class="fw-semibold">Service Available</h5>
+                <p-table [value]="serviceSchedules" [paginator]="true" [rows]="5">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Day</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-schedule>
+                        <tr>
+                            <td>{{ schedule.Schedule.ServiceId }}</td>
+                            <td>{{ schedule.Schedule.DayOfWeek }}</td>
+                            <td>{{ schedule.Schedule.StartRequestableTime }}</td>
+                            <td>{{ schedule.Schedule.EndRequestableTime }}</td>
+                            <td>
+                                <p-button
+                                    (click)="confirmDeleteSchedule($event, schedule.Schedule.ServiceId, schedule.Schedule)"
+                                    label="Delete" severity="danger" [outlined]="true" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+        <!-- 🟠 Form Add Service Availability -->
+        <div class="col-md-5">
+            <form [formGroup]="addServiceAvailableForm">
+                <!-- Day of Week -->
+                <div class="mb-3">
+                    <label for="DayOfWeek" class="fw-semibold">Day of Week</label>
+                    <p-select id="DayOfWeek" [options]="daysOfWeekOptions" optionLabel="Name" optionValue="Id"
+                        formControlName="DayOfWeek" placeholder="Select Day"></p-select>
+                </div>
+                <!-- Start Requestable Time -->
+                <div class="mb-3">
+                    <label for="StartRequestableTime" class="fw-semibold">Start Time</label>
+                    <input pInputText id="StartRequestableTime" type="time" class="form-control"
+                        formControlName="StartRequestableTime" />
+                </div>
+
+                <!-- End Requestable Time -->
+                <div class="mb-3">
+                    <label for="EndRequestableTime" class="fw-semibold">End Time</label>
+                    <input pInputText id="EndRequestableTime" type="time" class="form-control"
+                        formControlName="EndRequestableTime" />
+                </div>
+
+                <!-- Footer -->
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogServiceAvailable()" />
+                    <p-button label="Add" (click)="addAvailability($event)"
+                        [disabled]="addServiceAvailableForm.invalid" />
+                </div>
+            </form>
+        </div>
+    </div>
+</p-dialog>
+
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Service" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update service information</span>
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div class="row">
+        <!-- 🔹 Bảng hiển thị Service Available -->
+        <div class="col-md-7">
+            <div class="card">
+                <h5 class="fw-semibold">Service Available</h5>
+                <p-table [value]="serviceSchedules" [paginator]="true" [rows]="5">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Day</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Action</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-schedule>
+                        <tr>
+                            <td>{{ schedule.Schedule.ServiceId }}</td>
+                            <td>{{ schedule.Schedule.DayOfWeek }}</td>
+                            <td>{{ schedule.Schedule.StartRequestableTime }}</td>
+                            <td>{{ schedule.Schedule.EndRequestableTime }}</td>
+                            <td>
+                                <p-button
+                                    (click)="confirmDeleteSchedule($event, schedule.Schedule.ServiceId, schedule.Schedule)"
+                                    label="Delete" severity="danger" [outlined]="true" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+        <!-- 🔹 Form cập nhật Service -->
+        <div class="col-md-5">
+            <div class="text-center mb-3">
+                <p-avatar [image]="logoUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Logo"
+                    (onSelect)="onFileSelectLogo($event)" />
+            </div>
+            <form [formGroup]="updateServiceForm">
+                <div class="mb-3">
+                    <label for="Name" class="fw-semibold d-block">Service Name</label>
+                    <input pInputText id="Name" class="form-control w-100" formControlName="Name" />
+                    <small
+                        *ngIf="updateServiceForm.controls['Name'].invalid && updateServiceForm.controls['Name'].touched"
+                        class="text-danger">
+                        Service name is required (Min 3 chars).
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="MainDescription" class="fw-semibold d-block">Main Description</label>
+                    <textarea pInputTextarea id="MainDescription" class="form-control w-100"
+                        formControlName="MainDescription"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="WorkShiftsDescription" class="fw-semibold d-block">Work Shift Description</label>
+                    <textarea pInputTextarea id="WorkShiftsDescription" class="form-control w-100"
+                        formControlName="WorkShiftsDescription"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="CloseScheduleDate" class="fw-semibold d-block">Close Schedule Date</label>
+                    <input pInputText id="CloseScheduleDate" type="date" class="form-control w-100"
+                        formControlName="CloseScheduleDate" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="OpenScheduleDate" class="fw-semibold d-block">Open Schedule Date</label>
+                    <input pInputText id="OpenScheduleDate" type="date" class="form-control w-100"
+                        formControlName="OpenScheduleDate" />
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+                    <p-button label="Update" (click)="updateService($event)" [disabled]="updateServiceForm.invalid" />
+                </div>
+            </form>
+        </div>
+    </div>
+</p-dialog>

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
-import { MessResponse } from '../../api/main/responseGenerator';
 
-import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { FileUpload, FileUploadModule } from 'primeng/fileupload';
+import { AvatarModule } from 'primeng/avatar';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-profile',
@@ -16,74 +17,68 @@ import { MessageModule } from 'primeng/message';
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    MessageModule
+    MessageModule,
+    FileUploadModule,
+    AvatarModule,
+    DialogModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
-  updateForm!: FormGroup;
-  userId!: string;
-  successMessage = '';
-  errorMessage = '';
-  email: string = '';
+  updateMemberForm: FormGroup;
+  @ViewChild('fileUploadRef') fileUpload!: FileUpload;
+
+  avatarUrl: string | null = 'https://via.placeholder.com/100';
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
-  ) { }
-
-  async ngOnInit() {
-    this.userId = localStorage.getItem('userId') || '';
-    this.email = localStorage.getItem('email') || '';
-
-    this.updateForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern('^\\d{10,11}$')]]
+    private authService: AuthService,
+  ) {
+    this.updateMemberForm = this.fb.group({
+      FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
+      Address: ['', Validators.required],
+      Image: ['']
     });
-
-    await this.loadUserProfile();
   }
 
-  // ✅ Lấy thông tin người dùng từ API
-  async loadUserProfile() {
-    try {
-      const response: MessResponse = await this.authService.findByEmail(this.email);
-      if (response.success) {
-        this.updateForm.patchValue(response.data);
-      } else {
-        this.errorMessage = response.message.content;
+  ngOnInit() {
+    // Lấy thông tin tài khoản từ Store hoặc API
+    this.authService.getMemnerById(1).then(member => {
+      if (member) {
+        this.avatarUrl = member.Account.ImageUrl || null; // Cập nhật avatar
+
+        // 🔥 Cập nhật dữ liệu vào form
+        this.updateMemberForm.patchValue({
+          FullName: member.Account.FullName,
+          Phone: member.Account.Phone,
+          Address: member.Account.Address,
+          Image: member.Account.ImageUrl // Giữ ảnh nếu có
+        });
       }
-    } catch (error) {
-      this.errorMessage = "Lỗi khi tải thông tin tài khoản.";
+    }).catch(error => {
+      console.error('Error fetching staff:', error);
+    });
+  }
+
+  onFileSelect(event: any) {
+    const file = event.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.avatarUrl = e.target.result;
+        this.updateMemberForm.patchValue({ Image: e.target.result });
+      };
+      reader.readAsDataURL(file);
     }
   }
 
-  // ✅ Cập nhật thông tin tài khoản
-  async updateAccount() {
-    if (this.updateForm.invalid) {
-      this.errorMessage = 'Vui lòng nhập đầy đủ thông tin!';
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('name', this.updateForm.get('name')?.value);
-    formData.append('email', this.updateForm.get('email')?.value);
-    formData.append('phone', this.updateForm.get('phone')?.value);
-
-    try {
-      const response: MessResponse = await this.authService.updateAccount(this.userId, formData);
-      if (response.success) {
-        this.successMessage = 'Cập nhật thành công!';
-        this.errorMessage = '';
-      } else {
-        this.errorMessage = response.message.content;
-        this.successMessage = '';
-      }
-    } catch (error) {
-      this.errorMessage = 'Có lỗi xảy ra, thử lại sau!';
-      this.successMessage = '';
+  updateMember() {
+    if (this.updateMemberForm.valid) {
+      console.log('Updated Data:', this.updateMemberForm.value);
+    } else {
+      this.updateMemberForm.markAllAsTouched();
     }
   }
 }

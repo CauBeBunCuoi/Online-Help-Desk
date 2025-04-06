@@ -27,14 +27,8 @@
 
       <!-- Submit button -->
       <div class="col-12">
-        <button pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"
-          [disabled]="loginForm.invalid"></button>
-      </div>
-
-      <!-- Link đăng ký -->
-      <div class="col-12 text-center">
-        <span>Chưa có tài khoản? </span>
-        <a [routerLink]="['/register']" class="text-primary fw-bold">Đăng ký</a>
+        <button [routerLink]="['/']" pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"></button>
+        <!-- [disabled]="loginForm.invalid" -->
       </div>
     </form>
   </div>

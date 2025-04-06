@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SelectModule } from 'primeng/select';
 
 @Component({
@@ -17,23 +16,20 @@ import { SelectModule } from 'primeng/select';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-  user: boolean;
+  userName: string;
 
-  userOptions = [
-    { label: 'Profile', icon: 'pi pi-user', value: 'profile' },
-    { label: 'Logout', icon: 'pi pi-sign-out', value: 'logout' }
-  ];
-
-  selectedOption: any = null;
-
-  constructor(
-  ) { }
-
-  ngOnInit() {
-    this.user = true;
+  constructor(private router: Router) {
   }
 
-  // ✅ Hủy đăng ký Observable khi component bị hủy
   ngOnDestroy() {
+  }
+  ngOnInit() {
+    this.userName = 'Mr Bean';
+  }
+
+  logout() {
+    // Xóa token hoặc session nếu cần
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 }

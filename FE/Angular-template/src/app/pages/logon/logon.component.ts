@@ -55,7 +55,8 @@ export class LogonComponent implements OnInit {
       return;
     }
     console.log("📤 Gửi request login:", this.loginForm.value);
-    this.store.dispatch(login(this.loginForm.value));
+    this.router.navigate['/'];
+    // this.store.dispatch(login(this.loginForm.value));
   }
 
 }

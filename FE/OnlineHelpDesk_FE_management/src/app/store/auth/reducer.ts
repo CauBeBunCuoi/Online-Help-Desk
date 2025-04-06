@@ -18,6 +18,5 @@ export const authReducer = createReducer(
       user: null
     }
   }
-
   )
 );

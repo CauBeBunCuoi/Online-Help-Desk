@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav navbar-left me-auto mb-2 mb-lg-0">
         <li class="nav-item me-2">
-          <a class="nav-link active" aria-current="page" [routerLink]="['/']">Home</a>
+          <a class="nav-link active" aria-current="page" [routerLink]="['/home']">Home</a>
         </li>
         <li class="nav-item me-2">
           <a class="nav-link" [routerLink]="['/facility-major']">Facility Major</a>
@@ -24,35 +24,34 @@
           <a class="nav-link" [routerLink]="['/']">Q & A</a>
         </li>
       </ul>
-      @if(user) {
+      @if(userName) {
       <ul class="navbar-nav navbar-right mb-2 mb-lg-0">
+        <!-- Welcome message -->
         <li class="nav-item">
-          <a class="nav-link" aria-current="page">
+          <a class="nav-link">
             <div class="block-for-employee">
-              <p>Welcome</p>
-              <span>Mr Bean</span>
+              <a [routerLink]="['/profile']" style="text-decoration: none;">
+                <p>Welcome</p>
+                <span>{{userName}}</span>
+              </a>
             </div>
           </a>
         </li>
+        <!-- Divider -->
         <li class="nav-item">
           <div class="column-divider"></div>
         </li>
+
+        <!-- Notifications -->
         <li class="nav-item">
-          <a class="nav-link icon" href="#">
+          <a [routerLink]="['/logout']" class="nav-link icon">
             <i class="pi pi-bell" style="font-size: 1.5rem; color: green;"></i>
           </a>
         </li>
+
+        <!-- User Dropdown -->
         <li class="nav-item">
-          <a class="nav-link" href="#">
-            <p-select [options]="userOptions" optionLabel="label" class="rounded-pill">
-              <ng-template let-item pTemplate="item">
-                <div class="select-item">
-                  <i [class]="item.icon"></i>
-                  <span>{{ item.label }}</span>
-                </div>
-              </ng-template>
-            </p-select>
-          </a>
+          <a [routerLink]="['/logout']" class="btn btn-outline-danger">Logout</a>
         </li>
       </ul>
       }
@@ -62,7 +61,7 @@
           <a [routerLink]="['/logon']" class="btn btn-outline-success">Login</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-dark">Register</a>
+          <a class="btn btn-dark" [routerLink]="['/register']">Register</a>
         </li>
       </ul>
       }

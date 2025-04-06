@@ -1,1 +1,187 @@
-<p>facility-list works!</p>
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast />
+<p-confirmdialog />
+<div class="container"><button type="button" class="btn btn-success mb-3" (click)="showDialogAdd()">Add</button>
+    <div class="card">
+        <p-table #dt2 [value]="facilities" dataKey="Facility.Id" [paginator]="true" [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Facility.CreatedAt"
+            [globalFilterFields]="['Facility.Name', 'Facility.Description', 'Facility.IsDeactivated']" [sortOrder]="-1"
+            [tableStyle]="{ 'min-width': '60rem' }">
+
+            <!-- Thanh tìm kiếm chung -->
+            <ng-template #caption>
+                <div class="d-flex justify-content-end">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                            placeholder="Tìm kiếm cơ sở" />
+                    </p-iconfield>
+                </div>
+            </ng-template>
+
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="Facility.Id">ID</th>
+                    <th pSortableColumn="Facility.Name">Name</th>
+                    <th pSortableColumn="Facility.Description">Description</th>
+                    <th pSortableColumn="Facility.IsDeactivated">Status</th>
+                    <th pSortableColumn="Facility.CreatedAt">Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-facility>
+                <tr>
+                    <td>{{ facility.Facility.Id }}</td>
+                    <td>{{ facility.Facility.Name }}</td>
+                    <td>{{ facility.Facility.Description }}</td>
+                    <td>
+                        <p-tag [value]="facility.Facility.IsDeactivated ? 'Deactivated' : 'Active'"
+                            [severity]="facility.Facility.IsDeactivated ? 'danger' : 'success'" />
+                    </td>
+                    <td>{{ facility.Facility.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <p-button (click)="confirmDelete($event, facility.Facility.Id)" label="Delete" severity="danger"
+                            [outlined]="true" />
+                        <p-button (click)="showDialogUpdate(facility.Facility.Id)" label="Update" class="ms-2" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Dialog Add Thâm -->
+<p-dialog header="Add Facility" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+    @if(loadingAdd) {
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
+    <!-- Ảnh Facility -->
+    <div class="text-center mb-3">
+        @if (logoUrl) {
+        <p-avatar [image]="logoUrl" class="custom-avatar mb-3"></p-avatar>
+        } @else {
+        <p-avatar icon="pi pi-image" class="custom-avatar mb-3"></p-avatar>
+        }
+        <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
+            (onSelect)="onFileSelect($event)" />
+    </div>
+
+    <form [formGroup]="addFacilityForm">
+        <!-- Name -->
+        <div class="mb-3 row">
+            <label for="Name" class="col-sm-4 col-form-label fw-semibold">Name</label>
+            <div class="col-sm-8">
+                <input pInputText id="Name" class="form-control" formControlName="Name" />
+                @if (addFacilityForm.controls['Name'].invalid && addFacilityForm.controls['Name'].touched) {
+                <small class="text-danger">Name is required (Min 3 chars).</small>
+                }
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3 row">
+            <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="Description" class="form-control" formControlName="Description"></textarea>
+                @if (addFacilityForm.controls['Description'].invalid && addFacilityForm.controls['Description'].touched)
+                {
+                <small class="text-danger">Description is required (Min 3 chars).</small>
+                }
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2" />
+            <p-button label="Add" (click)="addFacility($event)" [disabled]="addFacilityForm.invalid" />
+        </div>
+    </form>
+</p-dialog>
+
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Facility" [modal]="true" [(visible)]="update" [style]="{ width: '80rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Add information</span>
+    @if(loadingDetail) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div class="row">
+        <!-- Danh sách Majors -->
+        <div class="col-md-7">
+            <div class="card">
+                <h5 class="fw-semibold">Majors in Facility</h5>
+                <p-table [value]="majors" [paginator]="true" [rows]="5">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-major>
+                        <tr>
+                            <td>{{ major.Id }}</td>
+                            <td>{{ major.Name }}</td>
+                            <td>
+                                <span [class.text-success]="major.IsOpen" [class.text-danger]="!major.IsOpen">
+                                    {{ major.IsOpen ? 'Open' : 'Closed' }}
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+
+        <!-- Form cập nhật Facility -->
+        <div class="col-md-5">
+            <div class="text-center mb-3">
+                <p-avatar [image]="logoUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Image"
+                    (onSelect)="onFileSelect($event)" />
+            </div>
+            <form [formGroup]="updateFacilityForm">
+                <div class="mb-3">
+                    <label for="Name" class="fw-semibold d-block">Name</label>
+                    <input pInputText id="Name" class="form-control w-100" formControlName="Name" />
+                    <small
+                        *ngIf="updateFacilityForm.controls['Name'].invalid && updateFacilityForm.controls['Name'].touched"
+                        class="text-danger">
+                        Name is required (Min 3 chars).
+                    </small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Description" class="fw-semibold d-block">Description</label>
+                    <textarea pInputTextarea id="Description" class="form-control w-100"
+                        formControlName="Description"></textarea>
+                    <small
+                        *ngIf="updateFacilityForm.controls['Description'].invalid && updateFacilityForm.controls['Description'].touched"
+                        class="text-danger">
+                        Enter a valid description.
+                    </small>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+                    <p-button label="Update" (click)="updateFacility($event)" [disabled]="updateFacilityForm.invalid" />
+                </div>
+            </form>
+        </div>
+    </div>
+</p-dialog>

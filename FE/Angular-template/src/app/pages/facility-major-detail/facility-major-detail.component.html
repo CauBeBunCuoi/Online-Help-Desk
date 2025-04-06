@@ -1,4 +1,8 @@
-<app-facility-major-detail-section-header [image]="facilityMajor.image" [logo]="facilityMajor.logo"
-    [name]="facilityMajor.name">
+<app-facility-major-detail-section-header [image]="facilityMajor.Major?.BackgroundImageUrl"
+    [logo]="facilityMajor.Major?.ImageUrl" [name]="facilityMajor.Major?.Name">
 </app-facility-major-detail-section-header>
-<app-facility-major-detail-section-content></app-facility-major-detail-section-content>
+<app-facility-major-detail-section-content [mainDescription]="facilityMajor.Major?.MainDescription"
+    [workShifstDescription]="facilityMajor.Major?.WorkShifstDescription" [isOpen]="facilityMajor.Major?.IsOpen"
+    [closeScheduleDate]="facilityMajor.Major?.CloseScheduleDate" [openScheduleDate]="facilityMajor.Major?.OpenScheduleDate"
+    [facilityMajorTypeId]="facilityMajor.Major?.FacilityMajorTypeId" [isDeactivated]="facilityMajor.Major?.IsDeactivated">
+</app-facility-major-detail-section-content>

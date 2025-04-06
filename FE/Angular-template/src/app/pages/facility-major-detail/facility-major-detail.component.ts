@@ -26,12 +26,9 @@ export class FacilityMajorDetailComponent {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.facilityMajorService.getFacilityMajorById(Number(id))
-      .then(response => {
-        if (response && response.facilityMajor) {
-          console.log(this.facilityMajor);
-          this.facilityMajor = response.facilityMajor;
-        }
+    this.facilityMajorService.getMajorDetail(Number(id))
+      .then((response) => {
+        this.facilityMajor = response;
       })
       .catch(error => console.error('Error fetching facility details:', error));
   }

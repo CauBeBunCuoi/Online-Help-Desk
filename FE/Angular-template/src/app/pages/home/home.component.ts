@@ -14,8 +14,10 @@ import { HomeSectionContentComponent } from './home-section-content/home-section
 })
 export class HomeComponent implements OnInit, OnDestroy {
   constructor() { }
+
   ngOnDestroy() {
   }
+  
   ngOnInit() {
   }
 }

@@ -1,1 +1,20 @@
-<p>reports works!</p>
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<div class="container mt-3">
+    <!-- Bộ lọc theo Major + Nút Add -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <label for="majorFilter" class="fw-semibold mb-2">Filter by Major</label>
+            <p-select [options]="majorOptions" [(ngModel)]="selectedMajorId" optionLabel="name" optionValue="id"
+                [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Major" class="form-control"
+                (onChange)="filterReports()">
+            </p-select>
+        </div>
+    </div>
+
+    <!-- Bảng Rpoet -->
+    <app-report-table [reports]="filteredReports" (actionCompleted)="handleChildEvent($event)"></app-report-table>
+</div>

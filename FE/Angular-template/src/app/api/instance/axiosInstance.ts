@@ -6,15 +6,15 @@ import { LocalStorageUtil } from "../../utils/storage.util";
 import { JwtUtil } from "../../utils/jwt.util";
 
 const publicApi = axios.create({
-  baseURL: apiBaseUrl + '/api',
+  baseURL: apiBaseUrl,
   timeout: 10000,
 });
 const loginRequiredApi = axios.create({
-  baseURL: apiBaseUrl + '/api',
+  baseURL: apiBaseUrl,
   timeout: 10000,
 });
 const adminApi = axios.create({
-  baseURL: apiBaseUrl + '/api',
+  baseURL: apiBaseUrl,
   timeout: 10000,
 });
 

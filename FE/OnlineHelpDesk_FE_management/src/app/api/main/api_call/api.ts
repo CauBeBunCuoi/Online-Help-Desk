@@ -10,7 +10,6 @@ interface ApiHelperParams {
     config?: AxiosRequestConfig;
 }
 
-
 export async function callApi({
     instance,
     method,

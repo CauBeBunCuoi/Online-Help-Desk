@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { fromEvent, interval, Observable } from 'rxjs';
-import { map, filter, startWith } from 'rxjs/operators';
+import { fromEvent, Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { HttpClient } from '@angular/common/http';
 import { AuthState } from '../../store/auth/state';
@@ -9,8 +9,6 @@ import { clearAuthToken, setAuthToken } from '../../store/auth/actions';
 import { selectAuthState } from '../../store/auth/selectors';
 import { LocalStorageUtil } from '../../core/utils/storage.util';
 import { JwtUtil } from '../../core/utils/jwt.util';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -24,37 +22,7 @@ export class AccountService {
   ) {
     //this.syncAuthWithLocalStorage();
   }
-
-
-  // Sử dụng interval check theo thời gian (có thể ảnh hưởng performance)
-  // syncAuthWithLocalStorage_CheckByInterval() {
-  //   interval(1000)
-  //     .pipe(
-  //       startWith(0), // Chạy ngay khi khởi tạo
-  //       map(() => {
-  //         const token = LocalStorageUtil.getAuthTokenFromLocalStorage();
-  //         const user = LocalStorageUtil.getAuthUserFromLocalStorage();
-
-  //         if (token !== this.previousToken) {
-  //           this.previousToken = token;
-
-  //           if (!token || !user || ! JwtUtil.isTokenValid(token)) {
-  //             this.store.dispatch(clearAuthToken());
-  //             this.router.navigate(['/login']);
-  //           } else {
-  //             const saveInfo = {
-  //               token: token,
-  //               user: user
-  //             };
-  //             this.store.dispatch(setAuthToken(saveInfo));
-  //             this.router.navigate(['/dashboard']);
-  //           }
-  //         }
-  //       })
-  //     )
-  //     .subscribe();
-  // }
-
+  
   // sử dụng event storage 
   syncAuthWithLocalStorage() {
     fromEvent<StorageEvent>(window, 'storage')

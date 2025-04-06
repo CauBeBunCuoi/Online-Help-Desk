@@ -6,12 +6,10 @@ import Aura from '@primeng/themes/aura';
 import { metaReducers } from './store/metaReducers';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { provideEffects } from '@ngrx/effects';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { rootReducers } from './store/rootReducers';
-import { AccountEffects } from './store/accounts/account.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,11 +25,6 @@ export const appConfig: ApplicationConfig = {
     provideStore(
       rootReducers,
       { metaReducers }
-    ),
-    provideEffects(
-      [
-        AccountEffects,
-      ]
     ),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
   ],

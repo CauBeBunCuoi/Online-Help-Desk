@@ -1,0 +1,63 @@
+@if(loading) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+<p-confirmdialog />
+<div class="card">
+    <p-table #dt2 [value]="feedbacks" dataKey="Feedback.Id" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="Feedback.FullName" [globalFilterFields]="[
+  'Feedback.Id', 
+  'Feedback.Content', 
+  'Account.FullName', 
+  'Feedback.Rate', 
+  'Feedback.IsDeactivated', 
+  'Feedback.CreatedAt'
+]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+        <!-- Thanh tìm kiếm chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-end">
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                        placeholder="Tìm kiếm feedback" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Feedback.Id">ID</th>
+                <th pSortableColumn="Account.FullName">User</th>
+                <th pSortableColumn="Feedback.Content">Content</th>
+                <th pSortableColumn="Feedback.Rate">Rate</th>
+                <th pSortableColumn="Feedback.IsDeactivated">Is Deactivated</th>
+                <th pSortableColumn="Feedback.CreatedAt">Created At</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-feedback>
+            <tr>
+                <td>{{ feedback.Feedback.Id }}</td>
+                <td>{{ feedback.Account.FullName }}</td>
+                <td>{{ feedback.Feedback.Content }}</td>
+                <td>{{ feedback.Feedback.Rate }}</td>
+                <td>
+                    <p-tag [value]="feedback.Feedback.IsDeactivated.toString()"
+                        [severity]="feedback.Feedback.IsDeactivated ? 'success' : 'warn'">
+                    </p-tag>
+
+                </td>
+                <td>{{ feedback.Feedback.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                    <p-button (click)="confirmDelete($event, feedback.Feedback.Id)" label="Delete" severity="danger" [outlined]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

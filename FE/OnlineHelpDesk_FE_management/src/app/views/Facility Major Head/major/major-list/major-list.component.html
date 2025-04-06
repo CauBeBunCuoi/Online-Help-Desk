@@ -1,1 +1,9 @@
-<p>major-list works!</p>
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<div class="container mt-3">
+    <!-- Bảng facility-major -->
+    <app-facility-major-table [facilityMajors]="filteredFacilityMajors" (actionCompleted)="handleChildEvent($event)"></app-facility-major-table>
+</div>
