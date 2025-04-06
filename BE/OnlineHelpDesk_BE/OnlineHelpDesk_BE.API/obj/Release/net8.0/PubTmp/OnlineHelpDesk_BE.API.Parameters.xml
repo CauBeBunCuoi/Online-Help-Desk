@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="OnlineHelpDeskBE" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\vscode\\MY\ PROJECT\\Online\ Help\ Desk\\Online-Help-Desk\\BE\\OnlineHelpDesk_BE\\OnlineHelpDesk_BE\.API\\obj\\Release\\net8\.0\\PubTmp\\Out\\$" />
+  </parameter>
+</parameters>

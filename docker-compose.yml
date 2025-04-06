@@ -1,0 +1,63 @@
+services:
+  # app:
+  #   container_name: FE_REACT
+  #   build:
+  #     context: ./react_Docker
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./src:/app/src
+  #   ports:
+  #     - "5173:3000"
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
+
+  OnlineHelpDesk_BE:
+    container_name: onlinehelpdesk_be
+    image: onlinehelpdesk_be:latest
+    build:
+      context: ./BE/OnlineHelpDesk_BE
+      dockerfile: Dockerfile
+    user: root
+    environment: # images_test - images  ,   OnlineHelpDeskDB_test - OnlineHelpDeskDB_clean
+      # Path to the folder where the images are stored, 
+      - FilePaths__ACCOUNt_IMAGE_PATH=images/accounts
+      - FilePaths__FACILITY_IMAGE_PATH=images/facilities
+      - FilePaths__MAJOR_IMAGE_PATH=images/majors
+      - ITEM_IMAGE_PATH=images/items
+      - FilePaths__SERVICE_IMAGE_PATH=images/services
+
+      # local
+      # - ConnectionStrings__DefaultConnection=Server=onlinehelpdesk_sql_server;Database=OnlineHelpDeskDB_test;User Id=sa;Password=Banana100;TrustServerCertificate=True; 
+      # - ConnectionStrings__ConnectionWithLogin=Server=onlinehelpdesk_sql_server;Database=OnlineHelpDeskDB_test;User Id=sa;Password=Banana100;TrustServerCertificate=True;
+      # Azure
+      - ConnectionStrings__DefaultConnection=Server=tcp:sql-server-southeast-asia-0.database.windows.net,1433;Initial Catalog=OnlineHelpDeskDB_clean;Persist Security Info=False;User ID=admin_0;Password=Banana100;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+      - ConnectionStrings__ConnectionWithLogin=Server=tcp:sql-server-southeast-asia-0.database.windows.net,1433;Initial Catalog=OnlineHelpDeskDB_clean;Persist Security Info=False;User ID=admin_0;Password=Banana100;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+    ports:
+      - "8002:8080"
+    depends_on:
+      - onlinehelpdesk_sql_server
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  onlinehelpdesk_sql_server:
+    image: mcr.microsoft.com/mssql/server:2022-latest # Sử dụng image SQL SERVER 2022 mới nhất từ Docker Hub
+    container_name: onlinehelpdesk_sql_server
+    environment:
+      SA_PASSWORD: "Banana100"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1434:1433" # Ánh xạ cổng 1433 (cổng mặc định của SQL SERVER trong container) vớii cổng 1431 trên máy host
+    volumes:
+      - sql_server_data:/var/opt/mssql
+    networks:
+      - app-network
+
+volumes:
+  sql_server_data:
+
+
+networks:
+  app-network:
+    driver: bridge
