@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   BASE_API_URL: 'https://9be9-14-186-89-198.ngrok-free.app',
-  DOCKER_API_URL: 'https://a6a1-115-78-236-124.ngrok-free.app',
+  DOCKER_API_URL: 'http://localhost:8002',
   // BASE_API_URL : 'http://localhost:5137'
 
   ROLES: {

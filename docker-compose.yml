@@ -1,16 +1,17 @@
 services:
-  # app:
-  #   container_name: FE_REACT
-  #   build:
-  #     context: ./react_Docker
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./src:/app/src
-  #   ports:
-  #     - "5173:3000"
-  #   restart: unless-stopped
-  #   networks:
-  #     - app-network
+  OnlineHelpDesk_FE_Management:
+    container_name: onlinehelpdesk_fe_management
+    image: onlinehelpdesk_fe_management:latest
+    build:
+      context: ./FE/OnlineHelpDesk_FE_Management
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+    ports:
+      - "4202:3000"
+    restart: unless-stopped
+    networks:
+      - app-network
 
   OnlineHelpDesk_BE:
     container_name: onlinehelpdesk_be
