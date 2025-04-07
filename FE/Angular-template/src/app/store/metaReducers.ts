@@ -3,9 +3,9 @@ import { MetaReducer } from '@ngrx/store';
 import { AppState } from './rootReducers';
 
 export function localStorageSyncReducer(reducer: any) {
-  return localStorageSync({
-    keys: ['account'],
-    rehydrate: true
+  return localStorageSync({ 
+    keys: ['auth','color'], 
+    rehydrate: true 
   })(reducer);
 }
 

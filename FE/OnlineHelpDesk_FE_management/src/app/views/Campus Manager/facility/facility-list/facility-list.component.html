@@ -10,9 +10,9 @@
         <p-table #dt2 [value]="facilities" dataKey="Facility.Id" [paginator]="true" [rows]="10"
             [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Facility.CreatedAt"
             [globalFilterFields]="['Facility.Name', 'Facility.Description', 'Facility.IsDeactivated']" [sortOrder]="-1"
-            [tableStyle]="{ 'min-width': '60rem' }">
+            [tableStyle]="{ 'min-width': '50rem' }">
 
-            <!-- Thanh tìm kiếm chung -->
+            <!-- Thanh Search chung -->
             <ng-template #caption>
                 <div class="d-flex justify-content-end">
                     <p-iconfield iconPosition="left">
@@ -20,7 +20,7 @@
                             <i class="pi pi-search"></i>
                         </p-inputicon>
                         <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                            placeholder="Tìm kiếm cơ sở" />
+                            placeholder="Search cơ sở" />
                     </p-iconfield>
                 </div>
             </ng-template>
@@ -30,8 +30,7 @@
                 <tr>
                     <th pSortableColumn="Facility.Id">ID</th>
                     <th pSortableColumn="Facility.Name">Name</th>
-                    <th pSortableColumn="Facility.Description">Description</th>
-                    <th pSortableColumn="Facility.IsDeactivated">Status</th>
+                    <th pSortableColumn="Facility.IsDeactivated">Available</th>
                     <th pSortableColumn="Facility.CreatedAt">Created At</th>
                     <th>Actions</th>
                 </tr>
@@ -42,15 +41,16 @@
                 <tr>
                     <td>{{ facility.Facility.Id }}</td>
                     <td>{{ facility.Facility.Name }}</td>
-                    <td>{{ facility.Facility.Description }}</td>
                     <td>
-                        <p-tag [value]="facility.Facility.IsDeactivated ? 'Deactivated' : 'Active'"
+                        <p-tag [value]="facility.Facility.IsDeactivated ? 'Deactivated' : 'Activate'"
                             [severity]="facility.Facility.IsDeactivated ? 'danger' : 'success'" />
                     </td>
                     <td>{{ facility.Facility.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                     <td>
-                        <p-button (click)="confirmDelete($event, facility.Facility.Id)" label="Delete" severity="danger"
-                            [outlined]="true" />
+                        <p-button (click)="confirmDelete($event, facility.Facility.Id)" severity="danger"
+                            [outlined]="true">
+                            <i class="pi pi-trash"></i>
+                        </p-button>
                         <p-button (click)="showDialogUpdate(facility.Facility.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
@@ -63,10 +63,10 @@
 <p-dialog header="Add Facility" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
     @if(loadingAdd) {
-        <div class="spinner-overlay">
-            <p-progressSpinner></p-progressSpinner>
-        </div>
-        }
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Ảnh Facility -->
     <div class="text-center mb-3">
         @if (logoUrl) {
@@ -131,6 +131,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Status</th>
+                            <th>Available</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-major>
@@ -141,6 +142,10 @@
                                 <span [class.text-success]="major.IsOpen" [class.text-danger]="!major.IsOpen">
                                     {{ major.IsOpen ? 'Open' : 'Closed' }}
                                 </span>
+                            </td>
+                            <td>
+                                <p-tag [value]="major.IsDeactivated ? 'Deactivated' : 'Activate'"
+                                    [severity]="major.IsDeactivated ? 'danger' : 'success'" />
                             </td>
                         </tr>
                     </ng-template>

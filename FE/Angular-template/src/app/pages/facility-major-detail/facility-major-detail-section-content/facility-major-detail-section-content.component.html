@@ -1,3 +1,11 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+@if(isLoading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
 <section class="">
     <div class="container">
         <div class="row">
@@ -5,7 +13,7 @@
                 <!-- Khung Giới thiệu lĩnh vực -->
                 <div class="col-md-8 mb-3">
                     <div class="section-introduce">
-                        <h3 class="title rounded-top">Giới thiệu lĩnh vực</h3>
+                        <h3 class="title rounded-top">Field Introduction</h3>
                         <div class="content p-3">
                             <div class="description">
                                 <!-- Hiển thị mô tả chính -->
@@ -18,16 +26,15 @@
                 <!-- Khung Thông tin liên quan -->
                 <div class="col-md-4 mb-3">
                     <div class="section-introduce">
-                        <h3 class="title rounded-top">Thông tin liên quan</h3>
+                        <h3 class="title rounded-top">Related Information</h3>
                         <div class="content p-3">
                             <div class="description">
                                 <ul class="list-unstyled">
-                                    <li><strong>Ca làm việc: </strong>{{ workShifstDescription }}</li>
-                                    <li><strong>Trạng thái mở: </strong>{{ isOpen }}</li>
-                                    <li><strong>Ngày mở: </strong>{{ openScheduleDate }}</li>
-                                    <li><strong>Ngày đóng: </strong>{{ closeScheduleDate }}</li>
-                                    <li><strong>Loại lĩnh vực: </strong>{{ facilityMajorTypeId }}</li>
-                                    <li><strong>Trạng thái vô hiệu: </strong>{{ isDeactivated }}</li>
+                                    <li><strong>Work shift: </strong>{{ workShifstDescription }}</li>
+                                    <li><strong>Status: </strong>{{ isOpen }}</li>
+                                    <li><strong>Open date: </strong>{{ openScheduleDate }}</li>
+                                    <li><strong>Close date: </strong>{{ closeScheduleDate }}</li>
+                                    <li><strong>Major type: </strong>{{ facilityMajorTypeId }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -37,10 +44,15 @@
 
             <div class="col-md-8 mb-3">
                 <div class="section-introduce">
-                    <h3 class="title rounded-top">Danh sách Service</h3>
+                    <h3 class="title rounded-top">Service List</h3>
+                    @if(loadingService) {
+                    <div class="spinner-overlay">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                    }
                     <div class="content p-3">
                         <!-- Top-level Tabs: Service và Contact -->
-                        <p-tabs [value]="selectedTopTab" (onChange)="onTopTabChange($event)">
+                        <p-tabs [value]="selectedTopTab" (valueChange)="onTopTabChange($event)">
                             <p-tablist>
                                 @for (tab of topTabs; track $index) {
                                 <p-tab [value]="tab.value">{{ tab.label }}</p-tab>
@@ -49,7 +61,8 @@
                             <p-tabpanels>
                                 <!-- TabPanel cho Service (gom 1 & 2) -->
                                 <p-tabpanel [value]="0">
-                                    <p-tabs [value]="selectedServiceSubTab" (onChange)="onServiceSubTabChange($event)">
+                                    <p-tabs [value]="selectedServiceSubTab"
+                                        (valueChange)="onServiceSubTabChange($event)">
                                         <p-tablist>
                                             @for (subTab of serviceSubTabs; track $index) {
                                             <p-tab [value]="subTab.value">{{ subTab.label }}</p-tab>
@@ -58,19 +71,21 @@
                                         <p-tabpanels>
                                             @for (subTab of serviceSubTabs; track $index) {
                                             <p-tabpanel [value]="subTab.value">
-                                                @for (service of filteredServices; track $index) {
+                                                @for (service of filteredservices; track $index) {
                                                 <a [routerLink]="['/service-major-detail', service.Service.Id]"
-                                                    class="text-decoration-none">
-                                                    <p-card class="service-card w-100">
+                                                    class="text-decoration-none mb-3">
+                                                    <div class="shadow-sm bg-light mb-3 p-3">
                                                         <div class="d-flex align-items-center">
-                                                            <img [src]="service.Service.ImageUrl" class="major-logo" />
-                                                            <div class="ms-3 flex-grow-1">
-                                                                <h5 class="service-title">{{ service.Service.Name }}
-                                                                </h5>
-                                                                <p class="major-name">{{ service.Major.Name }}</p>
+                                                            <img [src]="service.Service.ImageUrl"
+                                                                class="img-thumbnail me-3"
+                                                                style="width: 130px; height: 130px; object-fit: contain;" />
+                                                            <div class="flex-grow-1">
+                                                                <h5 class="mb-1 fw-bold text-dark">{{
+                                                                    service.Service.Name }}</h5>
+                                                                <p class="mb-0 text-muted">{{ service.Major.Name }}</p>
                                                             </div>
                                                         </div>
-                                                    </p-card>
+                                                    </div>
                                                 </a>
                                                 }
                                             </p-tabpanel>
@@ -80,18 +95,20 @@
                                 </p-tabpanel>
                                 <!-- TabPanel cho Contact -->
                                 <p-tabpanel [value]="3">
-                                    @for (service of filteredServices; track $index) {
+                                    @for (service of filteredservices; track $index) {
                                     <a [routerLink]="['/service-major-detail', service.Service.Id]"
-                                        class="text-decoration-none">
-                                        <p-card class="service-card w-100">
+                                        class="text-decoration-none mb-3">
+                                        <div class="shadow-sm bg-light mb-3 p-3">
                                             <div class="d-flex align-items-center">
-                                                <img [src]="service.Service.ImageUrl" class="major-logo" />
-                                                <div class="ms-3 flex-grow-1">
-                                                    <h5 class="service-title">{{ service.Service.Name }}</h5>
-                                                    <p class="major-name">{{ service.Major.Name }}</p>
+                                                <img [src]="service.Service.ImageUrl" class="img-thumbnail me-3"
+                                                    style="width: 130px; height: 130px; object-fit: contain;" />
+                                                <div class="flex-grow-1">
+                                                    <h5 class="mb-1 fw-bold text-dark">{{
+                                                        service.Service.Name }}</h5>
+                                                    <p class="mb-0 text-muted">{{ service.Major.Name }}</p>
                                                 </div>
                                             </div>
-                                        </p-card>
+                                        </div>
                                     </a>
                                     }
                                 </p-tabpanel>
@@ -103,55 +120,98 @@
             </div>
 
         </div>
-
+        @if(!feedbackStatus) {
         <!-- review.component.html -->
         <div class="review-card p-3 border rounded shadow-sm">
             <div class="text-center">
-                <h3>Feedback của bạn</h3>
+                <h3>Rate us</h3>
             </div>
-            <p-card class="mb-3">
+            <button type="button" class="btn btn-success" (click)="showDialogFeedback()">Evaluate</button>
+        </div>
+        }
+        @else {
+        <div class="review-card p-3 border rounded shadow-sm mb-4">
+            <div class="text-center mb-3">
+                <h3>Your Feedback</h3>
+            </div>
+            <p-card>
                 <div class="d-flex align-items-center gap-2">
-                    <!-- Avatar -->
-                    <p-avatar [label]="feedback.name[0]" shape="circle" styleClass="bg-primary text-white"></p-avatar>
+                    <!-- Avatar: lấy chữ cái đầu của FullName -->
+                    <p-avatar [label]="myFeedback.Account.FullName.charAt(0)" shape="circle"
+                        styleClass="bg-primary text-white">
+                    </p-avatar>
                     <div>
-                        <h6 class="mb-0">{{ feedback.name }}</h6>
-                        <small class="text-muted">{{ feedback.date }}</small>
+                        <h6 class="mb-0">{{ myFeedback.Account.FullName }}</h6>
+                        <small class="text-muted">{{ myFeedback.Feedback.CreatedAt }}</small>
                     </div>
                 </div>
 
                 <!-- Rating -->
-                <p-rating [(ngModel)]="feedback.rating" [readonly]="true" [disabled]="true" class="mt-2"></p-rating>
+                <div class="mt-3">
+                    <p-rating [ngModel]="myFeedback.Feedback.Rate" [readonly]="true">
+                    </p-rating>
+                </div>
 
                 <!-- Nội dung feedback -->
-                <p class="mt-2">
-                    {{ feedback.comment }}
-                </p>
-                <p-button (click)="showDialogFeedback()" label="Update my feedback" />
+                <div class="mt-3">
+                    <textarea class="form-control bg-light border rounded" rows="4" readonly>
+                      {{ myFeedback.Feedback.Content }}
+                    </textarea>
+                </div>
+
+                <!-- Nút xoá -->
+                <div class="d-flex justify-content-end mt-3">
+                    <p-button label="Delete my feedback" icon="pi pi-pencil"
+                        (click)="confirmDelete($event, myFeedback.Feedback.Id)">
+                    </p-button>
+                </div>
             </p-card>
         </div>
+        }
+
         <!-- Dialog Review -->
-        <p-dialog header="Update Feedback" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-            <p-card class="mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <!-- Avatar -->
-                    <p-avatar [label]="feedback.name[0]" shape="circle" styleClass="bg-primary text-white"></p-avatar>
+        <p-dialog header="Update Feedback" [(visible)]="addFeedback" [modal]="true" [style]="{ width: '30rem' }">
+            <div class="card mb-3 p-3">
+                @if(isLoading) {
+                <div class="spinner-overlay">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+                }
+                <div class="d-flex align-items-center gap-3">
+                    <p-avatar [label]="userName[0]" shape="circle" styleClass="bg-primary text-white"></p-avatar>
                     <div>
-                        <h6 class="mb-0">{{ feedback.name }}</h6>
-                        <small class="text-muted">{{ feedback.date }}</small>
+                        <h6 class="mb-0">{{ userName }}</h6>
                     </div>
                 </div>
 
-                <!-- Rating -->
-                <p-rating [(ngModel)]="feedback.rating" [readonly]="true" [disabled]="true" class="mt-2"></p-rating>
+                <form [formGroup]="addFeedbackForm">
+                    <!-- Rating -->
+                    <div class="mt-3">
+                        <p-rating formControlName="Rate" class="mt-2"></p-rating>
+                        <!-- Hiển thị lỗi nếu không chọn rating -->
+                        @if (addFeedbackForm.controls['Rate'].invalid && addFeedbackForm.controls['Rate'].touched) {
+                        <small class="text-danger">Please select a rating between 1 and 5</small>
+                        }
+                    </div>
 
-                <!-- Nội dung feedback -->
-                <p class="mt-2">
-                    <textarea rows="5" cols="30" pTextarea class="w-100" [(ngModel)]="value"></textarea>
-                </p>
-            </p-card>
-            <div class="flex justify-end gap-2">
-                <p-button label="Cancel" severity="secondary" (click)="visible = false" />
-                <p-button label="Save" (click)="visible = false" />
+                    <!-- Feedback content -->
+                    <div class="mt-3">
+                        <label for="feedbackContent" class="form-label">Feedback Content</label>
+                        <textarea id="feedbackContent" rows="3" pTextarea class="form-control"
+                            formControlName="Content"></textarea>
+                        <!-- Hiển thị lỗi nếu nội dung không hợp lệ -->
+                        @if (addFeedbackForm.controls['Content'].invalid && addFeedbackForm.controls['Content'].touched)
+                        {
+                        <small class="text-danger">Content is required and cannot exceed 250 characters</small>
+                        }
+                    </div>
+
+                    <!-- Footer buttons -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <p-button label="Cancel" severity="secondary" (click)="hideDialogFeedback()" class="me-2" />
+                        <p-button label="Save" (click)="saveFeedback($event)" [disabled]="addFeedbackForm.invalid" />
+                    </div>
+                </form>
             </div>
         </p-dialog>
 
@@ -160,6 +220,11 @@
             <div class="text-center mb-3">
                 <h3>Feedback liên quan</h3>
             </div>
+            @if(loadingFeedback) {
+            <div class="spinner-overlay">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
             @for(feedback of paginatedFeedbacks; track feedback) {
             <div class="mb-3">
                 <p-card class="mb-3">

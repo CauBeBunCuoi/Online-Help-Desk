@@ -53,6 +53,8 @@ export class TaskAssignmentsComponent implements OnInit {
   addTaskRequestForm: FormGroup;
   add: boolean = false;
 
+  userId: number;
+
   constructor(
     private facilityMajorService: FacilityMajorService,
     private messageService: MessageService,
@@ -60,16 +62,31 @@ export class TaskAssignmentsComponent implements OnInit {
     private fb: FormBuilder,
     private taskRequestService: TaskRequestService,
   ) {
-    this.addTaskRequestForm = this.fb.group({
-      Description: ['', [Validators.minLength(3)]],
-      RequesterId: 1,
-      FacilityMajorId: [null, Validators.required],
-    });
   }
 
   ngOnInit() {
+    // Lấy thông tin từ localStorage
+    const authDataString = localStorage.getItem('auth');
+
+    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
+    if (authDataString) {
+      const authData = JSON.parse(authDataString);
+      console.log(authData); // Kiểm tra dữ liệu auth
+
+      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
+      if (authData.user && authData.user.id) {
+        this.userId = authData.user.id;
+        console.log('User ID:', this.userId); // In ra userId
+      }
+    }
     this.loadMajorOptions();
     this.loadTaskRequests();
+    
+    this.addTaskRequestForm = this.fb.group({
+      Description: ['', [Validators.minLength(3)]],
+      RequesterId: this.userId,
+      FacilityMajorId: [null, Validators.required],
+    });
   }
 
   loadMajorOptions() {

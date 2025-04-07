@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+<p-confirmdialog />
 <section class="major-detail-header mt-3">
     <div class="container">
         <div class="major-cover-inner">
@@ -13,23 +15,61 @@
                 <div class="title">
                     <h1>{{ name }}</h1>
                 </div>
-                <button type="button" class="btn btn-danger" (click)="showDialog()">Report</button>
+                <button type="button" class="btn btn-danger" (click)="showDialogReport()">Report</button>
             </div>
-            <p-dialog header="Report Facility Major" [(visible)]="visible" [modal]="true" [style]="{ width: '400px' }">
-                <div class="text-muted mb-3">Report form</div>
-
-                <div class="mb-3 row align-items-center">
-                    <label for="description" class="col-sm-4 col-form-label fw-bold">Description</label>
+            
+        <!-- //"Add Report -->
+        <p-dialog header="Add Report" [modal]="true" [(visible)]="addReport" [style]="{ width: '40rem' }" [closable]="false">
+            <span class="text-muted d-block mb-3">Submit report for this major</span>
+        
+            @if (loadingAdd) {
+                <div class="spinner-overlay">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+            }
+        
+            <form [formGroup]="addReportForm">
+                <!-- Report Type -->
+                <div class="mb-3 row">
+                    <label for="ReportTypeId" class="col-sm-4 col-form-label fw-semibold">Report Type</label>
                     <div class="col-sm-8">
-                        <input pInputText id="description" class="form-control" autocomplete="off" />
+                        <p-select 
+                            [options]="reportTypes" 
+                            optionLabel="Name" 
+                            optionValue="Id" 
+                            formControlName="ReportTypeId" 
+                            placeholder="Select Report Type">
+                        </p-select>
+                        @if (addReportForm.controls['ReportTypeId'].invalid && addReportForm.controls['ReportTypeId'].touched) {
+                            <small class="text-danger">Report type is required.</small>
+                        }
                     </div>
                 </div>
-
-                <div class="d-flex justify-content-end gap-2">
-                    <p-button label="Cancel" severity="secondary" (click)="visible = false"></p-button>
-                    <p-button label="Save" (click)="visible = false"></p-button>
+        
+                <!-- Content -->
+                <div class="mb-3 row">
+                    <label for="Content" class="col-sm-4 col-form-label fw-semibold">Content</label>
+                    <div class="col-sm-8">
+                        <textarea 
+                            pInputTextarea 
+                            id="Content" 
+                            rows="5" 
+                            class="form-control" 
+                            formControlName="Content">
+                        </textarea>
+                        @if (addReportForm.controls['Content'].invalid && addReportForm.controls['Content'].touched) {
+                            <small class="text-danger">Content is required (min 5 characters).</small>
+                        }
+                    </div>
                 </div>
-            </p-dialog>
+        
+                <!-- Footer -->
+                <div class="d-flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (click)="hideDialogReport()" class="me-2" />
+                    <p-button label="Submit" (click)="submitReport()" [disabled]="addReportForm.invalid || loadingAdd" />
+                </div>
+            </form>
+        </p-dialog>
 
         </div>
     </div>

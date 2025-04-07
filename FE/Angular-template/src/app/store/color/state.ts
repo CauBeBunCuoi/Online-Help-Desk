@@ -1,6 +1,6 @@
 export interface ColorState {
   id: any | 0;
-  name: any | null;
+  name: any | null;  
   person: {
     name: string;
     age: number;

@@ -277,17 +277,16 @@ export class ServiceTableComponent implements OnInit {
             .then((response) => {
               if (response.success) {
                 successAlert(response.message.content);
-                this.actionCompleted.emit('Action completed');
                 this.hideDialogAdd();
               } else {
                 errorAlert(response.message.content);
               }
             })
             .catch((error) => {
-              console.error('❌ Lỗi khi thêm service:', error);
-              alert('Đã xảy ra lỗi khi thêm dịch vụ.');
+              errorAlert(error);
             })
             .finally(() => {
+              this.actionCompleted.emit('Action completed');
               this.loadingAdd = false; // Dừng loading dù thành công hay thất bại
             });
         } else {
@@ -338,7 +337,7 @@ export class ServiceTableComponent implements OnInit {
   // Thêm lịch trình vào dịch vụ
   addAvailability(event: any) {
     if (!this.selectedServiceId) {
-      alert('❌ Vui lòng chọn một dịch vụ trước khi thêm lịch trình.');
+      alert('Please select a service before adding a schedule.');
       return;
     }
     this.confirmationService.confirm({
@@ -503,8 +502,7 @@ export class ServiceTableComponent implements OnInit {
   // Cập nhật dịch vụ
   updateService(event: any) {
     if (!this.selectedServiceId) {
-      console.error('❌ Service ID không hợp lệ');
-      alert('Vui lòng chọn service cần cập nhật!');
+      alert('Please choose the service to update!');
       return;
     }
     this.confirmationService.confirm({
@@ -536,8 +534,7 @@ export class ServiceTableComponent implements OnInit {
               }
             })
             .catch(error => {
-              console.error('❌ Lỗi cập nhật service:', error);
-              alert('Đã xảy ra lỗi khi cập nhật service.');
+              errorAlert(error);
             })
             .finally(() => {
               this.loading = false; // Kết thúc trạng thái loading

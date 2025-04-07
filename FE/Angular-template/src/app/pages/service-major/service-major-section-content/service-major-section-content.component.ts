@@ -7,7 +7,9 @@ import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
-import { ServiceManagementService } from '../../../core/services/service-management.service';
+import { ServiceManagementService } from '../../../core/service/service-management.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-service-major-section-content',
@@ -18,6 +20,7 @@ import { ServiceManagementService } from '../../../core/services/service-managem
     ChipModule,
     TagModule,
     DividerModule,
+    ProgressSpinnerModule,
     AvatarModule,
     RouterLink,
   ],
@@ -34,10 +37,12 @@ export class ServiceMajorSectionContentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceManagementService.getServicesByHead(1).then(
+    
+    this.isLoading = true;
+    this.serviceManagementService.getAllServices().then(
       (data) => {
         console.log(data);
-        this.services = data.Services;
+        this.services = data.data.Services;
       }
     )
       .catch(error => {

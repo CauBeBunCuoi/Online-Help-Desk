@@ -102,4 +102,11 @@ export class FacilityItemService {
   }
 
   // delete
+  deleteItem(itemId: number) {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'delete',
+      url: API_PREFIX + `/${itemId}`,
+    }, "Update Item Remove");
+  }
 }

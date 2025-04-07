@@ -40,7 +40,11 @@
         <div class="mb-3 row">
             <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
             <div class="col-sm-8">
-                <input pInputText id="Description" class="form-control" formControlName="Description" />
+                <!-- <input pInputText id="Description" class="form-control" formControlName="Description" /> -->
+                <div class="col-sm-8">
+                    <textarea pInputTextarea id="Description" class="form-control"
+                        formControlName="Description"></textarea>
+                </div>
                 @if (addTaskRequestForm.controls['Description'].invalid &&
                 addTaskRequestForm.controls['Description'].touched) {
                 <small class="text-danger">
@@ -54,7 +58,7 @@
             <label for="FacilityMajorId" class="col-sm-4 col-form-label fw-semibold">Major</label>
             <div class="col-sm-8">
                 <p-select [options]="majorOptions" formControlName="FacilityMajorId" optionLabel="name" optionValue="id"
-                    [showClear]="true" placeholder="Select a Major" class="w-100">
+                    [showClear]="true" placeholder="Select a Major" appendTo="body" class="h-75">
                 </p-select>
                 @if (addTaskRequestForm.controls['FacilityMajorId'].invalid &&
                 addTaskRequestForm.controls['FacilityMajorId'].touched) {

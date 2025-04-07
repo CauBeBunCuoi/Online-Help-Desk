@@ -1,3 +1,6 @@
+<p-toast></p-toast>
+<p-confirmdialog />
+
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
     <div class="card p-4 shadow-lg rounded" style="width: 420px;">
         <h2 class="text-center text-primary mb-3">Cập Nhật Thông Tin</h2>
@@ -44,7 +47,7 @@
 
             <!-- Buttons -->
             <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-primary" (click)="updateMember()" [disabled]="updateMemberForm.invalid">Cập Nhật</button>
+                <button class="btn btn-primary" (click)="updateMember($event)" [disabled]="updateMemberForm.invalid">Cập Nhật</button>
             </div>
         </form>
     </div>

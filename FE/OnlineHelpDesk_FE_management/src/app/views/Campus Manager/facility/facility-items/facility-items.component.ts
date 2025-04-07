@@ -150,9 +150,25 @@ export class FacilityItemsComponent implements OnInit {
       header: 'Danger Zone',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
-      rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
-      acceptButtonProps: { label: 'Delete', severity: 'danger' },
+      rejectButtonProps: {
+        label: 'Cancel',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Delete',
+        severity: 'danger',
+      },
       accept: () => {
+        this.loading = true;
+        this.facilityItemService.deleteItem(id).then((response: any) => {
+          if (response.success) {
+            successAlert(response.message.content);
+            this.loadFacilityItem();
+          } else {
+            errorAlert(response.message.content);
+          }
+        });
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
       },
       reject: () => {
@@ -257,8 +273,7 @@ export class FacilityItemsComponent implements OnInit {
 
   updateFacilityItemMain(event: any) {
     if (!this.selectedFacilityItemId) {
-      console.error('❌ Item ID không hợp lệ');
-      alert('Vui lòng chọn item cần cập nhật!');
+      alert('Please choose the item to update!');
       return;
     }
     this.confirmationService.confirm({
@@ -281,7 +296,7 @@ export class FacilityItemsComponent implements OnInit {
         const formValue = this.updateFacilityItemFormMain.value;
         console.log('Count Value:', formValue.Count);
         if (formValue.Count < this.count) {
-          alert('Số lượng không được nhỏ hơn count!');
+          alert('Amount can not smaller than count!');
           return;
         }
         this.facilityItemService.updateItem(this.selectedFacilityItemId!, this.updateFacilityItemFormMain.value)
@@ -355,8 +370,7 @@ export class FacilityItemsComponent implements OnInit {
 
   updateFacilityItem() {
     if (!this.selectedFacilityItemId) {
-      console.error('❌ Item ID không hợp lệ');
-      alert('Vui lòng chọn item cần cập nhật!');
+      alert('Please choose the item to update!');
       return;
     }
 
@@ -366,12 +380,12 @@ export class FacilityItemsComponent implements OnInit {
     // Kiểm tra nếu action là "add" hoặc "remove" thì amount phải có giá trị
     if (action === 'add' || action === 'remove') {
       if (formValue.Amount == null || formValue.Amount <= 0) {
-        alert('Vui lòng nhập Amount hợp lệ (lớn hơn 0)!');
+        alert('Please input the amount valid > 0!');
         return;
       }
       // Nếu action là remove, kiểm tra Amount không vượt quá Count
       if (action === 'remove' && formValue.Amount > formValue.Count) {
-        alert('Amount không được lớn hơn Count!');
+        alert('Amount can not larger than count!');
         return;
       }
     }
@@ -443,17 +457,18 @@ export class FacilityItemsComponent implements OnInit {
       reader.onload = (e: any) => {
         this.imageUrl = e.target.result;
         this.addFacilityItemForm.patchValue({ Image: e.target.result });
+        this.updateFacilityItemFormMain.patchValue({ Image: e.target.result });
       };
       reader.readAsDataURL(file);
     }
   }
 
   // Mở dialog hiển thị bảng FacilityMajor với số lượng tối đa (count)
-  showDialogFacilityMajorTable(id: number, count: number) {
+  showDialogFacilityMajorTable(id: number, count: number, inUseCount: number) {
     this.selectedFacilityItemId = id;
     this.count = count;
     this.amount = 0;
-    this.remainingAmount = count;
+    this.remainingAmount = count - inUseCount;
     this.selectedFacilityMajors = [];
     this.facilityMajorTable = true;
   }

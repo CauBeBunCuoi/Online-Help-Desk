@@ -64,6 +64,9 @@ export class TaskAssignmentsTableComponent implements OnInit {
   loadingUpdate: boolean = false; // Trạng thái loading khi cập nhật
   activityValues: number[] = [0, 100];
 
+  userId: number;
+
+
   constructor(
     private confirmationService: ConfirmationService, private messageService: MessageService,
     private taskRequestService: TaskRequestService,
@@ -74,16 +77,30 @@ export class TaskAssignmentsTableComponent implements OnInit {
       CancelReason: [''],
       Description: ['', [Validators.minLength(3)]],
       MajorId: [{ value: null, disabled: true }, [Validators.required]],
-      RequesterId: [1, [Validators.required]],
+      RequesterId: [this.userId, [Validators.required]],
       Action: [''],
     });
   }
 
   ngOnInit() {
+    // Lấy thông tin từ localStorage
+    const authDataString = localStorage.getItem('auth');
+
+    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
+    if (authDataString) {
+      const authData = JSON.parse(authDataString);
+      console.log(authData); // Kiểm tra dữ liệu auth
+
+      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
+      if (authData.user && authData.user.id) {
+        this.userId = authData.user.id;
+        console.log('User ID:', this.userId); // In ra userId
+      }
+    }
     this.loadMajorOptions();
   }
 
-  // Tìm kiếm toàn cục
+  // Search toàn cục
   onGlobalFilter(event: Event, dt: any) {
     const inputElement = event.target as HTMLInputElement;
     dt.filterGlobal(inputElement?.value, 'contains');

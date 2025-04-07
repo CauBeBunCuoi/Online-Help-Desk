@@ -13,7 +13,7 @@
             [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Item.Name"
             [globalFilterFields]="['Item.Name']" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
 
-            <!-- Thanh tìm kiếm chung -->
+            <!-- Thanh Search chung -->
             <ng-template #caption>
                 <div class="d-flex justify-content-end">
                     <p-iconfield iconPosition="left">
@@ -30,7 +30,7 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="Item.Id">ID</th>
-                    <th pSortableColumn="Item.Name">Facility Item Name</th>
+                    <th pSortableColumn="Item.Name">Name</th>
                     <th pSortableColumn="Item.Count">Total Quantity</th>
                     <th pSortableColumn="Item.InUseCount">In Use</th>
                     <th pSortableColumn="Item.CreatedAt">Created At</th>
@@ -49,12 +49,14 @@
                     <td>{{ item.Item.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ item.Item.UpdatedAt | date: 'dd/MM/yyyy' }}</td>
                     <td>
-                        <p-button (click)="confirmDelete($event, item.Item.Id)" label="Delete" severity="danger"
-                            [outlined]="true" />
-                        <p-button (click)="showDialogFacilityMajorTable(item.Item.Id, item.Item.Count)" label="Update 1"
-                            class="ms-2" />
-                        <p-button (click)="showDialogUpdate(item.Item.Id)" label="Update" class="ms-2" />
-                        <p-button (click)="showDialogUpdateMain(item.Item.Id)" label="Update 2" class="ms-2" />
+                        <p-button (click)="confirmDelete($event, item.Item.Id)" severity="danger" [outlined]="true">
+                            <i class="pi pi-trash"></i>
+                        </p-button>
+                        <p-button
+                            (click)="showDialogFacilityMajorTable(item.Item.Id, item.Item.Count, item.Item.InUseCount)"
+                            label="Assign" class="ms-2" />
+                        <p-button (click)="showDialogUpdate(item.Item.Id)" label="Quantity" class="ms-2" />
+                        <p-button (click)="showDialogUpdateMain(item.Item.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
             </ng-template>
@@ -69,9 +71,9 @@
     <!-- Ảnh Item -->
     <div class="text-center mb-3">
         @if (imageUrl) {
-        <p-avatar [image]="imageUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
         } @else {
-        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
+        <p-avatar icon="pi pi-image" class="custom-avatar mb-3"></p-avatar>
         }
         <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
             (onSelect)="onFileSelect($event)" />
@@ -120,7 +122,7 @@
                 [globalFilterFields]="['Major.Name', 'Major.IsOpen']" [sortOrder]="-1"
                 [tableStyle]="{ 'min-width': '20rem' }">
 
-                <!-- Thanh tìm kiếm -->
+                <!-- Thanh Search -->
                 <ng-template #caption>
                     <div class="d-flex justify-content-end">
                         <p-iconfield iconPosition="left">
@@ -163,11 +165,11 @@
             <form [formGroup]="updateFacilityItemFormMain">
                 <div class="text-center mb-3">
                     @if(imageUrl) {
-                    <p-avatar [image]="imageUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                    <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
                     }
                     @else {
                     <ng-template #noImage>
-                        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                        <p-avatar icon="pi pi-image" class="custom-avatar mb-3"></p-avatar>
                     </ng-template>
                     }
                     <p-fileUpload #fileUploadRef mode="basic" accept="image/*" chooseLabel="Choose Image"
@@ -190,7 +192,7 @@
                 <div class="mb-3 row">
                     <label for="count" class="col-sm-4 col-form-label fw-semibold">Count</label>
                     <div class="col-sm-8">
-                        <input pInputText id="count" type="number" class="form-control" formControlName="Count"/>
+                        <input pInputText id="count" type="number" class="form-control" formControlName="Count" />
                         @if(updateFacilityItemFormMain.controls['Count'].invalid &&
                         updateFacilityItemFormMain.controls['Count'].touched) {
                         <small class="text-danger">Count must be at least 1.
@@ -222,7 +224,7 @@
                 [globalFilterFields]="['Major.Name', 'Major.IsOpen']" [sortOrder]="-1"
                 [tableStyle]="{ 'min-width': '20rem' }">
 
-                <!-- Thanh tìm kiếm -->
+                <!-- Thanh Search -->
                 <ng-template #caption>
                     <div class="d-flex justify-content-end">
                         <p-iconfield iconPosition="left">
@@ -265,11 +267,11 @@
             <form [formGroup]="updateFacilityItemForm">
                 <div class="text-center mb-3">
                     @if(imageUrl) {
-                    <p-avatar [image]="imageUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                    <p-avatar [image]="imageUrl" class="custom-avatar mb-3"></p-avatar>
                     }
                     @else {
                     <ng-template #noImage>
-                        <p-avatar icon="pi pi-image" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                        <p-avatar icon="pi pi-image" class="custom-avatar mb-3"></p-avatar>
                     </ng-template>
                     }
                 </div>
@@ -278,7 +280,7 @@
                 <div class="mb-3 row">
                     <label for="name" class="col-sm-4 col-form-label fw-semibold">Item Name</label>
                     <div class="col-sm-8">
-                        <input pInputText id="name" class="form-control" formControlName="Name" readonly/>
+                        <input pInputText id="name" class="form-control" formControlName="Name" readonly />
                         @if(updateFacilityItemForm.controls['Name'].invalid &&
                         updateFacilityItemForm.controls['Name'].touched) {
                         <small class="text-danger">Item Name is required (Min 3 chars).</small>
@@ -335,7 +337,7 @@
 
     <!-- Số lượng khả dụng -->
     <div class="mb-3">
-        <label for="amount" class="form-label fw-semibold">Tổng khả dụng: {{ count }}</label><br>
+        <label for="amount" class="form-label fw-semibold">Total Quantity: {{ count }}</label><br>
         <p-inputnumber inputId="amount" [(ngModel)]="amount" (onInput)="onAmountInput()" [min]="1" [max]="count" />
         &nbsp;<small class="text-muted">Remaining: {{ remainingAmount }}</small>
     </div>
@@ -351,7 +353,6 @@
                 <th style="width: 4rem"></th>
                 <th pSortableColumn="Major.Id">ID</th>
                 <th pSortableColumn="Major.Name">Name</th>
-                <th pSortableColumn="Major.MainDescription">Main Description</th>
                 <th pSortableColumn="Major.WorkShiftsDescription">Work Shift</th>
                 <th pSortableColumn="Major.IsOpen">Status</th>
                 <th>Action</th>
@@ -367,15 +368,15 @@
                 </td>
                 <td>{{ major.Major.Id }}</td>
                 <td>{{ major.Major.Name }}</td>
-                <td>{{ major.Major.MainDescription }}</td>
                 <td>{{ major.Major.WorkShiftsDescription }}</td>
                 <td>
                     <p-tag [value]="major.Major.IsOpen ? 'Open' : 'Closed'"
                         [severity]="major.Major.IsOpen ? 'success' : 'danger'" />
                 </td>
                 <td>
-                    <p-button (click)="confirmDelete($event, major.Major.Id)" label="Delete" severity="danger"
-                        [outlined]="true" />
+                    <p-button (click)="confirmDelete($event, major.Major.Id)" severity="danger" [outlined]="true">
+                        <i class="pi pi-trash"></i>
+                    </p-button>
                 </td>
             </tr>
         </ng-template>

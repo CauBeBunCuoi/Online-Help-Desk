@@ -14,14 +14,14 @@
   'Report.IsResolved', 
   'Report.CreatedAt'
 ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
-        <!-- Thanh tìm kiếm chung -->
+        <!-- Thanh Search chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-end">
                 <p-iconfield iconPosition="left">
                     <p-inputicon>
                         <i class="pi pi-search"></i>
                     </p-inputicon>
-                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)" placeholder="Tìm kiếm report" />
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)" placeholder="Search report" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -53,7 +53,6 @@
                 </td>
                 <td>{{ report.Report.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event)" label="Delete" severity="danger" [outlined]="true" />
                     <p-button (click)="showDialogUpdate(report.Report.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
@@ -65,10 +64,10 @@
 <p-dialog header="Report Details" [modal]="true" [(visible)]="update" [closable]="false" [style]="{ width: '50rem' }">
     <form [formGroup]="detailReportForm">
         @if(loadingUpdate) {
-            <div class="spinner-overlay">
-                <p-progressSpinner></p-progressSpinner>
-            </div>
-            }
+        <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
         <!-- User Info -->
         <div class="mb-3 d-flex align-items-center">
             @if(accountInfo?.ImageUrl) {
@@ -100,27 +99,10 @@
             <label for="Content" class="form-label fw-semibold">Report Content</label>
             <textarea id="Content" class="form-control" formControlName="Content" rows="3" readonly></textarea>
         </div>
-
-        <!-- Is Resolved -->
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Status</label>
-            <div class="form-check">
-                <input type="checkbox" id="IsResolved" class="form-check-input" formControlName="IsResolved" />
-                <label for="IsResolved" class="form-check-label">
-                    {{ detailReportForm.controls['IsResolved'].value ? 'Resolved' : 'Pending' }}
-                </label>
-            </div>
-        </div>
-
-        <!-- IsDeactivated -->
-        <div class="mb-3 form-check">
-            <input type="checkbox" id="IsDeactivated" class="form-check-input" formControlName="IsDeactivated" />
-            <label for="IsDeactivated" class="form-check-label">Deactivated</label>
-        </div>
-
+        
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
-            <p-button label="Update" severity="success" (click)="updateReportStatus($event)" />
+            <p-button label="Resolved" severity="success" (click)="updateReportStatus($event)" />
             <p-button label="Close" severity="secondary" (click)="hideDialogDetail()" />
         </div>
     </form>

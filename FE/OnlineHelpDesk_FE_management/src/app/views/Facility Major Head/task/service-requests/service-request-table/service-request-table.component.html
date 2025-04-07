@@ -11,7 +11,7 @@
         [globalFilterFields]="['ServiceRequest.Id', 'Requester.FullName', 'ServiceRequest.RequestInitDescription', 'Major.Name', 'RequestStatus.Name']"
         [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
 
-        <!-- Thanh tìm kiếm chung -->
+        <!-- Thanh Search chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-end">
                 <p-iconfield iconPosition="left">
@@ -19,7 +19,7 @@
                         <i class="pi pi-search"></i>
                     </p-inputicon>
                     <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                        placeholder="Tìm kiếm yêu cầu dịch vụ" />
+                        placeholder="Search yêu cầu dịch vụ" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -28,9 +28,10 @@
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="ServiceRequest.Id">ID</th>
-                <th pSortableColumn="Requester.FullName">Name</th>
-                <th pSortableColumn="ServiceRequest.RequestInitDescription">Description</th>
+                <th pSortableColumn="Requester.FullName">Requester</th>
                 <th pSortableColumn="Major.Name">Major</th>
+                <th pSortableColumn="Service.ServiceTypeId">Service Type</th>
+                <th pSortableColumn="ServiceRequest.IsCancelAutomatically">Cancel Auto</th>
                 <th pSortableColumn="RequestStatus.Name">Status</th>
                 <th pSortableColumn="ServiceRequest.CreatedAt">Created At</th>
                 <th>Action</th>
@@ -42,11 +43,16 @@
             <tr>
                 <td>{{ request.ServiceRequest.Id }}</td>
                 <td>{{ request.Requester.FullName }}</td>
-                <td>{{ request.ServiceRequest.RequestInitDescription }}</td>
                 <td>{{ request.Major.Name }}</td>
+                <td>{{ request.Service.ServiceTypeId }}</td>
+                <td>
+                    <p-tag [value]="request.ServiceRequest.IsCancelAutomatically"
+                        [severity]="request.ServiceRequest.IsCancelAutomatically ? 'danger' : 'success'">
+                    </p-tag>
+                </td>
                 <td>
                     <p-tag [value]="request.RequestStatus.Name"
-                        [severity]="request.RequestStatus.Name === 'Pending' ? 'warn' : 'success'">
+                        [severity]="statusSeverityMap[request.RequestStatus.Id]">
                     </p-tag>
                 </td>
                 <td>{{ request.ServiceRequest.CreatedAt | date: 'dd/MM/yyyy' }}</td>
@@ -115,7 +121,16 @@
         }
 
         <!-- ❌ Cancel Reason -->
-        @if (updateServiceRequestForm.get('Action')?.value === 'Canceled') {
+        <!-- @if (updateServiceRequestForm.get('Action')?.value === 'Canceled') {
+        <div class="mb-3 row">
+            <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
+            <div class="col-sm-8">
+                <textarea pInputTextarea id="CancelReason" class="form-control"
+                    formControlName="CancelReason"></textarea>
+            </div>
+        </div>
+        } -->
+        @if ([8].includes(updateServiceRequestForm.get('Action')?.value)) {
         <div class="mb-3 row">
             <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
             <div class="col-sm-8">
@@ -134,6 +149,7 @@
     </form>
 </p-dialog>
 
+
 <p-dialog header="Service Request Details" [modal]="true" [(visible)]="detail" [style]="{ width: '50rem' }"
     [closable]="false">
     <span class="text-muted d-block mb-3">Detailed Information</span>
@@ -144,77 +160,140 @@
     }
     <div *ngIf="serviceRequest" class="container">
         <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="fw-semibold">Service ID:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ServiceId }}</p>
+            <h3>Service Request</h3>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.Id }}</p>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request Request Init Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.RequestInitDescription">
+              </textarea>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request Request Result Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.RequestResultDescription">
+              </textarea>
             </div>
             <div class="col-md-6">
-                <label class="fw-semibold">Status:</label>
-                <p class="border rounded p-2 bg-light text-primary">{{ serviceRequest.RequestStatus.Name }}</p>
+                <label class="fw-semibold">Service Request Time Request:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.TimeRequest ?
+                    serviceRequest.ServiceRequest.TimeRequest : 'No value' }}</p>
             </div>
-        </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Request Date Request:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.DateRequest ?
+                    serviceRequest.ServiceRequest.DateRequest : 'No value' }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Request Is Cancel Automatically:</label>
+                <p class="border rounded p-2 bg-light text-danger">{{
+                    serviceRequest.ServiceRequest.IsCancelAutomatically }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Request Request Status:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.RequestStatus.Name }}</p>
+            </div>
+            <!-- <div class="col-md-12">
+                <label class="fw-semibold">Service Request ProgressNote:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ProgressNote }}</p>
+            </div> -->
 
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request ProgressNote:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.ProgressNote">
+              </textarea>
+            </div>
+
+            @if(serviceRequest.ServiceRequest.CancelReason) {
+            <div class="col-md-12">
+                <label class="fw-semibold">Cancel reason:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.CancelReason">
+                  </textarea>
+            </div>
+            }
+        </div>
+        <hr>
         <div class="row mb-3">
+            <h3>Requester</h3>
+            <div class="col-md-6">
+                <label class="fw-semibold">Requester ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.Id }}</p>
+            </div>
             <div class="col-md-6">
                 <label class="fw-semibold">Requester Name:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.FullName }}</p>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester. FullName }}</p>
             </div>
             <div class="col-md-6">
                 <label class="fw-semibold">Requester Email:</label>
                 <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.Email }}</p>
             </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label class="fw-semibold">Initial Description:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.RequestInitDescription }}</p>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label class="fw-semibold">Result Description:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.RequestResultDescription }}</p>
-            </div>
-        </div>
-
-        <div class="row mb-3">
             <div class="col-md-6">
-                <label class="fw-semibold">Time Requested:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.TimeRequest }}</p>
+                <label class="fw-semibold">Requester Phone:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Requester.Phone }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <h3>Service</h3>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ServiceId }}</p>
             </div>
             <div class="col-md-6">
-                <label class="fw-semibold">Date Requested:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.DateRequest }}</p>
+                <label class="fw-semibold">Service Name:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Service.Name }}</p>
             </div>
-        </div>
-
-        <div class="row mb-3">
             <div class="col-md-12">
-                <label class="fw-semibold">Progress Note:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ProgressNote }}</p>
+                <label class="fw-semibold">Service Work Shift Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.Service.WorkShiftsDescription">
+              </textarea>
             </div>
-        </div>
-
-        <div *ngIf="serviceRequest.ServiceRequest.IsCancelAutomatically" class="row mb-3">
             <div class="col-md-12">
-                <label class="fw-semibold text-danger">Cancel Reason:</label>
-                <p class="border rounded p-2 bg-light text-danger">{{ serviceRequest.ServiceRequest.CancelReason }}</p>
+                <label class="fw-semibold">Service Close Date:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Service.CloseScheduleDate ?
+                    serviceRequest.Service.CloseScheduleDate : 'No value' }}</p>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Open Date:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Service.OpenScheduleDate ?
+                    serviceRequest.Service.OpenScheduleDate : 'No value' }}</p>
             </div>
         </div>
-
+        <hr>
         <div class="row mb-3">
+            <h3>Major</h3>
             <div class="col-md-6">
-                <label class="fw-semibold">Created At:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.CreatedAt }}</p>
+                <label class="fw-semibold">Major ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Id }}</p>
             </div>
             <div class="col-md-6">
-                <label class="fw-semibold">Updated At:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.UpdatedAt }}</p>
+                <label class="fw-semibold">Major Name:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Name }}</p>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Major Work Shift Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.Major.WorkShiftsDescription">
+              </textarea>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Major Close Date:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.CloseScheduleDate ?
+                    serviceRequest.Major.CloseScheduleDate : 'No value' }}</p>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Major Open Date:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.OpenScheduleDate ?
+                    serviceRequest.Major.OpenScheduleDate : 'No value' }}</p>
             </div>
         </div>
-
+        <hr>
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Close" severity="secondary" (click)="hideDetailDialog()"></p-button>
         </div>

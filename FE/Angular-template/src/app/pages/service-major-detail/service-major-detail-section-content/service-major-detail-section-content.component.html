@@ -1,3 +1,11 @@
+<p-toast></p-toast>
+<p-confirmdialog />
+
+@if(isLoading) {
+<div class="spinner-overlay">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+}
 <section class="service-major-detail-content my-3">
   <div class="container">
     <div class="row">
@@ -45,18 +53,22 @@
           </div>
         </div>
       </div>
-
       <!-- Thông tin Lĩnh vực -->
       <div class="col-md-4 mb-3">
         <div class="section-introduce">
           <h3 class="title rounded-top">Thông tin Lĩnh vực</h3>
+          @if(isLoading) {
+          <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+          }
           <div class="content">
             <div class="description">
               <div class="company-card p-3 border rounded shadow-sm">
                 <div class="d-flex align-items-center mb-3">
                   <!-- Hình ảnh của lĩnh vực -->
-                  <img [src]="service?.Major?.ImageUrl" width="70px" height="70px" alt="Company Logo"
-                    class="company-logo me-3 rounded-circle shadow-sm" />
+                  <img [src]="service?.Major?.ImageUrl" width="80px" height="80px" alt="Company Logo"
+                    class="company-logo me-3 shadow-sm" />
 
                   <!-- Tên lĩnh vực -->
                   <div class="fw-bold fs-4 text-primary">{{ service?.Major?.Name }}</div>
@@ -114,14 +126,13 @@
       </div>
 
       <!-- Nếu serviceType == 1: Hiển thị Date & Time Request -->
-      <ng-container *ngIf="serviceType === 1">
+      <ng-container *ngIf="serviceType === 2">
         <!-- Date Request -->
         <div class="mb-3 row">
           <label for="DateRequest" class="col-sm-4 col-form-label fw-semibold">Date Request</label>
           <div class="col-sm-8">
             <p-select id="DateRequest" [options]="serviceSchedules" optionLabel="Date" optionValue="Date"
-              formControlName="DateRequest" placeholder="Select Date" appendTo="body"
-              (onChange)="onDayChange()">
+              formControlName="DateRequest" placeholder="Select Date" appendTo="body" (onChange)="onDayChange()">
             </p-select>
             <small
               *ngIf="addServiceRequestForm.controls['DateRequest'].invalid && addServiceRequestForm.controls['DateRequest'].touched"
@@ -148,7 +159,7 @@
       </ng-container>
 
       <!-- Nếu serviceType == 2: Chỉ hiển thị Description (đã có ở trên) -->
-      <ng-container *ngIf="serviceType === 2">
+      <ng-container *ngIf="serviceType === 1">
         <!-- Không có trường Date/Time -->
       </ng-container>
 
@@ -195,7 +206,7 @@
       <!-- Footer -->
       <div class="d-flex justify-content-end gap-2">
         <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2"></p-button>
-        <p-button label="Submit" (click)="addServiceRequest()" [disabled]="addServiceRequestForm.invalid"></p-button>
+        <p-button label="Submit" (click)="addServiceRequest($event)" [disabled]="addServiceRequestForm.invalid"></p-button>
       </div>
     </form>
   </p-dialog>

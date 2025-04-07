@@ -1,5 +1,3 @@
-import Swal from "sweetalert2";
-
 export interface MessResponse {
     success: boolean;
     isAppError: boolean;
@@ -11,8 +9,7 @@ export interface MessResponse {
     data: any | null;
 }
 
-
-export function response_with_mess(
+export function response_with_mess (
     isSuccess: boolean,
     isAppError: boolean,
     title: string | null,
@@ -32,6 +29,5 @@ export function response_with_mess(
         data: data
     }
     console.log("RESPONSE HERE", response)
-    
     return response;
 }

@@ -1,34 +1,31 @@
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-  <div class="card p-4 shadow-lg" style="width: 420px;">
-    <h2 class="text-center text-primary mb-3">Đăng nhập</h2>
-
-    <!-- Hiển thị thông báo lỗi -->
-    @if (errorMessage) {
-    <p-message severity="error" text="{{ errorMessage }}"></p-message>
-    }
-
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="row g-3">
+  <div class="card p-4 shadow-lg rounded-4" style="width: 420px;">
+    <h2 class="text-center text-primary mb-4">
+      <i class="pi pi-user"></i> Đăng nhập
+    </h2>
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="row g-3 mt-2">
       <!-- Email -->
       <div class="col-12">
-        <label for="email" class="form-label fw-bold">Email</label>
-        <input id="email" formControlName="email" type="email" class="form-control" pInputText />
-        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-        <small class="text-danger">Email không hợp lệ!</small>
-        }
-      </div>
-      <!-- Mật khẩu -->
-      <div class="col-12">
-        <label for="password" class="form-label fw-bold">Mật khẩu</label>
-        <input id="password" formControlName="password" type="password" class="form-control" pPassword />
-        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-        <small class="text-danger">Mật khẩu không được để trống!</small>
+        <label for="email" class="form-label fw-semibold">Email</label>
+        <input id="email" type="email" formControlName="Email" class="form-control" placeholder="Nhập địa chỉ email" />
+        @if (loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched) {
+        <div class="text-danger mt-1">Email không hợp lệ!</div>
         }
       </div>
 
-      <!-- Submit button -->
+      <!-- Mật khẩu -->
       <div class="col-12">
-        <button [routerLink]="['/']" pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"></button>
-        <!-- [disabled]="loginForm.invalid" -->
+        <label for="password" class="form-label fw-semibold">Mật khẩu</label>
+        <input id="password" type="password" formControlName="Password" class="form-control" placeholder="Nhập mật khẩu" />
+        @if (loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched) {
+        <div class="text-danger mt-1">Mật khẩu phải có ít nhất 3 ký tự!</div>
+        }
+      </div>
+
+      <!-- Nút đăng nhập -->
+      <div class="col-12 mt-3">
+        <button pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"
+          [disabled]="loginForm.invalid"></button>
       </div>
     </form>
   </div>

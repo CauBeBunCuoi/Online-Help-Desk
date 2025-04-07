@@ -11,10 +11,10 @@
         [globalFilterFields]="['Account.FullName', 'Account.Email', 'Account.Phone', 'JobType.Name', 'Role.Name']"
         [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
 
-        <!-- Thanh tìm kiếm chung -->
+        <!-- Thanh Search chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-between">
-                <!-- Ô tìm kiếm -->
+                <!-- Ô Search -->
                 <p-iconfield iconPosition="left">
                     <p-inputicon>
                         <i class="pi pi-search"></i>
@@ -33,6 +33,7 @@
                 <th pSortableColumn="Account.Phone">Phone</th>
                 <th pSortableColumn="JobType.Name">JobType</th>
                 <th pSortableColumn="Role.Name">Role</th>
+                <th pSortableColumn="Account.IsDeactivated">Available</th>
                 <th>Action</th>
             </tr>
         </ng-template>
@@ -47,8 +48,10 @@
                 <td>{{ assignee.JobType.Name }}</td>
                 <td>{{ assignee.Role.Name }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event, assignee.Account.Id)" label="Delete" severity="danger"
-                        [outlined]="true" />
+                    <p-tag [value]="assignee.Account.IsDeactivated ? 'Deactivated' : 'Activate'"
+                        [severity]="assignee.Account.IsDeactivated ? 'danger' : 'success'" />
+                </td>
+                <td>
                     <p-button (click)="showDialogUpdate(assignee.Account.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
