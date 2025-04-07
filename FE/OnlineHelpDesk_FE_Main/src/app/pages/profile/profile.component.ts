@@ -81,7 +81,7 @@ export class ProfileComponent implements OnInit {
           FullName: User.Account.FullName,
           Phone: User.Account.Phone,
           Address: User.Account.Address,
-          Image: User.Account.ImageUrl // Giữ ảnh nếu có
+          Image: null
         });
       }
     }).catch(error => {
