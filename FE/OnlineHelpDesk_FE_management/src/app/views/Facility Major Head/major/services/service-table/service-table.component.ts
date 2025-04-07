@@ -273,7 +273,7 @@ export class ServiceTableComponent implements OnInit {
         const majorId = this.addServiceForm.get('FacilityMajorId')?.value;
         if (this.addServiceForm.valid) {
           this.loadingAdd = true; // Bắt đầu loading
-          this.serviceManagementService.addServiceToMajor(majorId, this.addServiceForm.value)
+          this.serviceManagementService.addServiceToMajor(majorId, {...this.addServiceForm.value, IsInitRequestDescriptionRequired : !this.addServiceForm.value.IsInitRequestDescriptionRequired ? false : true})
             .then((response) => {
               if (response.success) {
                 successAlert(response.message.content);
@@ -286,11 +286,10 @@ export class ServiceTableComponent implements OnInit {
               errorAlert(error);
             })
             .finally(() => {
+              this.loadingAdd = false;
               this.actionCompleted.emit('Action completed');
-              this.loadingAdd = false; // Dừng loading dù thành công hay thất bại
             });
         } else {
-          console.log('❌ Form không hợp lệ');
           this.addServiceForm.markAllAsTouched();
         }
         this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record add' });
