@@ -5,17 +5,17 @@ export const loginRequiredAlert = () => {
     title: `You haven't login yet`,
     text: "Please login to continue!",
     icon: 'warning',
-    showCancelButton: true,
+    allowOutsideClick: false,
+    // showCancelButton: true,
     confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    cancelButtonText: 'Ok',
+    // cancelButtonColor: '#d33',
+    // cancelButtonText: 'Ok',
     confirmButtonText: 'Login now',
   }).then((result) => {
     if (result.isConfirmed) {
       window.location.href = '/login';
     }
   })
-
 };
 
 // thông báo thành công với message

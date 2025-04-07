@@ -12,7 +12,7 @@
       <!-- Giới thiệu Service -->
       <div class="col-md-8 mb-3">
         <div class="section-introduce">
-          <h3 class="title rounded-top">Giới thiệu Service</h3>
+          <h3 class="title rounded-top">Introduction Service</h3>
           <div class="content p-3">
             <!-- Mô tả dịch vụ -->
             <div class="description mb-3" *ngIf="service?.Service?.MainDescription">
@@ -26,37 +26,36 @@
 
             <!-- Ca làm việc -->
             <div class="description mb-3" *ngIf="service?.Service?.WorkShiftsDescription">
-              <strong>Ca làm việc:</strong> {{ service?.Service?.WorkShiftsDescription }}
+              <strong>Work Shift:</strong> {{ service?.Service?.WorkShiftsDescription }}
             </div>
 
             <!-- Trạng thái mở -->
             <div class="description mb-3">
-              <strong>Trạng thái:</strong>
+              <strong>Status:</strong>
               <span [ngClass]="{'text-success': service?.Service?.IsOpen, 'text-danger': !service?.Service?.IsOpen}">
-                {{ service?.Service?.IsOpen ? 'Mở' : 'Đóng' }}
+                {{ service?.Service?.IsOpen ? 'Open' : 'Close' }}
               </span>
             </div>
 
             <!-- Ngày mở -->
             <div class="description mb-3" *ngIf="service?.Service?.OpenScheduleDate">
-              <strong>Ngày mở:</strong> {{ service?.Service?.OpenScheduleDate }}
+              <strong>Open Date:</strong> {{ service?.Service?.OpenScheduleDate }}
             </div>
 
             <!-- Ngày đóng -->
             <div class="description mb-3" *ngIf="service?.Service?.CloseScheduleDate">
-              <strong>Ngày đóng:</strong> {{ service?.Service?.CloseScheduleDate }}
+              <strong>Close Date:</strong> {{ service?.Service?.CloseScheduleDate }}
             </div>
 
             <!-- Nút đặt ngay -->
-            <button type="button" class="btn btn-success" (click)="showDialogServiceAvailable()">Đặt
-              ngay</button>
+            <button type="button" class="btn btn-success" (click)="showDialogServiceAvailable()">Book now</button>
           </div>
         </div>
       </div>
       <!-- Thông tin Lĩnh vực -->
       <div class="col-md-4 mb-3">
         <div class="section-introduce">
-          <h3 class="title rounded-top">Thông tin Lĩnh vực</h3>
+          <h3 class="title rounded-top">Major Information</h3>
           @if(isLoading) {
           <div class="spinner-overlay">
             <p-progressSpinner></p-progressSpinner>
@@ -76,26 +75,20 @@
                 <div class="text-muted small">
                   <!-- Chỉ hiển thị nếu có thông tin mô tả lĩnh vực -->
                   <div *ngIf="service?.Major?.MainDescription" class="mb-2">
-                    <i class="pi pi-briefcase text-success"></i> <strong>Lĩnh vực:</strong> {{
+                    <i class="pi pi-briefcase text-success"></i> <strong>Major:</strong> {{
                     service?.Major?.MainDescription }}
                   </div>
 
                   <!-- Chỉ hiển thị nếu có thông tin về ca làm việc -->
                   <div *ngIf="service?.Major?.WorkShiftsDescription" class="mb-2">
-                    <i class="pi pi-clock text-warning"></i> <strong>Ca làm việc:</strong> {{
+                    <i class="pi pi-clock text-warning"></i> <strong>Work shift:</strong> {{
                     service?.Major?.WorkShiftsDescription }}
-                  </div>
-
-                  <!-- Chỉ hiển thị nếu có thông tin về địa điểm -->
-                  <div *ngIf="service?.Major?.FacilityId" class="mb-2">
-                    <i class="pi pi-map-marker text-info"></i> <strong>Địa điểm:</strong> {{ service?.Major?.FacilityId
-                    }}
                   </div>
                 </div>
                 <!-- Liên kết đến trang chi tiết của lĩnh vực -->
                 <a [routerLink]="['/facility-major-detail', service?.Major?.Id]"
                   class="text-success mt-3 d-inline-block">
-                  <i class="pi pi-external-link"></i> Xem trang lĩnh vực
+                  <i class="pi pi-external-link"></i> Redirect to this major
                 </a>
               </div>
             </div>
@@ -115,8 +108,8 @@
       <div class="mb-3 row">
         <label for="RequestInitDescription" class="col-sm-4 col-form-label fw-semibold">Description</label>
         <div class="col-sm-8">
-          <textarea id="RequestInitDescription" class="form-control"
-            formControlName="RequestInitDescription"></textarea>
+          <textarea id="RequestInitDescription" class="form-control" formControlName="RequestInitDescription"
+            placeholder="{{service?.Service?.RequestInitHintDescription}}"></textarea>
           <small
             *ngIf="addServiceRequestForm.controls['RequestInitDescription'].invalid && addServiceRequestForm.controls['RequestInitDescription'].touched"
             class="text-danger">
@@ -206,7 +199,8 @@
       <!-- Footer -->
       <div class="d-flex justify-content-end gap-2">
         <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2"></p-button>
-        <p-button label="Submit" (click)="addServiceRequest($event)" [disabled]="addServiceRequestForm.invalid"></p-button>
+        <p-button label="Submit" (click)="addServiceRequest($event)"
+          [disabled]="addServiceRequestForm.invalid"></p-button>
       </div>
     </form>
   </p-dialog>

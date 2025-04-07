@@ -12,7 +12,7 @@ export class AuthService {
   // [GET] /User/accounts/staff
   getStaffs(): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/staff',
     }, "Get Staff");
@@ -24,7 +24,7 @@ export class AuthService {
       Staff: staffData
     };
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'post',
       url: API_PREFIX + '/staff',
       data: Request,
@@ -34,7 +34,7 @@ export class AuthService {
   // [GET] /User/accounts/staff/{accountId}
   getStaffById(accountId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/staff' + '/' + accountId,
     }, "Get Staff By Id");
@@ -47,7 +47,7 @@ export class AuthService {
     }
     console.log('request: ' + JSON.stringify(Request));
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'put',
       url: API_PREFIX + '/staff' + '/' + accountId,
       data: Request,
@@ -69,7 +69,7 @@ export class AuthService {
       Member: memberData
     }
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'post',
       url: API_PREFIX + '/member',
       data: Request,
@@ -79,7 +79,7 @@ export class AuthService {
   // [GET] /User/accounts/member/{accountId}
   getMemnerById(accountId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/member' + '/' + accountId,
     }, "Get Member By Id");
@@ -101,7 +101,7 @@ export class AuthService {
   // [GET] /User/accounts/roles
   getRoles(): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/roles',
     }, "Get roles");
@@ -110,7 +110,7 @@ export class AuthService {
   // [GET] /User/accounts/jobTypes
   getJobTypes(): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/jobTypes',
     }, "Get jobTypes");
@@ -119,7 +119,7 @@ export class AuthService {
   // [DELETE] /User/accounts/staff/{accountId}
   deactivateStaff(accountId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'delete',
       url: API_PREFIX + '/staff' + '/' + accountId,
     }, "Delete Staff By Id");
@@ -128,7 +128,7 @@ export class AuthService {
   // [DELETE] /User/accounts/member/{accountId}
   deactivatMember(accountId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'delete',
       url: API_PREFIX + '/member' + '/' + accountId,
     }, "Delete Member By Id");

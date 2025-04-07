@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Request/task';
 
@@ -12,7 +12,7 @@ export class TaskRequestService {
     // [GET] /Request/task
     getAllTaskRequests(): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'get',
             url: API_PREFIX
         }, "Get all task requests");
@@ -33,7 +33,7 @@ export class TaskRequestService {
             TaskRequest: taskRequest
         };
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'post',
             url: API_PREFIX,
             data: Request,
@@ -62,7 +62,7 @@ export class TaskRequestService {
     // [GET] /Request/task/major-head/{accountId}
     getTaskRequestsByHead(accountId: number): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'get',
             url: API_PREFIX + '/major-head' + `/${accountId}`,
         }, "Get Task Requests By Major");

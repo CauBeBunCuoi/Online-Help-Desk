@@ -9,7 +9,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { RouterLink } from '@angular/router';
 import { ServiceManagementService } from '../../../core/service/service-management.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-service-major-section-content',
@@ -31,13 +30,17 @@ export class ServiceMajorSectionContentComponent implements OnInit {
   services: any[];
   showFullDescription: { [key: number]: boolean } = {};
   maxLength = 100;
-  isLoading = true; // Biến kiểm soát hiển thị spinner
+  isLoading = false; // Biến kiểm soát hiển thị spinner
 
   constructor(private serviceManagementService: ServiceManagementService,
   ) { }
 
   ngOnInit() {
-    
+    this.loadServices();
+  }
+
+  loadServices() {
+
     this.isLoading = true;
     this.serviceManagementService.getAllServices().then(
       (data) => {

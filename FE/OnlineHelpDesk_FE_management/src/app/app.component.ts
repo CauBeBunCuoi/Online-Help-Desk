@@ -17,7 +17,7 @@ import { AccountService } from './core/service/accounts.service';
   imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  title = 'Online Help Desk';
+  title = 'Online Help Desk Management';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);

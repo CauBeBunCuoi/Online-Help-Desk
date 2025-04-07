@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Major/services';
 

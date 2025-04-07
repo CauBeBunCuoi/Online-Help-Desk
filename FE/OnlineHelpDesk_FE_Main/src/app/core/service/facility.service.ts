@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { publicApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Facility/facilities';
 
@@ -11,7 +11,7 @@ export class FacilityService {
   // [GET] /Facility/facilities
   getFacilities(): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX
     }, "Get Facilities");
@@ -24,7 +24,7 @@ export class FacilityService {
     }
     console.log('request: ' + JSON.stringify(Request));
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'post',
       url: API_PREFIX,
       data: Request,
@@ -34,7 +34,7 @@ export class FacilityService {
   // [GET] /Facility/facilities/{facilityId}
   getFacilityById(facilityId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/${facilityId}`,
     }, "Get Facility By ID");
@@ -46,7 +46,7 @@ export class FacilityService {
       Facility: updatedData
     }
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'put',
       url: API_PREFIX + `/${facilityId}`,
       data: Request,
@@ -56,7 +56,7 @@ export class FacilityService {
   // [DELETE] /Facility/facilities/{facilityId}
   deactivateFacility(facilityId: number): Promise<any> {
     return callApi({
-      instance: publicApi,
+      instance: loginRequiredApi,
       method: 'delete',
       url: API_PREFIX + `/${facilityId}`,
     }, 'Deactivate Facility');
