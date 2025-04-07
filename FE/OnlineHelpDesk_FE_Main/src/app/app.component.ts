@@ -19,5 +19,5 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'exam-web-api';
+  title = 'OnlineHelpDesk_FE_Main';
 }

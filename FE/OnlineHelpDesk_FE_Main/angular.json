@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "exam-web-api": {
+    "OnlineHelpDesk_FE_Main": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/exam-web-api",
+            "outputPath": "dist/OnlineHelpDesk_FE_Main",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -66,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "exam-web-api:build:production"
+              "buildTarget": "OnlineHelpDesk_FE_Main:build:production"
             },
             "development": {
-              "buildTarget": "exam-web-api:build:development"
+              "buildTarget": "OnlineHelpDesk_FE_Main:build:development"
             }
           },
           "defaultConfiguration": "development",

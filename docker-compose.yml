@@ -1,4 +1,17 @@
 services:
+  OnlineHelpDesk_FE_Main:
+    container_name: onlinehelpdesk_fe_main
+    image: onlinehelpdesk_fe_main:latest
+    build:
+      context: ./FE/OnlineHelpDesk_FE_Main
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+    ports:
+      - "4201:4201"
+    restart: unless-stopped
+    networks:
+      - app-network
   OnlineHelpDesk_FE_Management:
     container_name: onlinehelpdesk_fe_management
     image: onlinehelpdesk_fe_management:latest
@@ -8,7 +21,7 @@ services:
     volumes:
       - ./src:/app/src
     ports:
-      - "4202:3000"
+      - "4202:4202"
     restart: unless-stopped
     networks:
       - app-network
@@ -20,7 +33,8 @@ services:
       context: ./BE/OnlineHelpDesk_BE
       dockerfile: Dockerfile
     user: root
-    environment: # images_test - images  ,   OnlineHelpDeskDB_test - OnlineHelpDeskDB_clean
+    environment:
+      # images_test - images  ,   OnlineHelpDeskDB_test - OnlineHelpDeskDB_clean
       # Path to the folder where the images are stored, 
       - FilePaths__ACCOUNt_IMAGE_PATH=images/accounts
       - FilePaths__FACILITY_IMAGE_PATH=images/facilities
