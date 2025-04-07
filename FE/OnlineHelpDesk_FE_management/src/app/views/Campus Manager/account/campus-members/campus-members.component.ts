@@ -89,6 +89,7 @@ export class CampusMembersComponent implements OnInit {
       JobTypeId: [null, Validators.required],
       Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       Address: ['', Validators.required],
+      DateOfBirth: ['', Validators.required],
       Image: ['']
     });
   }
@@ -127,7 +128,7 @@ export class CampusMembersComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
@@ -161,7 +162,7 @@ export class CampusMembersComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Add this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {
@@ -220,11 +221,10 @@ export class CampusMembersComponent implements OnInit {
             FullName: Member.Account.FullName,
             Phone: Member.Account.Phone,
             Address: Member.Account.Address,
-            // thêm để test
             Email: Member.Account.Email,
             JobTypeId: Member.Account.JobTypeId,
-            //
-            Image: null
+            DateOfBirth: Member.Account.DateOfBirth,
+            Image: '',
           });
         }
       })
@@ -236,7 +236,7 @@ export class CampusMembersComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Update this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {

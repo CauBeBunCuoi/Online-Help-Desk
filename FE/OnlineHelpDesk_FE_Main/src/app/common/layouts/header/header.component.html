@@ -20,9 +20,6 @@
         <li class="nav-item me-2">
           <a class="nav-link" [routerLink]="['/service-major']">Service</a>
         </li>
-        <li class="nav-item me-2">
-          <a class="nav-link" [routerLink]="['/']">Q & A</a>
-        </li>
       </ul>
       @if(userId) {
       <ul class="navbar-nav navbar-right mb-2 mb-lg-0">
@@ -49,14 +46,14 @@
           </a>
         </li>
         <li class="nav-item">
-          <a [routerLink]="['/logout']" class="btn btn-outline-danger">Logout</a>
+          <button class="btn btn-outline-danger" (click)="logout()">Sign out</button>
         </li>
       </ul>
       }
       @else {
       <ul class="navbar-nav navbar-right mb-2 mb-lg-0">
         <li class="nav-item">
-          <a [routerLink]="['/logon']" class="btn btn-outline-success">Login</a>
+          <a [routerLink]="['/login']" class="btn btn-outline-success">Sign in</a>
         </li>
         <li class="nav-item">
           <a class="btn btn-dark" [routerLink]="['/register']">Register</a>

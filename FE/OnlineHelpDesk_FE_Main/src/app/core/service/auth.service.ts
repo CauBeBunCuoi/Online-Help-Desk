@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { publicApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/User/accounts';
 
@@ -57,7 +57,7 @@ export class AuthService {
   // [GET] /User/accounts/member
   getMembers(): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/member',
     }, "Get member");
@@ -91,7 +91,7 @@ export class AuthService {
       Member: updatedData
     }
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'put',
       url: API_PREFIX + '/member' + '/' + accountId,
       data: Request,

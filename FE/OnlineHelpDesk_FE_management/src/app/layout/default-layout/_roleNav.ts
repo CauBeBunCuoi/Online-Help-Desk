@@ -74,12 +74,12 @@ export function get_roleNav(role_id: number): INavData[] {
           },
         ]
       },
-      {
-        name: 'FAQ',
-        url: '/faq_campus',
-        class: ' my-2 bg-info rounded',
-        iconComponent: { name: 'cil-puzzle' }
-      },
+      // {
+      //   name: 'FAQ',
+      //   url: '/faq_campus',
+      //   class: ' my-2 bg-info rounded',
+      //   iconComponent: { name: 'cil-puzzle' }
+      // },
     ],
 
 
@@ -147,11 +147,11 @@ export function get_roleNav(role_id: number): INavData[] {
             url: '/task_major/task_assignments',
             icon: 'cil-arrow-circle-right w-25 text-success fs-6'
           },
-          {
-            name: 'BlackList Requests',
-            url: '/task_major/blacklist_requests',
-            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
-          }
+          // {
+          //   name: 'BlackList Requests',
+          //   url: '/task_major/blacklist_requests',
+          //   icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          // }
         ]
       }
     ],
@@ -169,11 +169,11 @@ export function get_roleNav(role_id: number): INavData[] {
             url: '/task_assignee/service_requests',
             icon: 'cil-arrow-circle-right w-25 text-success fs-6'
           },
-          {
-            name: 'BlackList Requests',
-            url: '/task_assignee/blacklist_requests',
-            icon: 'cil-arrow-circle-right w-25 text-success fs-6'
-          }
+          // {
+          //   name: 'BlackList Requests',
+          //   url: '/task_assignee/blacklist_requests',
+          //   icon: 'cil-arrow-circle-right w-25 text-success fs-6'
+          // }
         ]
       }
     ]

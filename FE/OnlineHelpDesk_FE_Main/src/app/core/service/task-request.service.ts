@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { publicApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Request/task';
 
@@ -21,7 +21,7 @@ export class TaskRequestService {
     // [GET] /Request/task/majors/{majorId}
     getTaskRequestsByMajor(majorId: number): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'get',
             url: API_PREFIX + '/majors' + `/${majorId}`,
         }, "Get Task Requests By Major");
@@ -43,7 +43,7 @@ export class TaskRequestService {
     // [GET] /Request/task/{requestId}
     getTaskRequestDetail(requestId: number): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'get',
             url: API_PREFIX + `/${requestId}`,
         }, "Get Task Requests By Major");
@@ -52,7 +52,7 @@ export class TaskRequestService {
     // [PUT] /Request/task/{taskId}
     updateTaskStatus(taskId: number, action: 'Finished' | 'Cancelled', cancelReason: any): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'put',
             url: API_PREFIX + `/${taskId}` + `?Action=${action}`,
             data: cancelReason,

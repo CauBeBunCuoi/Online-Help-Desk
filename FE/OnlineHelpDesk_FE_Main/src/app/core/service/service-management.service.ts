@@ -124,7 +124,7 @@ export class ServiceManagementService {
     // [GET] /Major/services/{serviceId}/bookable-schedules
     getBookableSchedules(serviceId: number): Promise<any> {
         return callApi({
-            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
             method: 'get',
             url: API_PREFIX + `/${serviceId}` + '/bookable-schedules',
         }, "get bbok availability service"); // Giả lập độ trễ API 1 giây

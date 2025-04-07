@@ -162,7 +162,7 @@ export class FacilityMajorTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
@@ -232,7 +232,7 @@ export class FacilityMajorTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Update this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {

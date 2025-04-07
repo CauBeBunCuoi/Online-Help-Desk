@@ -18,6 +18,15 @@ export class FacilityMajorService {
     }, "Get Majors");
   }
 
+  // [GET] /Major/majors/major-head/{accountId}/requesters
+  getAllRequester(accountId: number): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/major-head/' + accountId + '/requesters'
+    }, "Get Requester");
+  }
+
   // [POST] /Major/majors
   addMajor(newMajor: any): Promise<any> {
     const Request = {
@@ -48,7 +57,7 @@ export class FacilityMajorService {
       url: API_PREFIX + `/major-head` + `/${accountId}` + '/majors',
     }, "Get majors by headId");
   }
-  
+
   // [GET] /Major/majors/assignee/{accountId}/majors
   getMajorsByAssignee(accountId: number): Promise<any> {
     return callApi({

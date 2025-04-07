@@ -202,7 +202,7 @@ export class FacilityMajorService {
   // [DELETE] /Major/majors/feedbacks/{feedbackId}
   deleteFeedback(feedbackId: number): Promise<any> {
     return callApi({
-      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'delete',
       url: API_PREFIX + `/feedbacks` + `/${feedbackId}`,
     }, "DELETE Feedback");

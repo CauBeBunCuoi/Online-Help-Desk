@@ -16,13 +16,13 @@ import { JwtUtil } from '../../core/utils/jwt.util';
 export class AccountService {
   previousToken: string | null = null
   constructor(
-    private router: Router, 
+    private router: Router,
     private store: Store<AuthState>,
     private http: HttpClient,
   ) {
     //this.syncAuthWithLocalStorage();
   }
-  
+
   // sử dụng event storage 
   syncAuthWithLocalStorage() {
     fromEvent<StorageEvent>(window, 'storage')
@@ -38,7 +38,7 @@ export class AccountService {
             this.store.dispatch(clearAuthToken());
             console.log('clearAuthToken SYNC');
             this.router.navigate(['/login']);
-          }else {
+          } else {
             const saveInfo = {
               token: token,
               user: user
@@ -52,8 +52,8 @@ export class AccountService {
   }
 
   checkLogin_MainPage() {
-    var token : string | null = null;
-    var user : any | null = null;
+    var token: string | null = null;
+    var user: any | null = null;
     this.store.select(selectAuthState).subscribe((auth) => {
       token = auth.token;
       user = auth.user;
@@ -90,7 +90,6 @@ export class AccountService {
     }
   }
 
-
   logout() {
     this.store.dispatch(clearAuthToken());
     this.router.navigate(['/login']);
@@ -100,13 +99,13 @@ export class AccountService {
     this.store.dispatch(setAuthToken({ token, user }));
   }
 
-  login(username: string, password: string) : Observable<any> {
+  login(username: string, password: string): Observable<any> {
     const loginInfo = {
       username: username,
       password: password
     };
-    console.log("loginInfo",loginInfo);
-    
+    console.log("loginInfo", loginInfo);
+
     const formData = new FormData();
     formData.append('loginInfo', JSON.stringify(loginInfo));
     return this.http.post('http://localhost:5137/api/Account/login-manual', formData);

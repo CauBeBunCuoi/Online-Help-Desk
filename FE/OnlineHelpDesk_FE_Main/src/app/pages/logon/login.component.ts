@@ -29,10 +29,10 @@ import { callApi } from '../../api/main/api_call/api';
     MessageModule,
   ],
   providers: [MessageService],
-  templateUrl: './logon.component.html',
-  styleUrl: './logon.component.scss'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
 })
-export class LogonComponent implements OnInit {
+export class LoginComponent implements OnInit {
   auth_subscription: any;
 
   loginForm: FormGroup;

@@ -122,7 +122,7 @@ export class ServiceTableComponent implements OnInit {
       FacilityMajorId: [null, Validators.required], // ID FacilityMajor liên kết
       IsInitRequestDescriptionRequired: [false], // Yêu cầu mô tả khi tạo request
       RequestInitHintDescription: [''], // Gợi ý mô tả khi tạo request
-      MainDescription: ['', [Validators.required, Validators.minLength(5)]], // Mô tả chính
+      MainDescription: ['', [Validators.required, Validators.minLength(1)]], // Mô tả chính
       WorkShiftsDescription: [''], // Mô tả ca làm việc
       ServiceTypeId: [null, Validators.required], // Loại dịch vụ
       Image: [''] // Hình ảnh (logo) dưới dạng Base64
@@ -137,7 +137,7 @@ export class ServiceTableComponent implements OnInit {
       FacilityMajorId: [null, Validators.required], // ID Facility Major (Chữ 'm' cần viết thường theo JSON)
       IsInitRequestDescriptionRequired: [false, Validators.required], // Có bắt buộc mô tả không
       RequestInitHintDescription: [''], // Gợi ý mô tả yêu cầu
-      MainDescription: [''], // Mô tả chính
+      MainDescription: ['', [Validators.required, Validators.minLength(1)]], // Mô tả chính
       WorkShiftsDescription: [''], // Mô tả ca làm việc
       CloseScheduleDate: [null], // Ngày đóng
       OpenScheduleDate: [null], // Ngày mở
@@ -220,7 +220,7 @@ export class ServiceTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
@@ -257,7 +257,7 @@ export class ServiceTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Add this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {
@@ -343,7 +343,7 @@ export class ServiceTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Add this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {
@@ -405,7 +405,7 @@ export class ServiceTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: { label: 'Cancel', severity: 'secondary', outlined: true },
@@ -508,7 +508,7 @@ export class ServiceTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Update this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {

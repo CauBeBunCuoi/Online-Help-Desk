@@ -1,53 +1,88 @@
 <p-toast></p-toast>
 <p-confirmdialog />
-
-<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card p-4 shadow-lg rounded" style="width: 420px;">
-        <h2 class="text-center text-primary mb-3">Cập Nhật Thông Tin</h2>
-
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<div class="container d-flex justify-content-center align-items-center bg-light mb-3">
+    <div class="p-4 shadow rounded-4" style="max-width: 500px; width: 100%;">
+        <h3 class="text-center text-primary mb-4 fw-bold">Update Information</h3>
+        @if (loadingUpdate) {
+        <div
+            class="spinner-overlay position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75 z-2">
+            <p-progressSpinner></p-progressSpinner>
+        </div>
+        }
         <!-- Avatar -->
-        <div class="text-center">
-            <img [src]="avatarUrl" alt="Avatar" class="rounded-circle shadow-sm mb-3" width="100" height="100">
-            <p-fileUpload mode="basic" accept="image/*" chooseLabel="Chọn Ảnh" (onSelect)="onFileSelect($event)" />
+        <div class="text-center mb-4">
+            @if (avatarUrl) {
+                <p-avatar [image]="avatarUrl" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                } @else {
+                <p-avatar icon="pi pi-user" shape="circle" class="custom-avatar mb-3"></p-avatar>
+                }
+            <div>
+                <p-fileUpload mode="basic" accept="image/*" chooseLabel="Choose Avatar"
+                    (onSelect)="onFileSelect($event)" />
+            </div>
         </div>
 
         <form [formGroup]="updateMemberForm">
             <!-- Full Name -->
             <div class="mb-3">
-                <label for="FullName" class="form-label fw-semibold">Họ và Tên</label>
+                <label for="FullName" class="form-label fw-semibold">Full Name</label>
                 <input pInputText id="FullName" class="form-control" formControlName="FullName" />
-                @if(updateMemberForm.controls['FullName'].invalid && updateMemberForm.controls['FullName'].touched) {
-                    <small class="text-danger">
-                        Họ tên tối thiểu 3 ký tự.
-                    </small>
+                @if (updateMemberForm.controls['FullName'].invalid && updateMemberForm.controls['FullName'].touched) {
+                <small class="text-danger">Full name is required (Min 3 chars).</small>
+                }
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="Email" class="form-label fw-semibold">Email</label>
+                <input pInputText id="Email" class="form-control" formControlName="Email" />
+                @if (updateMemberForm.controls['Email'].invalid && updateMemberForm.controls['Email'].touched) {
+                <small class="text-danger">Email is required.</small>
                 }
             </div>
 
             <!-- Address -->
             <div class="mb-3">
-                <label for="Address" class="form-label fw-semibold">Địa chỉ</label>
+                <label for="Address" class="form-label fw-semibold">Address</label>
                 <input pInputText id="Address" class="form-control" formControlName="Address" />
-                @if(updateMemberForm.controls['Address'].invalid && updateMemberForm.controls['Address'].touched) {
-                    <small class="text-danger">
-                        Địa chỉ không được để trống.
-                    </small>
+                @if (updateMemberForm.controls['Address'].invalid && updateMemberForm.controls['Address'].touched) {
+                <small class="text-danger">Address is required.</small>
                 }
             </div>
 
             <!-- Phone -->
             <div class="mb-3">
-                <label for="Phone" class="form-label fw-semibold">Số điện thoại</label>
+                <label for="Phone" class="form-label fw-semibold">Phone</label>
                 <input pInputText id="Phone" class="form-control" formControlName="Phone" />
-                @if(updateMemberForm.controls['Phone'].invalid && updateMemberForm.controls['Phone'].touched) {
-                    <small class="text-danger">
-                        Số điện thoại không được để trống.
-                    </small>
+                @if (updateMemberForm.controls['Phone'].invalid && updateMemberForm.controls['Phone'].touched) {
+                <small class="text-danger">Phone must be 10-11 digits.</small>
                 }
             </div>
 
-            <!-- Buttons -->
-            <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-primary" (click)="updateMember($event)" [disabled]="updateMemberForm.invalid">Cập Nhật</button>
+            <!-- Job Type -->
+            <div class="mb-3">
+                <label for="JobTypeId" class="form-label fw-semibold">Job Type</label>
+                <p-select [options]="jobTypes" optionLabel="Name" optionValue="Id" formControlName="JobTypeId"
+                    placeholder="Select Job Type" styleClass="w-100"></p-select>
+                @if (updateMemberForm.controls['JobTypeId'].invalid && updateMemberForm.controls['JobTypeId'].touched) {
+                <small class="text-danger">Job type must be selected.</small>
+                }
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="mb-4">
+                <label for="DateOfBirth" class="form-label fw-semibold">Date of Birth</label>
+                <input pInputText type="date" id="DateOfBirth" class="form-control" formControlName="DateOfBirth" />
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+                <p-button label="Update" (click)="updateMember($event)" [disabled]="updateMemberForm.invalid" />
             </div>
         </form>
     </div>

@@ -91,7 +91,7 @@ export class TaskAssignmentsTableComponent implements OnInit {
     this.loadMajorOptions();
   }
 
-  statusSeverityMap: { [id: number]: "success" | "secondary" | "info" | "warn" | "danger" | "contrast"  } = {
+  statusSeverityMap: { [id: number]: "success" | "secondary" | "info" | "warn" | "danger" | "contrast" } = {
     1: 'warn',   // Pending
     2: 'info',      // Assigned
     3: 'danger',    // Rejected By Assignee
@@ -161,7 +161,7 @@ export class TaskAssignmentsTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Update this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {

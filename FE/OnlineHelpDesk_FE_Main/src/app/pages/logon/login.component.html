@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
   <div class="card p-4 shadow-lg rounded-4" style="width: 420px;">
     <h2 class="text-center text-primary mb-4">
-      <i class="pi pi-user"></i> Đăng nhập
+      <i class="pi pi-user"></i> Login
     </h2>
     <form [formGroup]="loginForm" (ngSubmit)="login()" class="row g-3 mt-2">
       <!-- Email -->
@@ -15,7 +15,7 @@
 
       <!-- Mật khẩu -->
       <div class="col-12">
-        <label for="password" class="form-label fw-semibold">Mật khẩu</label>
+        <label for="password" class="form-label fw-semibold">Password</label>
         <input id="password" type="password" formControlName="Password" class="form-control" placeholder="Nhập mật khẩu" />
         @if (loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched) {
         <div class="text-danger mt-1">Mật khẩu phải có ít nhất 3 ký tự!</div>
@@ -24,7 +24,7 @@
 
       <!-- Nút đăng nhập -->
       <div class="col-12 mt-3">
-        <button pButton type="submit" label="Đăng nhập" class="w-100 btn btn-primary"
+        <button pButton type="submit" label="Login" class="w-100 btn btn-primary"
           [disabled]="loginForm.invalid"></button>
       </div>
     </form>

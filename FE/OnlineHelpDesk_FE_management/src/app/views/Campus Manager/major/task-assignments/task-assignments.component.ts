@@ -81,7 +81,7 @@ export class TaskAssignmentsComponent implements OnInit {
     }
     this.loadMajorOptions();
     this.loadTaskRequests();
-    
+
     this.addTaskRequestForm = this.fb.group({
       Description: ['', [Validators.minLength(3)]],
       RequesterId: this.userId,
@@ -158,7 +158,7 @@ export class TaskAssignmentsComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Do you want to Add this record?',
-      header: 'Danger Zone',
+      header: 'Confirm',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       rejectButtonProps: {

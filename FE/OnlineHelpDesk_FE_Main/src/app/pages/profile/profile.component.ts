@@ -12,6 +12,9 @@ import { Toast } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SelectModule } from 'primeng/select';
+
 
 @Component({
   selector: 'app-profile',
@@ -22,6 +25,8 @@ import { errorAlert, successAlert } from '../../core/utils/alert.util';
     ButtonModule,
     Toast,
     InputTextModule,
+    SelectModule,
+    ProgressSpinnerModule,
     MessageModule,
     FileUploadModule,
     AvatarModule,
@@ -40,6 +45,11 @@ export class ProfileComponent implements OnInit {
   avatarUrl: string | null = 'https://via.placeholder.com/100';
   userId: number;
   loadingUpdate: boolean = false;
+  loading: boolean = false;
+
+  // Giả lập API cho JobTypes (có thể thay bằng API thật)
+  jobTypes: any;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -48,13 +58,17 @@ export class ProfileComponent implements OnInit {
   ) {
     this.updateMemberForm = this.fb.group({
       FullName: ['', [Validators.required, Validators.minLength(3)]],
+      Email: ['', [Validators.required, Validators.email]],
+      JobTypeId: [null, Validators.required],
       Phone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
       Address: ['', Validators.required],
+      DateOfBirth: ['', Validators.required],
       Image: ['']
     });
   }
 
   ngOnInit() {
+    this.loadJobTypes();
     // Lấy thông tin từ localStorage
     const authDataString = localStorage.getItem('auth');
 
@@ -74,19 +88,33 @@ export class ProfileComponent implements OnInit {
     this.authService.getMemnerById(this.userId).then(member => {
       const User = member.data;
       if (member) {
-        this.avatarUrl = User.Account.ImageUrl || null; // Cập nhật avatar
+        const Member = member.data;
+        this.avatarUrl = Member.Account.ImageUrl || null; // Cập nhật avatar
 
         // 🔥 Cập nhật dữ liệu vào form
+        this.avatarUrl = Member.Account.ImageUrl || null;
         this.updateMemberForm.patchValue({
-          FullName: User.Account.FullName,
-          Phone: User.Account.Phone,
-          Address: User.Account.Address,
-          Image: null
+          FullName: Member.Account.FullName,
+          Phone: Member.Account.Phone,
+          Address: Member.Account.Address,
+          DateOfBirth: Member.Account.DateOfBirth,
+          Email: Member.Account.Email,
+          JobTypeId: Member.Account.JobTypeId,
+          Image: ''
         });
       }
     }).catch(error => {
       console.error('Error fetching staff:', error);
     });
+  }
+
+  loadJobTypes() {
+    this.authService.getJobTypes()
+      .then(jobTypesData => {
+        this.jobTypes = jobTypesData.data.JobTypes;
+      })
+      .catch(error => console.error('Lỗi khi load loại công việc:', error))
+      .finally(() => (this.loading = false));  // Đặt loading false khi cả 2 API hoàn thành
   }
 
   onFileSelect(event: any) {
