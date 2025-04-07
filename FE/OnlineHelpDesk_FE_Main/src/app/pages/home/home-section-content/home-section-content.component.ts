@@ -44,9 +44,9 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
   maxLength = 100;
 
   // Loading state cho từng phần
-  loadingMajors = true;
-  loadingServices = true;
-  loadingFeedbacks = true;
+  loadingMajors = false;
+  loadingServices = false;
+  loadingFeedbacks = false;
 
   constructor(
     private serviceManagementService: ServiceManagementService,
@@ -55,6 +55,7 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // call api
+    this.loadingMajors = true;
     this.facilityMajorService
       .getAllMajorsFeartures()
       .then((response) => {
@@ -69,7 +70,7 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
 
 
     this.serviceManagementService
-    // call api
+      // call api
       .getAllServices()
       .then((response) => {
         const activeServices = response.data?.Services.filter(service => !service.IsDeactivated);
@@ -81,10 +82,10 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
         this.services = [];
       })
       .finally(() => {
-        this.loadingServices = false;
+        this.loadingMajors = false;
       });
 
-      // call api
+    // call api
     this.facilityMajorService
       .getAllMajorFeedbacks()
       .then((response) => {
@@ -97,7 +98,7 @@ export class HomeSectionContentComponent implements OnInit, OnDestroy {
         this.feedbacks = [];
       })
       .finally(() => {
-        this.loadingFeedbacks = false;
+        this.loadingMajors = false;
       });
 
   }

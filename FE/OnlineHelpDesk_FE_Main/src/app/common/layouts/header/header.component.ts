@@ -3,6 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SelectModule } from 'primeng/select';
 import { AccountService } from '../../../core/service/accounts.service';
+import { selectAuthState } from '../../../store/auth/selectors';
+import { Store } from '@ngrx/store';
+import { AuthState } from '../../../store/auth/state';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -16,39 +20,36 @@ import { AccountService } from '../../../core/service/accounts.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
-  userId: number;
-  userName: number;
-  avatar: string;
+  userId: number | null = null;
+  userName: string = '';
+  avatar: string = '';
+  private sub: Subscription;
 
   constructor(
-    private router: Router,
-    private accountService: AccountService,
-  ) {
+    private store: Store<AuthState>,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.sub = this.store.select(selectAuthState).subscribe(auth => {
+      if (auth?.user) {
+        this.userId = auth.user.id;
+        this.userName = auth.user.name;
+        this.avatar = auth.user.image;
+      } else {
+        this.userId = null;
+        this.userName = '';
+        this.avatar = '';
+      }
+    });
   }
 
   ngOnDestroy() {
-  }
-
-  ngOnInit() {
-    // Lấy thông tin từ localStorage
-    const authDataString = localStorage.getItem('auth');
-
-    // Kiểm tra nếu có dữ liệu và sau đó chuyển sang JSON
-    if (authDataString) {
-      const authData = JSON.parse(authDataString);
-      console.log(authData); // Kiểm tra dữ liệu auth
-
-      // Kiểm tra nếu có dữ liệu 'user' và lấy 'id' từ 'user'
-      if (authData.user && authData.user.id) {
-        this.userId = authData.user.id;
-        this.userName = authData.user.name;
-        this.avatar = authData.user.image;
-      }
-    }
+    this.sub.unsubscribe();
   }
 
   public logout() {
-    this.accountService.logout();
+    this.store.dispatch({ type: '[Auth] Clear Auth Token' });
+    this.router.navigate(['/login']);
   }
 }
