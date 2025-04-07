@@ -99,7 +99,7 @@ export class ServiceRequestsComponent implements OnInit {
   loadServiceRequest() {
     this.loading = true;  // Start loading
     this.serviceRequestService.getServiceRequestsByRequester(this.userId).then(serviceRequests => {
-      this.filteredServiceRequest = serviceRequests.data.ServiceRequests.filter(sr => sr.ServiceRequest.RequestStatusId != 3);  // Display all initially
+      this.filteredServiceRequest = serviceRequests.data.ServiceRequests;  // Display all initially
     }).catch(error => {
       console.error('Error loading Service Requests:', error);
     }).finally(() => {

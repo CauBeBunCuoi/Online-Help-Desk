@@ -64,6 +64,9 @@ export class FacilityMajorTableComponent implements OnInit {
   }
   // gọi service api lấy facility và type major
   facilityOptions: any[] = [];
+
+  facilityItems: any[] = [];
+
   selectedFacilityMajorId: number | null = null;
 
   // Facility major types
@@ -216,6 +219,8 @@ export class FacilityMajorTableComponent implements OnInit {
           Image: null,
           BackgroundImage: null
         });
+
+        this.facilityItems = FacilityMajor.Items;
 
         // 🔹 Cập nhật hình ảnh hiển thị
         this.logoUrl = FacilityMajor.Major.ImageUrl;
