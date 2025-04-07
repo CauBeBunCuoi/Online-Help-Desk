@@ -178,3 +178,5 @@ D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\Onli
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\bin\Debug\net8.0\AWSSDK.S3.dll
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\bin\Debug\net8.0\System.Private.Windows.Core.dll
 D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\OnlineHelpDesk_BE.API.RazorAssemblyInfo.cache
+D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API\obj\Debug\net8.0\OnlineHelpDesk_BE.API.RazorAssemblyInfo.cs

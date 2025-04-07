@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace OnlineHelpDesk_BE.API.Configurations.Builder
@@ -28,9 +29,12 @@ namespace OnlineHelpDesk_BE.API.Configurations.Builder
                 };
 
             });
+            builder.Services.AddRazorPages();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            
 
+            
         }
 
 

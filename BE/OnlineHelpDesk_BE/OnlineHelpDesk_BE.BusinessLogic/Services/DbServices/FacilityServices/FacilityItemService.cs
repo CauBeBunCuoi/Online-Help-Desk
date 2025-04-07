@@ -196,7 +196,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
             var inUseCount = await _unitOfWork.FacilityItemAssignmentRepository.GetInUseItemCount(facilityItemId);
             if (facilityItem.Count < inUseCount)
             {
-                throw new HttpRequestException("The number of items in use is greater than the number of items updated, id: " + facilityItemId);
+                throw new HttpRequestException("The number of items in used is greater than the number of items updated, id: " + facilityItemId);
             }
 
 
@@ -302,7 +302,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
             if (existingFacilityItem.Count < inUseCount)
             {
                 // throw new HttpRequestException("Số lượng vật tư đang sử dụng nhiều hơn số lượng cập nhật");
-                throw new HttpRequestException("The number of items in use is greater than the number of items updated, id: " + facilityItemId);
+                throw new HttpRequestException("The number of items in used is greater than the number of items updated, id: " + facilityItemId);
             }
 
             try
@@ -377,7 +377,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
             if (existingFacilityItem.Count < inUseCount + Count * MajorIds.Count())
             {
                 // throw new HttpRequestException("Số lượng vật tư đang sử dụng nhiều hơn số lượng cập nhật");
-                throw new HttpRequestException("The number of items in use is greater than the number of items updated, id: " + itemId);
+                throw new HttpRequestException("the number of items required to assign greater than inventory quantity, id: " + itemId);
             }
 
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())

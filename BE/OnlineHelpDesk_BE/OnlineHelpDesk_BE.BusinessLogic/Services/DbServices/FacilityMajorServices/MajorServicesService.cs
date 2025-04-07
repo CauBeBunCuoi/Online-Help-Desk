@@ -533,7 +533,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                 // throw new HttpRequestException("Loại dịch vụ không tồn tại");
                 throw new HttpRequestException("Service type is not exist, id: " + service.ServiceTypeId);
             }
-            _dateHelpers.IsValidCloseScheduleAndOpenSchedule(service.CloseScheduleDate.ToString(), service.OpenScheduleDate.ToString(), existingService.CloseScheduleDate.ToString());
+            _dateHelpers.IsValidCloseScheduleAndOpenSchedule(service.CloseScheduleDate.ToString(), service.OpenScheduleDate.ToString(), existingService.CloseScheduleDate?.ToString("yyyy-MM-dd"));
 
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {

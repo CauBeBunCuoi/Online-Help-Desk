@@ -11,6 +11,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.db_services
             services.AddSingleton<JwtHelpers>();
             services.AddSingleton<FileHelpers>();
             services.AddSingleton<DateHelpers>();
+            services.AddSingleton<MailHelpers>();
             return services;
         }
     }

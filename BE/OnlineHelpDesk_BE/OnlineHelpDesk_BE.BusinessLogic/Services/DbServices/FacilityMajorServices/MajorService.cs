@@ -198,6 +198,101 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
             return JArray.FromObject(result);
         }
 
+        public async Task<JArray> GetAllFeatureMajors()
+        {
+            var majors = await _unitOfWork.FacilityMajorRepository.FindByAllAsync();
+            var temp_result = new List<dynamic>();
+            majors = majors.Where(m => m.IsDeactivated == false).ToList();
+            foreach (var major in majors)
+            {
+                string folderPath = _filePathConfig.MAJOR_IMAGE_PATH;
+                var majorType = major.FacilityMajorType;
+                var facility = major.Facility;
+                var serviceRequestCount = await _unitOfWork.ServiceRequestRepository.CountByMajorIdFromThisMonth(major.Id);
+                temp_result.Add(new
+                {
+                    Major = new
+                    {
+                        Id = major.Id,
+                        Name = major.Name,
+                        MainDescription = major.MainDescription,
+                        WorkShiftsDescription = major.WorkShiftsDescription,
+                        FacilityMajorTypeId = major.FacilityMajorTypeId,
+                        FacilityId = major.FacilityId,
+                        IsOpen = major.IsOpen,
+                        CloseScheduleDate = major.CloseScheduleDate,
+                        OpenScheduleDate = major.OpenScheduleDate,
+                        IsDeactivated = major.IsDeactivated,
+                        CreatedAt = major.CreatedAt,
+                    },
+                    MajorType = new
+                    {
+                        Id = majorType.Id,
+                        Name = majorType.Name
+                    },
+                    Facility = new
+                    {
+                        Id = facility.Id,
+                        Name = facility.Name,
+                        Description = facility.Description,
+                        IsDeactivated = facility.IsDeactivated,
+                        CreatedAt = facility.CreatedAt
+                    },
+                    ServiceRequestCount = serviceRequestCount
+
+
+                });
+            }
+
+            temp_result = temp_result.OrderByDescending(m => m.ServiceRequestCount).Take(6).ToList();
+            var result = new List<object>();
+            foreach(var major in temp_result)
+            {
+                var majorType = major.MajorType;
+                var facility = major.Facility;
+                result.Add(new
+                {
+                    Major = new
+                    {
+                        Id = major.Major.Id,
+                        Name = major.Major.Name,
+                        MainDescription = major.Major.MainDescription,
+                        WorkShiftsDescription = major.Major.WorkShiftsDescription,
+                        FacilityMajorTypeId = major.Major.FacilityMajorTypeId,
+                        FacilityId = major.Major.FacilityId,
+                        IsOpen = major.Major.IsOpen,
+                        CloseScheduleDate = major.Major.CloseScheduleDate,
+                        OpenScheduleDate = major.Major.OpenScheduleDate,
+                        IsDeactivated = major.Major.IsDeactivated,
+                        CreatedAt = major.Major.CreatedAt,
+                        BackgroundImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Major.Id.ToString(), "background"),
+                        ImageUrl = await GenerateImageUrl(_filePathConfig.MAJOR_IMAGE_PATH, major.Major.Id.ToString(), "main"),
+                    },
+                    MajorType = new
+                    {
+                        Id = majorType.Id,
+                        Name = majorType.Name
+                    },
+                    Facility = new
+                    {
+                        Id = facility.Id,
+                        Name = facility.Name,
+                        Description = facility.Description,
+                        ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, facility.Id.ToString(), "main"),
+                        IsDeactivated = facility.IsDeactivated,
+                        CreatedAt = facility.CreatedAt
+                    },
+                    ServiceRequestCount = major.ServiceRequestCount
+
+
+                });
+            }
+
+
+
+            return JArray.FromObject(result);
+        }
+
         public async Task CreateMajor(dynamic major)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
@@ -503,7 +598,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                 throw new HttpRequestException("Major is not exist, id: " + majorId);
             }
 
-            _dateHelpers.IsValidCloseScheduleAndOpenSchedule(major.CloseScheduleDate.ToString(), major.OpenScheduleDate.ToString(), existingMajor.CloseScheduleDate.ToString());
+            _dateHelpers.IsValidCloseScheduleAndOpenSchedule(major.CloseScheduleDate.ToString(), major.OpenScheduleDate.ToString(), existingMajor.CloseScheduleDate?.ToString("yyyy-MM-dd"));
 
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {

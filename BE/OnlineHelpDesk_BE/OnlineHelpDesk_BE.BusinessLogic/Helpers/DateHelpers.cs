@@ -56,8 +56,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
 
         public bool IsDateEarlier(string date1, string date2)
         {
-            Console.WriteLine($"\n\ndate1: {date1}");
-            Console.WriteLine($"\n\ndate2: {date2}");
+            Console.WriteLine($"\n\n\ndate1: {date1}");
+            Console.WriteLine($"\n\n\ndate2: {date2}");
             // Sử dụng DateTime.TryParse để chuyển đổi chuỗi ngày thành kiểu DateTime
             if (DateTime.TryParseExact(date1, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime firstDate) &&
                 DateTime.TryParseExact(date2, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime secondDate))
@@ -92,6 +92,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
 
         public bool IsValidCloseScheduleAndOpenSchedule(string CloseScheduleDate, string OpenScheduleDate, string PrevCloseScheduleDate)
         {
+            PrevCloseScheduleDate = PrevCloseScheduleDate == null || PrevCloseScheduleDate == "" ? null : PrevCloseScheduleDate;
 
             if (CloseScheduleDate != null && CloseScheduleDate != "")
             {
@@ -100,7 +101,12 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
                     // throw new HttpRequestException("Ngày đóng không hợp lệ");
                     throw new HttpRequestException("Invalid close date (required format: yyyy-MM-dd), " + CloseScheduleDate);
                 }
+                
                 if (PrevCloseScheduleDate == null && IsDateEarlier(DateTime.Now.ToString("yyyy-MM-dd"), CloseScheduleDate) == false)
+                {
+                    // throw new HttpRequestException("Ngày đóng phải sau ngày hiện tại");
+                    throw new HttpRequestException("Close date must be after the current date, " + CloseScheduleDate);
+                }else if (PrevCloseScheduleDate != null && IsDateEarlier(PrevCloseScheduleDate, DateTime.Now.ToString("yyyy-MM-dd")) == false && IsDateEarlier(DateTime.Now.ToString("yyyy-MM-dd"), CloseScheduleDate) == false)
                 {
                     // throw new HttpRequestException("Ngày đóng phải sau ngày hiện tại");
                     throw new HttpRequestException("Close date must be after the current date, " + CloseScheduleDate);

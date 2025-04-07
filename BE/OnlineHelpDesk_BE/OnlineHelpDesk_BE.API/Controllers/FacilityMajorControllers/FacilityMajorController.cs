@@ -27,7 +27,7 @@ namespace OnlineHelpDesk_BE.API.Controllers.FacilityMajorControllers
 
         // [GET] /Major/majors
         [HttpGet]
-        [Authorize(AuthenticationSchemes = "PublicKeyAuth", Roles = "Campus Manager, Facility Major Head")]
+        // [Authorize(AuthenticationSchemes = "PublicKeyAuth", Roles = "Campus Manager, Facility Major Head")]
         public async Task<IActionResult> Get()
         {
             var majors = await _majorService.GetMajors();
@@ -37,6 +37,7 @@ namespace OnlineHelpDesk_BE.API.Controllers.FacilityMajorControllers
                 Majors = majors
             });
         }
+
 
         // [POST] /Major/majors
         [HttpPost]
@@ -50,6 +51,18 @@ namespace OnlineHelpDesk_BE.API.Controllers.FacilityMajorControllers
             {
                 // message = "Tạo major thành công",
                 message = "Create facility major successfully"
+            });
+        }
+
+        // [GET] /Major/majors/features
+        [HttpGet("features")]
+        public async Task<IActionResult> GetFeatures()
+        {
+            var features = await _majorService.GetAllFeatureMajors();
+
+            return Ok(new
+            {
+                Features = features
             });
         }
 

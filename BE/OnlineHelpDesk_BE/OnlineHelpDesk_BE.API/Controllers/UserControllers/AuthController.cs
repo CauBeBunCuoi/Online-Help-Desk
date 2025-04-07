@@ -23,6 +23,7 @@ namespace OnlineHelpDesk_BE.API.Controllers.UserControllers
         private readonly AWSS3Service _awsS3Service;
         private readonly BcryptHelpers _bcryptHelpers;
         private readonly IFilePathConfig _filePathConfig;
+        private readonly MailHelpers _mailHelpers;
 
         // Records
         public record LoginRequestBody(string Email, string Password);
@@ -30,7 +31,8 @@ namespace OnlineHelpDesk_BE.API.Controllers.UserControllers
         public AuthController(ILogger<AuthController> logger, AuthService authService, AccountService accountService,
             BcryptHelpers bcryptHelpers,
             AWSS3Service awsS3Service,
-            IFilePathConfig filePathConfig
+            IFilePathConfig filePathConfig,
+            MailHelpers mailHelpers
             )
         {
             _logger = logger;
@@ -39,6 +41,7 @@ namespace OnlineHelpDesk_BE.API.Controllers.UserControllers
             _bcryptHelpers = bcryptHelpers;
             _awsS3Service = awsS3Service;
             _filePathConfig = filePathConfig;
+            _mailHelpers = mailHelpers;
         }
 
 
@@ -149,6 +152,29 @@ namespace OnlineHelpDesk_BE.API.Controllers.UserControllers
             }
         }
 
+        [HttpPost("test-mail")]
+        public async Task<IActionResult> TestMail([FromBody] JToken jsonData)
+        {
+            try
+            {
+                var email = jsonData["email"].ToString();
+                var subject = jsonData["subject"].ToString();
+                var viewPath = jsonData["viewPath"].ToString();
+                var viewData = jsonData["viewData"].ToObject<dynamic>();
+
+                await _mailHelpers.SendEmailAsync(email, subject, viewPath, viewData);
+
+                return Ok(new
+                {
+                    message = "Send mail successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\n\n\n" + ex.ToString() + "\n\n\n");
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

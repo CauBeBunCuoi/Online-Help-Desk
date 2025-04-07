@@ -17,3 +17,11 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = D:\vscode\MY PROJECT\Online Help Desk\Online-Help-Desk\BE\OnlineHelpDesk_BE\OnlineHelpDesk_BE.API
 build_property._RazorSourceGeneratorDebug = 
+
+[D:/vscode/MY PROJECT/Online Help Desk/Online-Help-Desk/BE/OnlineHelpDesk_BE/OnlineHelpDesk_BE.API/Views/ExternalViews/EmailTemplates/Notification.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXh0ZXJuYWxWaWV3c1xFbWFpbFRlbXBsYXRlc1xOb3RpZmljYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscode/MY PROJECT/Online Help Desk/Online-Help-Desk/BE/OnlineHelpDesk_BE/OnlineHelpDesk_BE.API/Views/Mail/Notification.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbFxOb3RpZmljYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
