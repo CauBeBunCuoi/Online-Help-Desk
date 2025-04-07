@@ -221,6 +221,8 @@ export class FacilityMajorTableComponent implements OnInit {
         });
 
         this.facilityItems = FacilityMajor.Items;
+        console.log(this.facilityItems);
+
 
         // 🔹 Cập nhật hình ảnh hiển thị
         this.logoUrl = FacilityMajor.Major.ImageUrl;
