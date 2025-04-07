@@ -8,7 +8,7 @@
         <p-table #dt2 [value]="requesters" dataKey="Account.Id" [paginator]="true" [rows]="10"
             [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Account.FullName"
             [globalFilterFields]="['Account.FullName', 'Account.Email', 'Role.Name', 'JobType.Name', 'Account.IsDeactivated']"
-            [sortOrder]="-1" [tableStyle]="{ 'min-width': '80rem' }">
+            [sortOrder]="-1" [tableStyle]="{ 'min-width': '50rem' }">
             <!-- Thanh Search chung -->
             <ng-template #caption>
                 <div class="d-flex justify-content-end">
@@ -17,7 +17,7 @@
                             <i class="pi pi-search"></i>
                         </p-inputicon>
                         <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                            placeholder="Search nhân viên" />
+                            placeholder="Search requester" />
                     </p-iconfield>
                 </div>
             </ng-template>
@@ -28,10 +28,7 @@
                     <th pSortableColumn="Account.Id">ID</th>
                     <th pSortableColumn="Account.FullName">Full name</th>
                     <th pSortableColumn="Account.Email">Email</th>
-                    <th pSortableColumn="JobType.Name">Job</th>
-                    <th pSortableColumn="Role.Name">Role</th>
-                    <th pSortableColumn="Account.IsDeactivated">Available</th>
-                    <th pSortableColumn="Account.CreatedAt">CreatedAt</th>
+                    <th pSortableColumn="Account.Phone">Phone</th>
                 </tr>
             </ng-template>
 
@@ -41,13 +38,7 @@
                     <td>{{ staff.Account.Id }}</td>
                     <td>{{ staff.Account.FullName }}</td>
                     <td>{{ staff.Account.Email }}</td>
-                    <td>{{ staff.JobType.Name }}</td>
-                    <td>{{ staff.Role.Name }}</td>
-                    <td>
-                        <p-tag [value]="staff.Account.IsDeactivated ? 'Deactivated' : 'Activate'"
-                            [severity]="staff.Account.IsDeactivated ? 'danger' : 'success'" />
-                    </td>
-                    <td>{{ staff.Account.CreatedAt }}</td>
+                    <td>{{ staff.Account.Phone }}</td>
                 </tr>
             </ng-template>
         </p-table>
