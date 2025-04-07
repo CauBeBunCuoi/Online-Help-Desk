@@ -393,6 +393,12 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
                             // throw new HttpRequestException("Major không tồn tại");
                             throw new HttpRequestException("Facility major is not exist, id: " + majorId);
                         }
+                        if (existingFacilityMajor.IsDeactivated == true)
+                        {
+                            // throw new HttpRequestException("Major đã bị khóa");
+                            throw new HttpRequestException("Facility major is deactivated, id: " + majorId);
+                        }
+
                         if (facilityItemAssignments.Any(fia => fia.FacilityMajorId == majorId))
                         {
                             var existingFacilityItemAssignment = facilityItemAssignments.First(fia => fia.FacilityMajorId == majorId);

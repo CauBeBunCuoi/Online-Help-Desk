@@ -63,10 +63,14 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.UserServices
         public async Task<JObject> Login(dynamic loginRequest)
         {
             var account = await _unitOfWork.AccountRepository.FindByEmail(loginRequest.Email);
-            if (account == null)
+            if (account == null )
             {
                 // throw new HttpRequestException("Email or password is incorrect");
                 throw new HttpRequestException("Account is not exist");
+            }
+            if (account.IsDeactivated == true)
+            {
+                throw new HttpRequestException("Account is deactivated");
             }
 
             if (!_bcryptHelpers.VerifyPassword(loginRequest.Password, account.Password))
