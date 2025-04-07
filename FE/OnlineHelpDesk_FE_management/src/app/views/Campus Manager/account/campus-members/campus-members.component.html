@@ -12,7 +12,7 @@
             [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" sortField="Account.FullName"
             [globalFilterFields]="['Account.FullName', 'Account.Email', 'Role.Name', 'JobType.Name', 'Account.IsDeactivated']"
             [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
-            <!-- Thanh tìm kiếm chung -->
+            <!-- Thanh Search chung -->
             <ng-template #caption>
                 <div class="d-flex justify-content-end">
                     <p-iconfield iconPosition="left">
@@ -20,7 +20,7 @@
                             <i class="pi pi-search"></i>
                         </p-inputicon>
                         <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                            placeholder="Tìm kiếm nhân viên" />
+                            placeholder="Search nhân viên" />
                     </p-iconfield>
                 </div>
             </ng-template>
@@ -29,13 +29,13 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="Account.Id">ID</th>
-                    <th pSortableColumn="Account.FullName">Họ và tên</th>
+                    <th pSortableColumn="Account.FullName">Full name</th>
                     <th pSortableColumn="Account.Email">Email</th>
-                    <th pSortableColumn="Role.Name">Vai trò</th>
-                    <th pSortableColumn="JobType.Name">Nghề nghiệp</th>
-                    <th pSortableColumn="Account.IsDeactivated">Trạng thái</th>
-                    <th pSortableColumn="Account.CreatedAt">Ngày tạo</th>
-                    <th>Hành động</th>
+                    <th pSortableColumn="JobType.Name">Job</th>
+                    <th pSortableColumn="Role.Name">Role</th>
+                    <th pSortableColumn="Account.IsDeactivated">Available</th>
+                    <th pSortableColumn="Account.CreatedAt">CreatedAt</th>
+                    <th>Action</th>
                 </tr>
             </ng-template>
 
@@ -45,16 +45,18 @@
                     <td>{{ member.Account.Id }}</td>
                     <td>{{ member.Account.FullName }}</td>
                     <td>{{ member.Account.Email }}</td>
-                    <td>{{ member.Role.Name }}</td>
                     <td>{{ member.JobType.Name }}</td>
+                    <td>{{ member.Role.Name }}</td>
                     <td>
-                        <p-tag [value]="member.Account.IsDeactivated ? 'Bị khóa' : 'Hoạt động'"
+                        <p-tag [value]="member.Account.IsDeactivated ? 'Deactivated' : 'Activate'"
                             [severity]="member.Account.IsDeactivated ? 'danger' : 'success'" />
                     </td>
                     <td>{{ member.Account.CreatedAt | date: 'dd/MM/yyyy' }}</td>
                     <td>
-                        <p-button (click)="confirmDelete($event, member.Account.Id)" label="Delete" severity="danger"
-                            [outlined]="true" />
+                        <p-button (click)="confirmDelete($event, member.Account.Id)" severity="danger"
+                            [outlined]="true">
+                            <i class="pi pi-trash"></i>
+                        </p-button>
                         <p-button (click)="showDialogUpdate(member.Account.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
@@ -67,10 +69,10 @@
 <p-dialog header="Add Member" [modal]="true" [(visible)]="add" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Add information</span>
     @if(loadingAdd) {
-        <div class="spinner-overlay">
-            <p-progressSpinner></p-progressSpinner>
-        </div>
-        }
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Avatar Upload -->
     <div class="text-center mb-3">
         @if (avatarUrl) {
@@ -168,10 +170,10 @@
 <p-dialog header="Update Member" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
     @if(loadingUpdate) {
-        <div class="spinner-overlay">
-            <p-progressSpinner></p-progressSpinner>
-        </div>
-        }
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Avatar Upload -->
     <div class="text-center mb-3">
         @if (avatarUrl) {

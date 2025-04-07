@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { loginRequiredApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Major/majors';
 
@@ -12,9 +12,18 @@ export class FacilityMajorService {
   // [GET] /Major/majors
   getAllMajors(): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX
+    }, "Get Majors");
+  }
+
+  // [GET] /Major/majors/features
+  getAllMajorsFeartures(): Promise<any> {
+    return callApi({
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/features',
     }, "Get Majors");
   }
 
@@ -24,7 +33,7 @@ export class FacilityMajorService {
       Major: newMajor
     };
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'post',
       url: API_PREFIX,
       data: Request,
@@ -34,7 +43,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/{majorId}
   getMajorDetail(majorId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/${majorId}`,
     }, "Get major detail");
@@ -43,16 +52,16 @@ export class FacilityMajorService {
   // [GET] /Major/majors/major-head/{accountId}/majors
   getMajorsByHead(accountId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/major-head` + `/${accountId}` + '/majors',
     }, "Get majors by headId");
   }
-  
+
   // [GET] /Major/majors/assignee/{accountId}/majors
   getMajorsByAssignee(accountId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/assignee` + `/${accountId}` + '/majors',
     }, "Get majors by headId");
@@ -64,7 +73,7 @@ export class FacilityMajorService {
       Major: updatedMajor
     };
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'put',
       url: API_PREFIX + `/${majorId}`,
       data: Request,
@@ -74,7 +83,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/feedbacks
   getAllMajorFeedbacks(): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/feedbacks',
     }, "Get Feedbacks");
@@ -83,7 +92,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/{majorId}/feedbacks
   getMajorFeedbacks(majorId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/${majorId}` + '/feedbacks',
     }, "Get feedbacks by majorId");
@@ -92,7 +101,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/major-head/{accountId}/feedbacks
   getHeadMajorFeedbacks(accountId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/major-head' + `/${accountId}` + '/feedbacks',
     }, "Get feedbacks by majorId");
@@ -101,7 +110,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/reports
   getAllMajorReports(): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/reports',
     }, "Get Reports");
@@ -110,7 +119,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/major-head/{accountId}/reports
   getReportsByHead(accountId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/major-head' + `/${accountId}` + '/reports',
     }, "Get reports by majorId");
@@ -119,32 +128,45 @@ export class FacilityMajorService {
   // [GET] /Major/majors/{majorId}/reports
   getReportsByMajor(majorId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + `/${majorId}` + '/reports',
     }, "Get reports by majorId");
   }
 
+  // [POST] /Major/majors/{majorId}/account/{accountId}/feedbacks
+  createFeedback(majorId: number, accountId: number, feedbackData: any): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'post',
+      url: API_PREFIX + '/' + majorId + '/account/' + accountId + '/feedbacks',
+      data: feedbackData,
+    }, "Add feed");
+  }
+
   // [POST] /Major/majors/{majorId}/account/{accountId}/reports
-  createReport(majorId: number, accountId: number, reportData: { ReportTypeId: number; Content: string }): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!majorId || !accountId || !reportData || !reportData.ReportTypeId || !reportData.Content.trim()) {
-        reject('❌ Dữ liệu không hợp lệ. Vui lòng nhập đầy đủ thông tin.');
-        return;
-      }
-      setTimeout(() => {
-        const mockResponse = {
-          message: '✅ Report đã được tạo thành công!',
-        };
-        resolve(mockResponse);
-      }, 1000); // Giả lập độ trễ API 1 giây
-    });
+  createReport(majorId: number, accountId: number, reportData: any): Promise<any> {
+    return callApi({
+      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'post',
+      url: API_PREFIX + '/' + majorId + '/account/' + accountId + '/reports',
+      data: reportData,
+    }, "Add report");
+  }
+
+  // [GET] /Major/majors/reportTypes
+  getReportTypes(): Promise<any> {
+    return callApi({
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      method: 'get',
+      url: API_PREFIX + '/reportTypes',
+    }, "Get reportTypes");
   }
 
   // [GET] /Major/majors/reports/{reportId}
   getReportDetail(reportId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/reports' + `/${reportId}`,
     }, "Get Report detail"); // Giả lập độ trễ API 1 giây
@@ -153,7 +175,7 @@ export class FacilityMajorService {
   // [PUT] /Major/majors/reports/{reportId}
   resolveReport(reportId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'put',
       url: API_PREFIX + `/reports` + `/${reportId}`,
     }, "Update resolve");
@@ -162,7 +184,7 @@ export class FacilityMajorService {
   // [GET] /Major/majors/facilityMajorTypes
   getFacilityMajorTypes(): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'get',
       url: API_PREFIX + '/facilityMajorTypes'
     }, "Get Major Types");
@@ -171,7 +193,7 @@ export class FacilityMajorService {
   // [DELETE] /Major/majors/{majorId}
   deleteMajor(MajorId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'delete',
       url: API_PREFIX + `/${MajorId}`,
     }, "Delete major");
@@ -180,7 +202,7 @@ export class FacilityMajorService {
   // [DELETE] /Major/majors/feedbacks/{feedbackId}
   deleteFeedback(feedbackId: number): Promise<any> {
     return callApi({
-      instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+      instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
       method: 'delete',
       url: API_PREFIX + `/feedbacks` + `/${feedbackId}`,
     }, "DELETE Feedback");

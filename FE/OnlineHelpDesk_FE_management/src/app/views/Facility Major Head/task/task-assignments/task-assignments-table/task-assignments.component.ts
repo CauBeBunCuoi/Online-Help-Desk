@@ -80,7 +80,7 @@ export class TaskAssignmentsTableComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.updateTaskRequestForm = this.fb.group({
-      Description: ['', [Validators.minLength(3)]],
+      Description: [''],
       Action: [null, Validators.required], // Thêm action
       MajorId: [{ value: null, disabled: true }, [Validators.required]], // Vô hiệu hóa ban đầu
       CancelReason: ['', Validators.minLength(3)], // Chỉ yêu cầu khi Cancel
@@ -91,35 +91,21 @@ export class TaskAssignmentsTableComponent implements OnInit {
     this.loadMajorOptions();
   }
 
+  statusSeverityMap: { [id: number]: "success" | "secondary" | "info" | "warn" | "danger" | "contrast"  } = {
+    1: 'warn',   // Pending
+    2: 'info',      // Assigned
+    3: 'danger',    // Rejected By Assignee
+    4: 'danger',    // Rejected By Assignee Deactivation
+    5: 'success',   // Accepted By Assignee
+    6: 'success',   // Completed By Assignee
+    7: 'success',   // Finished
+    8: 'danger',    // Cancelled
+    9: 'danger'     // Cancelled Auto
+  };
+
   onGlobalFilter(event: Event, dt: any) {
     const inputElement = event.target as HTMLInputElement;
     dt.filterGlobal(inputElement?.value, 'contains');
-  }
-
-  confirmDelete(event: Event) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
-      icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
-      rejectButtonProps: {
-        label: 'Cancel',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
-      },
-
-      accept: () => {
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
-      },
-      reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-      },
-    });
   }
 
   loadMajorOptions() {

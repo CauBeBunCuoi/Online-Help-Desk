@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { FacilityMajorDetailSectionHeaderComponent } from './facility-major-detail-section-header/facility-major-detail-section-header.component';
 import { FacilityMajorDetailSectionContentComponent } from './facility-major-detail-section-content/facility-major-detail-section-content.component';
 import { ActivatedRoute } from '@angular/router';
-import { FacilityMajorService } from '../../core/services/facility-major.service';
+import { FacilityMajorService } from '../../core/service/facility-major.service';
 import { FormsModule } from '@angular/forms';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-facility-major-detail',
@@ -11,13 +12,15 @@ import { FormsModule } from '@angular/forms';
   imports: [
     FormsModule,
     FacilityMajorDetailSectionHeaderComponent,
-    FacilityMajorDetailSectionContentComponent
+    FacilityMajorDetailSectionContentComponent,
+    ProgressSpinnerModule,
   ],
   templateUrl: './facility-major-detail.component.html',
   styleUrl: './facility-major-detail.component.scss'
 })
 export class FacilityMajorDetailComponent {
   facilityMajor: any = {};
+  loading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,10 +29,14 @@ export class FacilityMajorDetailComponent {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    this.loading = true;
     this.facilityMajorService.getMajorDetail(Number(id))
       .then((response) => {
-        this.facilityMajor = response;
+        this.facilityMajor = response.data;
       })
-      .catch(error => console.error('Error fetching facility details:', error));
+      .catch(error => console.error('Error fetching facility details:', error))
+      .finally(() => {
+        this.loading = false; // Ẩn spinner khi có kết quả
+      })
   }
 }

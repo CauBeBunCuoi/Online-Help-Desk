@@ -112,6 +112,18 @@ export class ServiceRequestTableComponent implements OnInit {
       }
     }
   }
+  
+  statusSeverityMap: { [id: number]: "success" | "secondary" | "info" | "warn" | "danger" | "contrast"  } = {
+    1: 'warn',   // Pending
+    2: 'info',      // Assigned
+    3: 'danger',    // Rejected By Assignee
+    4: 'danger',    // Rejected By Assignee Deactivation
+    5: 'success',   // Accepted By Assignee
+    6: 'success',   // Completed By Assignee
+    7: 'success',   // Finished
+    8: 'danger',    // Cancelled
+    9: 'danger'     // Cancelled Auto
+  };
 
   // Đảm bảo loadServiceRequestActions trả về Promise<void>
   loadServiceRequestActions(status: number): Promise<void> {

@@ -1,4 +1,10 @@
+@if(loading) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
 <app-service-major-detail-section-header [image]="serviceMajor.Major?.BackgroundImageUrl"
     [logo]="serviceMajor.Service?.ImageUrl" [name]="serviceMajor.Service?.Name">
 </app-service-major-detail-section-header>
+
 <app-service-major-detail-section-content></app-service-major-detail-section-content>

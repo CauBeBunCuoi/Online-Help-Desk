@@ -92,44 +92,6 @@ export class StaffTableComponent implements OnInit {
     dt.filterGlobal(inputElement?.value, 'contains');
   }
 
-  confirmDelete(event: Event, id: number) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Do you want to delete this record?',
-      header: 'Danger Zone',
-      icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
-      rejectButtonProps: {
-        label: 'Cancel',
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: 'Delete',
-        severity: 'danger',
-      },
-      accept: () => {
-        this.loading = true;
-        this.majorAssignmentService.deleteStaffFromMajor(this.selectedAccountId!, id)
-          .then(response => {
-            if (response.success) {
-              successAlert(response.message.content);
-              this.actionCompleted.emit('Action completed');
-              this.hideDialogUpdate();
-            } else {
-              errorAlert(response.message.content);
-            }
-          })
-          .catch(error => console.error('Lỗi xóa nhân viên:', error))
-          .finally(() => (this.loading = false));
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
-      },
-      reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
-      },
-    });
-  }
-
   // ✅ Hiển thị danh sách Major của Staff
   showDialogUpdate(accountId: number) {
     this.selectedAccountId = accountId;
@@ -192,8 +154,7 @@ export class StaffTableComponent implements OnInit {
             }
           })
           .catch(error => {
-            console.error('⚠️ Lỗi khi cập nhật:', error);
-            alert('Cập nhật thất bại!');
+            errorAlert(error);
           })
           .finally(() => {
             this.loadingUpdate = false;

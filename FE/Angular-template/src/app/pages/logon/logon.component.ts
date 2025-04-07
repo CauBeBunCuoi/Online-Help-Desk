@@ -9,22 +9,24 @@ import { MessageModule } from 'primeng/message';
 import { AccountService } from '../../core/service/accounts.service';
 import { AuthState } from '../../store/auth/state';
 import { selectAuthState } from '../../store/auth/selectors';
-import { callApi } from '../../api/main/api_call/api';
 import { publicApi } from '../../api/instance/axiosInstance';
 import { JwtUtil } from '../../core/utils/jwt.util';
 import { errorAlert, successAlert } from '../../core/utils/alert.util';
 import { jwtDecode } from 'jwt-decode';
+import { CommonModule } from '@angular/common';
+import { callApi } from '../../api/main/api_call/api';
 
 @Component({
   selector: 'app-logon',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    RouterLink,
+    // RouterLink,
     ToastModule,
-    MessageModule
+    MessageModule,
   ],
   providers: [MessageService],
   templateUrl: './logon.component.html',
@@ -66,31 +68,44 @@ export class LogonComponent implements OnInit {
   }
 
   async login() {
-    // ** Validate input + call api login *
+    // Kiểm tra form
     if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched(); // Đánh dấu tất cả field để hiển thị lỗi
       return;
     }
-    const Data = {
-      login: {
-        Email: this.email,
-        Password: this.password
-      }
+
+    // Lấy dữ liệu từ form
+    const data = {
+      login: this.loginForm.value
     };
-    const res = await callApi({
-      instance: publicApi,
-      method: 'post',
-      url: '/User/auth/login',
-      data: Data
-    })
-    if (res.success) {
-      successAlert(res.message.content ? res.message.content : 'Login success');
-      const user = jwtDecode(res.data.Token);
-      this.accountService.save_login(res.data.Token, {
-        ...user
+
+    try {
+      const res = await callApi({
+        instance: publicApi,
+        method: 'post',
+        url: '/User/auth/login',
+        data
       });
-    } else {
-      errorAlert(res.message.content ? res.message.content : 'Login failed');
+
+      if (res.success) {
+        successAlert(res.message?.content || 'Đăng nhập thành công!');
+
+        const user = jwtDecode(res.data.Token); // Giải mã token lấy thông tin user
+
+        // Lưu thông tin đăng nhập
+        this.accountService.save_login(res.data.Token, { ...user });
+
+        // Optional: điều hướng sang trang chủ hoặc dashboard
+        this.router.navigate(['/home']);
+      } else {
+        errorAlert(res.message?.content || 'Đăng nhập thất bại!');
+      }
+
+    } catch (error) {
+      console.error('❌ Lỗi khi đăng nhập:', error);
+      errorAlert('Có lỗi xảy ra khi đăng nhập!');
     }
   }
+
 
 }

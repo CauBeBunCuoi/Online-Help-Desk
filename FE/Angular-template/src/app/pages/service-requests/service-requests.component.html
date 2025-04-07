@@ -1,8 +1,11 @@
 @if(loading) {
-    <div class="spinner-overlay">
-        <p-progressSpinner></p-progressSpinner>
-    </div>
-    }
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-toast></p-toast>
+<p-confirmdialog />
+
 <div class="container mt-3">
     <!-- Bộ lọc theo Major + Nút Add -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -16,5 +19,5 @@
     </div>
 
     <!-- Bảng service -->
-    <app-service-request-table [serviceRequests]="filteredServiceRequest"></app-service-request-table>
+    <app-service-request-table [serviceRequests]="filteredServiceRequest" (actionCompleted)="handleChildEvent($event)"></app-service-request-table>
 </div>

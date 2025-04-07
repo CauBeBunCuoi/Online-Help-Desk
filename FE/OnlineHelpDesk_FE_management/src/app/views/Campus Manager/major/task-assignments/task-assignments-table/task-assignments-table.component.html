@@ -9,7 +9,7 @@
         [rowsPerPageOptions]="[10, 25, 50]" sortField="TaskRequest.CreatedAt"
         [globalFilterFields]="['TaskRequest.Id', 'TaskRequest.Description', 'Major.Name', 'RequestStatus.Name']"
         [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
-        <!-- Thanh tìm kiếm chung -->
+        <!-- Thanh Search chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-end">
                 <p-iconfield iconPosition="left">
@@ -17,7 +17,7 @@
                         <i class="pi pi-search"></i>
                     </p-inputicon>
                     <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                        placeholder="Tìm kiếm tài khoản" />
+                        placeholder="Search tài khoản" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -65,7 +65,7 @@
         <!-- Description -->
         <div class="mb-3 row">
             <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
-            <div class="col-sm-8">
+            <!-- <div class="col-sm-8">
                 <input pInputText id="Description" class="form-control" formControlName="Description" />
                 @if (updateTaskRequestForm.controls['Description'].invalid &&
                 updateTaskRequestForm.controls['Description'].touched) {
@@ -73,7 +73,26 @@
                     Description is required (Min 3 chars).
                 </small>
                 }
+            </div> -->
+            <div class="col-sm-8">
+
+                <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
+                <!-- <div class="col-sm-8">
+                    <textarea pInputTextarea id="Description" class="form-control"
+                        formControlName="Description"></textarea>
+                </div> -->
+                <div class="col-sm-8">
+                    <textarea pInputTextarea id="Description" class="form-control"
+                        formControlName="Description"></textarea>
+                </div>
+                @if (updateTaskRequestForm.controls['Description'].invalid &&
+                updateTaskRequestForm.controls['Description'].touched) {
+                <small class="text-danger">
+                    Description is required (Min 3 chars).
+                </small>
+                }
             </div>
+
         </div>
         <!-- MajorId -->
         <div class="mb-3 row">

@@ -11,11 +11,13 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
 import { CarouselModule } from 'primeng/carousel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RouterLink } from '@angular/router';
-import { ServiceManagementService } from '../../../core/services/service-management.service';
-import { FacilityMajorService } from '../../../core/services/facility-major.service';
+
+import { ServiceManagementService } from '../../../core/service/service-management.service';
+import { FacilityMajorService } from '../../../core/service/facility-major.service';
 
 @Component({
   selector: 'app-home-section-content',
+  standalone: true,
   imports: [
     FormsModule,
     TabsModule,
@@ -31,66 +33,90 @@ import { FacilityMajorService } from '../../../core/services/facility-major.serv
     RouterLink,
   ],
   templateUrl: './home-section-content.component.html',
-  styleUrl: './home-section-content.component.scss'
+  styleUrl: './home-section-content.component.scss',
 })
 export class HomeSectionContentComponent implements OnInit, OnDestroy {
   services: any[] = [];
-
   facilitiesMajor: any[] = [];
-
   feedbacks: any[] = [];
 
   showFullDescription: { [key: number]: boolean } = {};
   maxLength = 100;
-  isLoading = true; // Biến kiểm soát hiển thị spinner
+
+  // Loading state cho từng phần
+  loadingMajors = true;
+  loadingServices = true;
+  loadingFeedbacks = true;
 
   constructor(
     private serviceManagementService: ServiceManagementService,
-    private facilityMajorService: FacilityMajorService,
+    private facilityMajorService: FacilityMajorService
   ) { }
 
   ngOnInit() {
-    this.facilityMajorService.getAllMajors().then(
-      (data) => {
-        this.facilitiesMajor = data.Majors;
-      }
-    )
-      .catch(error => {
-        console.error('Error:', error);
+    // call api
+    this.facilityMajorService
+      .getAllMajorsFeartures()
+      .then((response) => {
+        this.facilitiesMajor = response.data?.Features
+      })
+      .catch((err) => {
         this.facilitiesMajor = [];
       })
       .finally(() => {
-        this.isLoading = false; // Ẩn spinner khi có kết quả
+        this.loadingMajors = false;
       });
 
-    this.serviceManagementService.getServicesByHead(1).then(
-      (data) => {
-        this.services = data.Services;
-      }
-    )
-      .catch(error => {
-        console.error('Error:', error);
+
+    this.serviceManagementService
+    // call api
+      .getAllServices()
+      .then((response) => {
+        const activeServices = response.data?.Services.filter(service => !service.IsDeactivated);
+
+        // Chọn ngẫu nhiên 5 dịch vụ từ danh sách đã lọc
+        this.services = this.getRandomItems(activeServices, 5);
+      })
+      .catch((err) => {
         this.services = [];
       })
       .finally(() => {
-        this.isLoading = false; // Ẩn spinner khi có kết quả
-      })
+        this.loadingServices = false;
+      });
 
-    this.facilityMajorService.getAllMajorFeedbacks().then(
-      (data) => {
-        this.feedbacks = data.Feedbacks;
-      }
-    )
-      .catch(error => {
-        console.error('Error:', error);
+      // call api
+    this.facilityMajorService
+      .getAllMajorFeedbacks()
+      .then((response) => {
+        const filteredFeedbacks = response.data?.Feedbacks
+          .filter(feedback => !feedback.Feedback.IsDeactivated && !feedback.Major.IsDeactivated)
+          .sort((a, b) => b.Feedback.Rate - a.Feedback.Rate);
+        this.feedbacks = filteredFeedbacks.slice(0, 5);
+      })
+      .catch((err) => {
         this.feedbacks = [];
       })
       .finally(() => {
-        this.isLoading = false; // Ẩn spinner khi có kết quả
-      })
+        this.loadingFeedbacks = false;
+      });
+
   }
 
-  ngOnDestroy() {
+  // get random
+  getRandomItems(arr: any[], n: number): any[] {
+    const shuffled = arr.slice(0);
+    let i = arr.length, t, j;
+
+    // Random
+    while (i) {
+      j = Math.floor(Math.random() * i--);
+      t = shuffled[i];
+      shuffled[i] = shuffled[j];
+      shuffled[j] = t;
+    }
+
+    return shuffled.slice(0, n);
   }
 
+  ngOnDestroy() { }
 }

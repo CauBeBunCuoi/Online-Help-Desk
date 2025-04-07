@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { callApi } from '../../api/main/api_call/api';
-import { loginRequiredApi } from '../../api/instance/axiosInstance';
+import { loginRequiredApi, publicApi } from '../../api/instance/axiosInstance';
 
 const API_PREFIX = '/Major/services';
 
@@ -8,6 +8,16 @@ const API_PREFIX = '/Major/services';
     providedIn: 'root'
 })
 export class ServiceManagementService {
+
+    // [GET] /Major/services
+    getAllServices(): Promise<any> {
+        return callApi({
+            instance: loginRequiredApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            method: 'get',
+            url: API_PREFIX,
+        }, "Get services");
+    }
+
     // [GET] /Major/services/major-head/{accountId}
     getServicesByHead(accountId: number): Promise<any> {
         return callApi({
@@ -109,5 +119,14 @@ export class ServiceManagementService {
             url: API_PREFIX + `/${serviceId}` + '/delete-availability',
             data: Request,
         }, "Delete availability service"); // Giả lập độ trễ API 1 giây
+    }
+
+    // [GET] /Major/services/{serviceId}/bookable-schedules
+    getBookableSchedules(serviceId: number): Promise<any> {
+        return callApi({
+            instance: publicApi, // hoặc axiosInstance nếu bạn đã cấu hình riêng
+            method: 'get',
+            url: API_PREFIX + `/${serviceId}` + '/bookable-schedules',
+        }, "get bbok availability service"); // Giả lập độ trễ API 1 giây
     }
 }

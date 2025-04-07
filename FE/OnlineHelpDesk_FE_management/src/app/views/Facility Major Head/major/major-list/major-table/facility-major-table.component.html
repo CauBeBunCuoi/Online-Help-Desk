@@ -16,7 +16,7 @@
             'MajorType.Name',
         ]" [sortOrder]="-1" [tableStyle]="{ 'min-width': '70rem' }">
 
-        <!-- Thanh tìm kiếm chung -->
+        <!-- Thanh Search chung -->
         <ng-template #caption>
             <div class="d-flex justify-content-end">
                 <p-iconfield iconPosition="left">
@@ -24,7 +24,7 @@
                         <i class="pi pi-search"></i>
                     </p-inputicon>
                     <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                        placeholder="Tìm kiếm Facility Major" />
+                        placeholder="Search Facility Major" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -34,10 +34,10 @@
             <tr>
                 <th pSortableColumn="Major.Id">ID</th>
                 <th pSortableColumn="Major.Name">Name</th>
-                <th pSortableColumn="Major.MainDescription">Main Description</th>
                 <th pSortableColumn="Major.WorkShiftsDescription">Work Shift</th>
                 <th pSortableColumn="Facility.Name">Facility</th>
                 <th pSortableColumn="MajorType.Name">Major Type</th>
+                <th pSortableColumn="Major.IsDeactivated">Available</th>
                 <th>Action</th>
             </tr>
         </ng-template>
@@ -47,13 +47,16 @@
             <tr>
                 <td>{{ facilityMajor.Major.Id }}</td>
                 <td>{{ facilityMajor.Major.Name }}</td>
-                <td>{{ facilityMajor.Major.MainDescription }}</td>
                 <td>{{ facilityMajor.Major.WorkShiftsDescription }}</td>
                 <td>{{ facilityMajor.Facility.Name }}</td>
                 <td>{{ facilityMajor.MajorType.Name }}</td>
                 <td>
-                    <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" label="Delete" severity="danger"
-                        [outlined]="true" />
+                    <p-tag [value]="facilityMajor.Major.IsDeactivated ? 'Deactivated' : 'Activate'"
+                        [severity]="facilityMajor.Major.IsDeactivated ? 'danger' : 'success'" />
+                </td>
+                <td>
+                    <!-- <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" label="Delete" severity="danger"
+                        [outlined]="true" /> -->
                     <p-button (click)="showDialogUpdate(facilityMajor.Major.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
@@ -66,10 +69,10 @@
     [closable]="false">
     <span class="text-muted d-block mb-3">Update information</span>
     @if(loadingUpdate) {
-        <div class="spinner-overlay">
-            <p-progressSpinner></p-progressSpinner>
-        </div>
-        }
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
     <!-- Logo -->
     <div class="text-center mb-3">
         @if (logoUrl) {

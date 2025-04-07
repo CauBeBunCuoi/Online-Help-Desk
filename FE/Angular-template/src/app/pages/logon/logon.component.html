@@ -3,31 +3,23 @@
     <h2 class="text-center text-primary mb-4">
       <i class="pi pi-user"></i> Đăng nhập
     </h2>
-
-    <!-- Thông báo lỗi -->
-    <p-message *ngIf="errorMessage" severity="error" text="{{ errorMessage }}"></p-message>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="row g-3 mt-2">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="row g-3 mt-2">
       <!-- Email -->
       <div class="col-12">
         <label for="email" class="form-label fw-semibold">Email</label>
-        <input id="email" type="email" formControlName="Email" pInputText class="form-control"
-          [ngClass]="{ 'is-invalid': loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched }"
-          placeholder="Nhập địa chỉ email" />
-        <div *ngIf="loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched" class="text-danger mt-1">
-          Email không hợp lệ!
-        </div>
+        <input id="email" type="email" formControlName="Email" class="form-control" placeholder="Nhập địa chỉ email" />
+        @if (loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched) {
+        <div class="text-danger mt-1">Email không hợp lệ!</div>
+        }
       </div>
 
       <!-- Mật khẩu -->
       <div class="col-12">
         <label for="password" class="form-label fw-semibold">Mật khẩu</label>
-        <p-password id="password" formControlName="Password" [feedback]="false" toggleMask="true"
-          inputStyleClass="form-control" placeholder="Nhập mật khẩu"
-          [ngClass]="{ 'is-invalid': loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched }"></p-password>
-        <div *ngIf="loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched" class="text-danger mt-1">
-          Mật khẩu phải có ít nhất 3 ký tự!
-        </div>
+        <input id="password" type="password" formControlName="Password" class="form-control" placeholder="Nhập mật khẩu" />
+        @if (loginForm.get('Password')?.invalid && loginForm.get('Password')?.touched) {
+        <div class="text-danger mt-1">Mật khẩu phải có ít nhất 3 ký tự!</div>
+        }
       </div>
 
       <!-- Nút đăng nhập -->

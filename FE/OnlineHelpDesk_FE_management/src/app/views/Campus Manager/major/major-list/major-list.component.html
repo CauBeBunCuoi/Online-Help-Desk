@@ -14,7 +14,7 @@
             [globalFilterFields]="['Major.Name', 'MajorType.Name', 'Facility.Name']" [sortOrder]="-1"
             [tableStyle]="{ 'min-width': '100rem' }">
 
-            <!-- Thanh tìm kiếm -->
+            <!-- Thanh Search -->
             <ng-template #caption>
                 <div class="d-flex justify-content-between">
                     <h5 class="fw-bold">Facility Majors</h5>
@@ -23,7 +23,7 @@
                             <i class="pi pi-search"></i>
                         </p-inputicon>
                         <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
-                            placeholder="Tìm kiếm Facility Major" />
+                            placeholder="Search Facility Major" />
                     </p-iconfield>
                 </div>
             </ng-template>
@@ -32,12 +32,12 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="Major.Id">ID <p-sortIcon field="Major.Id"></p-sortIcon></th>
-                    <th pSortableColumn="Major.Name">Tên <p-sortIcon field="Major.Name"></p-sortIcon></th>
-                    <th>Hình ảnh</th>
-                    <th>Mô tả</th>
-                    <th pSortableColumn="MajorType.Name">Loại <p-sortIcon field="MajorType.Name"></p-sortIcon></th>
-                    <th pSortableColumn="Facility.Name">Cơ sở <p-sortIcon field="Facility.Name"></p-sortIcon></th>
-                    <th>Hành động</th>
+                    <th pSortableColumn="Major.Name">Name <p-sortIcon field="Major.Name"></p-sortIcon></th>
+                    <th>Image</th>
+                    <th pSortableColumn="MajorType.Name">Major Type<p-sortIcon field="MajorType.Name"></p-sortIcon></th>
+                    <th pSortableColumn="Facility.Name">Facility<p-sortIcon field="Facility.Name"></p-sortIcon></th>
+                    <th pSortableColumn="Major.IsDeactivated">Available</th>
+                    <th>Action</th>
                 </tr>
             </ng-template>
 
@@ -51,12 +51,17 @@
                             alt="{{ facilityMajor.Major.Name }}" class="table-image">
                         <span *ngIf="!facilityMajor.Major.ImageUrl" class="text-muted">No Image</span>
                     </td>
-                    <td>{{ facilityMajor.Major.MainDescription }}</td>
                     <td>{{ facilityMajor.MajorType?.Name || 'N/A' }}</td>
                     <td>{{ facilityMajor.Facility?.Name || 'N/A' }}</td>
                     <td>
-                        <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" label="Delete"
-                            severity="danger" [outlined]="true" />
+                        <p-tag [value]="facilityMajor.Major.IsDeactivated ? 'Deactivated' : 'Activate'"
+                            [severity]="facilityMajor.Major.IsDeactivated ? 'danger' : 'success'" />
+                    </td>
+                    <td>
+                        <p-button (click)="confirmDelete($event, facilityMajor.Major.Id)" severity="danger"
+                            [outlined]="true">
+                            <i class="pi pi-trash"></i>
+                        </p-button>
                         <p-button (click)="showDialogUpdate(facilityMajor.Major.Id)" label="Update" class="ms-2" />
                     </td>
                 </tr>
@@ -264,7 +269,8 @@
         <!-- Footer -->
         <div class="d-flex justify-content-end gap-2">
             <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
-            <p-button label="Update" (click)="updateFacilityMajor($event)" [disabled]="updateFacilityMajorForm.invalid" />
+            <p-button label="Update" (click)="updateFacilityMajor($event)"
+                [disabled]="updateFacilityMajorForm.invalid" />
         </div>
     </form>
 </p-dialog>

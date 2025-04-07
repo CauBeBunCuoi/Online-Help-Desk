@@ -1,15 +1,15 @@
 <section class="major-content">
     <div class="major-content__header">
-        <h1 class="title">Danh sách các lĩnh vực nổi bật</h1>
+        <h1 class="title">List of featured majors</h1>
     </div>
     <div class="container">
         <div class="row">
-            @if(isLoading) {
+            @if(loadingMajors) {
             <div class="text-center my-5">
                 <p-progressSpinner></p-progressSpinner>
             </div>
             }
-            @for (major of facilitiesMajor; track major) {
+            @for (major of facilitiesMajorTop; track major) {
             <div class="col-md-4 col-sm-6 mb-3">
                 <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
                     <p-card class="mb-3">
@@ -20,10 +20,6 @@
                                 <h6 class="mb-0">{{ major.Major.Name }}</h6>
                             </div>
                         </div>
-
-                        <!-- Hình ảnh lớn -->
-                        <img [src]="major.Major.BackgroundImageUrl" class="w-100 mt-2 rounded" alt="major Image" />
-
                         <!-- Mô tả -->
                         <p class="text-dark">
                             {{ major.Major.MainDescription }}
@@ -35,13 +31,18 @@
         </div>
     </div>
 </section>
-
+    
 <section class="major-content">
     <div class="major-content__header">
-        <h1 class="title">Danh sách các lĩnh vực</h1>
+        <h1 class="title">List of majors</h1>
     </div>
     <div class="container">
         <div class="row">
+            @if(isLoading) {
+                <div class="text-center my-5">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+                }
             @for (major of facilitiesMajor; track major) {
             <div class="col-md-4 col-sm-6 mb-3">
                 <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
@@ -53,10 +54,6 @@
                                 <h6 class="mb-0">{{ major.Major.Name }}</h6>
                             </div>
                         </div>
-
-                        <!-- Hình ảnh lớn -->
-                        <img [src]="major.Major.BackgroundImageUrl" class="w-100 mt-2 rounded" alt="major Image" />
-
                         <!-- Mô tả -->
                         <p class="text-dark">
                             {{ major.Major.MainDescription }}

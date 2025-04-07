@@ -110,6 +110,9 @@ export class ReportTableComponent implements OnInit {
             IsResolved: Report.Report.IsResolved,
             IsDeactivated: Report.Report.IsDeactivated,
           });
+          if (Report.Report.IsResolved) {
+            this.updateReportForm.get('IsResolved')?.disable();
+          }
           // Cập nhật thông tin hiển thị
           this.accountInfo = Report.Account;
           this.majorInfo = Report.Major;
@@ -131,6 +134,7 @@ export class ReportTableComponent implements OnInit {
     this.majorInfo = null;
     this.reportType = null;
     this.update = false;
+    this.updateReportForm.get('IsResolved')?.enable();
   }
 
   updateReportStatus(event: any) {
