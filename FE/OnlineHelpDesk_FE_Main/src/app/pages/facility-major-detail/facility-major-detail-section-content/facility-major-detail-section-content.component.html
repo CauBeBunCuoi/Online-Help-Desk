@@ -29,8 +29,10 @@
                         <h3 class="title rounded-top">Related Information</h3>
                         <div class="content p-3">
                             <div class="description">
+                                
                                 <ul class="list-unstyled">
-                                    <li><strong>Work shift: </strong>{{ workShifstDescription }}</li>
+
+                                    <li><strong>Work shift: </strong>{{ workShifstDescription ? workShifstDescription : 'no information' }}</li>
                                     <li><strong>Status: </strong>{{ isOpen }}</li>
 
                                     <!-- <li><strong>Open date: </strong>{{ openScheduleDate }}</li>
