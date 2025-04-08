@@ -12,3 +12,19 @@
         }
     }
 }
+
+.header-content__search {
+    color: #fff;
+
+    form {
+        align-items: center;
+        background: #fff;
+        border-radius: 100px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .04);
+        display: flex;
+        height: 60px;
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+    }
+}

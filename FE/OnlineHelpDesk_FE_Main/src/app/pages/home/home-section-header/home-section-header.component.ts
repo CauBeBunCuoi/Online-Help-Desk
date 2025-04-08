@@ -4,7 +4,7 @@ import { SearchMajorComponent } from '../../../common/components/search-major/se
 @Component({
   selector: 'app-home-section-header',
   imports: [
-    SearchMajorComponent
+    // SearchMajorComponent
   ],
   templateUrl: './home-section-header.component.html',
   styleUrl: './home-section-header.component.scss'

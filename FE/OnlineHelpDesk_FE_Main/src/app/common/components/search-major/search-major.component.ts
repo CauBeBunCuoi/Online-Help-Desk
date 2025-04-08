@@ -27,7 +27,7 @@ export class SearchMajorComponent implements OnInit, OnDestroy {
     { name: 'Business Administration', value: 'ba' },
     { name: 'Mechanical Engineering', value: 'me' }
   ];
-  selectedMajor: any | undefined;
+  selectedMajorType: any | undefined;
   keyword: string;
   constructor(
     private fb: FormBuilder

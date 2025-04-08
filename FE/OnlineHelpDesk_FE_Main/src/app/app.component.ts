@@ -13,7 +13,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     HeaderComponent,
     RouterOutlet,
     FooterComponent,
-    BreadcrumbComponent,
+    // BreadcrumbComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

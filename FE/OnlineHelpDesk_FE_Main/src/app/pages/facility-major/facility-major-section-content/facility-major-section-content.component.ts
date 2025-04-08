@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FacilityMajorService } from '../../../core/service/facility-major.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RouterLink } from '@angular/router';
 import { RatingModule } from 'primeng/rating';
 import { CarouselModule } from 'primeng/carousel';
+import { ButtonModule } from 'primeng/button';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 @Component({
   selector: 'app-facility-major-section-content',
   imports: [
@@ -16,7 +21,13 @@ import { CarouselModule } from 'primeng/carousel';
     AvatarModule,
     RatingModule,
     CarouselModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ButtonModule,
+    ReactiveFormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    SelectModule,
   ],
   standalone: true,
   templateUrl: './facility-major-section-content.component.html',
@@ -34,12 +45,28 @@ export class FacilityMajorSectionContentComponent implements OnInit {
   isLoading: boolean = false;
   loadingMajors: boolean = false;
   loadingFeedbacks: boolean = false;
+  formGroup!: FormGroup;
+  loading: boolean = false;
+
+  facilityMajorTypes: any[] = [];
+  majors: any[] = [];
+  isSearched = false; // mặc định là false
+
+  selectedMajorType: any | undefined;
+  keyword: string;
 
   constructor(
     private facilityMajorService: FacilityMajorService,
-  ) { }
+    private fb: FormBuilder
+  ) {
+    this.formGroup = this.fb.group({
+      type: [null],
+      keyword: ['']
+    });
+  }
 
   ngOnInit() {
+    this.loadFacilityMajorTypeOptions();
     this.isLoading = true; // Biến kiểm soát hiển thị spinner
     this.facilityMajorService.getAllMajors().then(
       (data) => {
@@ -89,4 +116,49 @@ export class FacilityMajorSectionContentComponent implements OnInit {
         this.loadingFeedbacks = false;
       });
   }
+
+  loadFacilityMajorTypeOptions() {
+    this.loading = true;
+    this.facilityMajorService.getFacilityMajorTypes()
+      .then(response => {
+        if (!response || !Array.isArray(response.data.FacilityMajorTypes)) {
+          this.facilityMajorTypes = [];
+          return;
+        }
+        this.facilityMajorTypes = response.data.FacilityMajorTypes.map(type => ({
+          id: type.Id,
+          name: type.Name
+        }));
+      })
+      .catch(error => {
+        console.error('Error loading Facility Major Type options:', error);
+        this.facilityMajorTypes = [];
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
+
+  save() {
+    const formValue = this.formGroup.value;
+    const selectedTypeId = formValue.type; // là số, ví dụ: 1, 2, 3,...
+    const keyword = formValue.keyword?.trim().toLowerCase();
+
+    console.log('Search type ID:', selectedTypeId);
+    console.log('Search keyword:', keyword);
+
+    this.majors = this.facilitiesMajor.filter(major => {
+      const majorName = major.Major?.Name?.toLowerCase() || '';
+      const majorTypeId = major.MajorType?.Id;
+
+      const isTypeMatched = selectedTypeId ? majorTypeId === selectedTypeId : true;
+      const isKeywordMatched = keyword ? majorName.includes(keyword) : true;
+
+      return isTypeMatched && isKeywordMatched;
+    });
+    console.log(this.majors);
+
+    this.isSearched = true; // đánh dấu là đã tìm kiếm
+  }
+
 }

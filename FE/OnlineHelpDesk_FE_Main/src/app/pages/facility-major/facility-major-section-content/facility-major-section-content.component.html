@@ -1,3 +1,64 @@
+<div class="container mt-3">
+    <div class="header-content__search">
+        <form [formGroup]="formGroup" (ngSubmit)="save()" class="">
+            <div class="col-md-3">
+                <p-select [options]="facilityMajorTypes" placeholder="Major" [editable]="true" optionLabel="name"
+                    optionValue="id" formControlName="type" class="rounded-pill w-100" />
+
+            </div>
+            <div class="col-md-8">
+                <input type="text" pInputText placeholder="keyword" formControlName="keyword" class="w-100 border-0" />
+            </div>
+            <div class="col-md-1">
+                <p-button icon="pi pi-search" label="Search" class="w-auto" size="small" [rounded]="true"
+                    severity="success" (click)="save()" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if(isSearched) {
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">Searrch result</h1>
+    </div>
+    @if(majors.length > 0) {
+    <!-- Hiển thị danh sách majors -->
+    <div class="container">
+        <div class="row">
+            @if(isLoading) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (major of majors; track major) {
+            <div class="col-md-4 col-sm-6 mb-3">
+                <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
+                    <p-card class="mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.Major.ImageUrl" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.Major.Name }}</h6>
+                            </div>
+                        </div>
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.Major.MainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+    } @else {
+    <!-- Thông báo không có kết quả -->
+    <div class="text-center my-5 text-muted">No result found</div>
+    }
+</section>
+}
+
 <section class="major-content">
     <div class="major-content__header">
         <h1 class="title">List of featured majors</h1>
@@ -31,7 +92,7 @@
         </div>
     </div>
 </section>
-    
+
 <section class="major-content">
     <div class="major-content__header">
         <h1 class="title">List of majors</h1>
@@ -39,10 +100,10 @@
     <div class="container">
         <div class="row">
             @if(isLoading) {
-                <div class="text-center my-5">
-                    <p-progressSpinner></p-progressSpinner>
-                </div>
-                }
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
             @for (major of facilitiesMajor; track major) {
             <div class="col-md-4 col-sm-6 mb-3">
                 <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
