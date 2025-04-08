@@ -253,8 +253,10 @@ export class FacilityMajorTableComponent implements OnInit {
       },
       accept: () => {
         if (this.updateFacilityMajorForm.valid) {
-          this.loadingUpdate = true; // Bắt đầu hiển thị spinner
-          this.facilityMajorService.updateMajor(this.selectedFacilityMajorId!, this.updateFacilityMajorForm.value).then(
+          this.loadingUpdate = true; // Bắt đầu trạng thái loading
+          var closeScheduleDate = !this.updateFacilityMajorForm.value.CloseScheduleDate ? null : this.updateFacilityMajorForm.value.CloseScheduleDate;
+          var openScheduleDate = !this.updateFacilityMajorForm.value.OpenScheduleDate ? null : this.updateFacilityMajorForm.value.OpenScheduleDate;
+          this.facilityMajorService.updateMajor(this.selectedFacilityMajorId!, { ...this.updateFacilityMajorForm.value, CloseScheduleDate: closeScheduleDate, OpenScheduleDate: openScheduleDate }).then(
             (response) => {
               if (response.success) {
                 successAlert(response.message.content);

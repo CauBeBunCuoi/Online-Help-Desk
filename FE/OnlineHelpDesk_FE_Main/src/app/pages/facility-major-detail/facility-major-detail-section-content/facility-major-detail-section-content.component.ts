@@ -24,10 +24,12 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FacilityMajorService } from '../../../core/service/facility-major.service';
 import { ServiceManagementService } from '../../../core/service/service-management.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-facility-major-detail-section-content',
   imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,

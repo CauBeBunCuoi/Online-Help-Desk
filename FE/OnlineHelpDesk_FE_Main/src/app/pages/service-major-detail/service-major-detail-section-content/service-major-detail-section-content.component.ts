@@ -129,7 +129,6 @@ export class ServiceMajorDetailSectionContentComponent implements OnInit {
     return this.availableTimes.map(time => ({ Time: time }));
   }
 
-
   onDayChange() {
     this.addServiceRequestForm.patchValue({
       TimeRequest: '', // Reset time request when day is changed
@@ -146,14 +145,30 @@ export class ServiceMajorDetailSectionContentComponent implements OnInit {
     }
   }
 
-  showDialogServiceAvailable() {
+  showDialogServiceAvailable(service: any) {
     this.addServiceAvailable = true;
     this.fetchBookableSchedules();
+  this.selectedServiceId = service.Service.Id;
+  this.serviceType = service.Service.ServiceTypeId;
+
+  if (service.Service.ServiceTypeId == 3) {
+    this.addServiceRequestForm.get('Email')?.setValidators([Validators.required]);
+    this.addServiceRequestForm.get('Phone')?.setValidators([Validators.required]);
+    this.addServiceRequestForm.get('Name')?.setValidators([Validators.required]);
   }
 
-  hideDialogAdd() {
-    this.addServiceAvailable = false;
-    this.addServiceRequestForm.reset();
+  // Reset form trước
+  this.addServiceRequestForm.reset();
+
+  // Xử lý cập nhật validate nếu service yêu cầu mô tả ban đầu
+  if (service.Service.IsInitRequestDescriptionRequired) {
+    this.addServiceRequestForm.get('RequestInitDescription')?.setValidators([Validators.required]);
+  } else {
+    this.addServiceRequestForm.get('RequestInitDescription')?.clearValidators();
+  }
+
+  // Cập nhật trạng thái validate
+  this.addServiceRequestForm.get('RequestInitDescription')?.updateValueAndValidity();
   }
 
   addServiceRequest(event: any) {
@@ -213,6 +228,11 @@ export class ServiceMajorDetailSectionContentComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
       },
     });
+  }
+
+  hideDialogAdd() {
+    this.addServiceAvailable = false;
+    this.addServiceRequestForm.reset();
   }
 
 }

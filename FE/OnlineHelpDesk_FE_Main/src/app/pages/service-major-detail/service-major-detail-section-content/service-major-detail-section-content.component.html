@@ -37,18 +37,23 @@
               </span>
             </div>
 
-            <!-- Ngày mở -->
-            <div class="description mb-3" *ngIf="service?.Service?.OpenScheduleDate">
-              <strong>Open Date:</strong> {{ service?.Service?.OpenScheduleDate }}
+            <div class="description">
+              <strong>Close Schedule:</strong>
+              <span>
+                {{
+                  service?.Service?.OpenScheduleDate && service?.Service?.CloseScheduleDate
+                    ? ((service?.Service?.CloseScheduleDate | date:'dd/MM/yyyy') + ' - ' + (service?.Service?.OpenScheduleDate | date:'dd/MM/yyyy'))
+                    : service?.Service?.CloseScheduleDate
+                      ? ((service?.Service?.CloseScheduleDate | date:'dd/MM/yyyy') + ' - Not Determined')
+                      : 'Not Available'
+                }}
+              </span>
             </div>
-
-            <!-- Ngày đóng -->
-            <div class="description mb-3" *ngIf="service?.Service?.CloseScheduleDate">
-              <strong>Close Date:</strong> {{ service?.Service?.CloseScheduleDate }}
-            </div>
+            
 
             <!-- Nút đặt ngay -->
-            <button type="button" class="btn btn-success" (click)="showDialogServiceAvailable()">Book now</button>
+            <button type="button" class="btn btn-success mt-5" (click)="showDialogServiceAvailable(service)">Book
+              now</button>
           </div>
         </div>
       </div>

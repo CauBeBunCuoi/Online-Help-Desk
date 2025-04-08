@@ -327,7 +327,9 @@ export class MajorListComponent implements OnInit {
       accept: () => {
         if (this.updateFacilityMajorForm.valid) {
           this.loading = true;
-          this.facilityMajorService.updateMajor(this.selectedFacilityMajorId!, this.updateFacilityMajorForm.value)
+          var closeScheduleDate = !this.updateFacilityMajorForm.value.CloseScheduleDate ? null : this.updateFacilityMajorForm.value.CloseScheduleDate;
+          var openScheduleDate = !this.updateFacilityMajorForm.value.OpenScheduleDate ? null : this.updateFacilityMajorForm.value.OpenScheduleDate;
+          this.facilityMajorService.updateMajor(this.selectedFacilityMajorId!, { ...this.updateFacilityMajorForm.value, CloseScheduleDate: closeScheduleDate, OpenScheduleDate: openScheduleDate })
             .then((response) => {
               if (response.success) {
                 successAlert(response.message.content);

@@ -544,7 +544,9 @@ export class ServiceTableComponent implements OnInit {
       accept: () => {
         if (this.updateServiceForm.valid) {
           this.loading = true; // Bắt đầu trạng thái loading
-          this.serviceManagementService.updateService(this.selectedServiceId!, this.updateServiceForm.value)
+          var closeScheduleDate = !this.updateServiceForm.value.CloseScheduleDate ? null : this.updateServiceForm.value.CloseScheduleDate;
+          var openScheduleDate = !this.updateServiceForm.value.OpenScheduleDate ? null : this.updateServiceForm.value.OpenScheduleDate;
+          this.serviceManagementService.updateService(this.selectedServiceId!, { ...this.updateServiceForm.value, CloseScheduleDate: closeScheduleDate, OpenScheduleDate: openScheduleDate })
             .then(response => {
               if (response.success) {
                 successAlert(response.message.content);
@@ -591,6 +593,7 @@ export class ServiceTableComponent implements OnInit {
       reader.onload = (e: any) => {
         this.logoUrl = e.target.result; // Hiển thị ảnh trước
         this.updateServiceForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
+        this.addServiceForm.patchValue({ Image: e.target.result }); // Gán vào FormGroup
       };
       reader.readAsDataURL(file);
     }

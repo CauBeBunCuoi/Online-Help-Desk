@@ -32,9 +32,24 @@
                                 <ul class="list-unstyled">
                                     <li><strong>Work shift: </strong>{{ workShifstDescription }}</li>
                                     <li><strong>Status: </strong>{{ isOpen }}</li>
-                                    <li><strong>Open date: </strong>{{ openScheduleDate }}</li>
-                                    <li><strong>Close date: </strong>{{ closeScheduleDate }}</li>
+
+                                    <!-- <li><strong>Open date: </strong>{{ openScheduleDate }}</li>
+                                    <li><strong>Close date: </strong>{{ closeScheduleDate }}</li> -->
                                     <li><strong>Major type: </strong>{{ facilityMajorTypeId }}</li>
+                                    <li>
+                                        <strong>Close Schedule:</strong>
+                                        <span>
+                                            {{
+                                            openScheduleDate && closeScheduleDate
+                                            ? ((closeScheduleDate | date:'dd/MM/yyyy') + ' - ' +
+                                            (openScheduleDate | date:'dd/MM/yyyy'))
+                                            : closeScheduleDate
+                                            ? ((closeScheduleDate | date:'dd/MM/yyyy') + ' - Not
+                                            Determined')
+                                            : 'Not Available'
+                                            }}
+                                        </span>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

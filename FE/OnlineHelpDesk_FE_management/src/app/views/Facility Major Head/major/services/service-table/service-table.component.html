@@ -65,7 +65,7 @@
                         <i class="pi pi-trash"></i>
                     </p-button>
                     <p-button (click)="showDialogServiceAvailable(service.Service.Id)" label="Availability"
-                        class="ms-2" />
+                        class="ms-2" [disabled]="service.Service.ServiceTypeId != 2"/>
                     <p-button (click)="showDialogUpdate(service.Service.Id)" label="Update" class="ms-2" />
                 </td>
             </tr>
