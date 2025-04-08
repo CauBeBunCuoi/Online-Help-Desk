@@ -12,3 +12,7 @@ p-dialog {
           }
     }
 }
+
+bs-timepicker-container .minutes {
+    display: none !important;
+  }

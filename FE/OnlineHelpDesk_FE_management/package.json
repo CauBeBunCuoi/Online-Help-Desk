@@ -48,6 +48,7 @@
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.21",
     "ngrx-store-localstorage": "^19.0.0",
+    "ngx-bootstrap": "^19.0.2",
     "ngx-scrollbar": "^13.0.3",
     "npm": "^11.2.0",
     "primeicons": "^7.0.0",

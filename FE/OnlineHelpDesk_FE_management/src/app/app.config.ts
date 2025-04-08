@@ -20,6 +20,7 @@ import { metaReducers } from './store/metaReducers';
 import { provideHttpClient } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,7 +38,11 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
-    importProvidersFrom(SidebarModule, DropdownModule),
+    importProvidersFrom(
+      SidebarModule,
+      DropdownModule,
+      TimepickerModule.forRoot()
+    ),
     IconSetService,
     provideAnimationsAsync(),
     // primeng

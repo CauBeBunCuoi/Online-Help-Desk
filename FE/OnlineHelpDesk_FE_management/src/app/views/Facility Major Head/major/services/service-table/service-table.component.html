@@ -222,15 +222,16 @@
                 <!-- Start Requestable Time -->
                 <div class="mb-3">
                     <label for="StartRequestableTime" class="fw-semibold">Start Time</label>
-                    <input pInputText id="StartRequestableTime" type="time" class="form-control"
-                        formControlName="StartRequestableTime" />
+                    <timepicker formControlName="StartRequestableTime" [showMeridian]="false" [minuteStep]="60"
+                        [showSeconds]="false" class="form-control border p-2 rounded"></timepicker>
                 </div>
+
 
                 <!-- End Requestable Time -->
                 <div class="mb-3">
                     <label for="EndRequestableTime" class="fw-semibold">End Time</label>
-                    <input pInputText id="EndRequestableTime" type="time" class="form-control"
-                        formControlName="EndRequestableTime" />
+                    <timepicker formControlName="EndRequestableTime" [showMeridian]="false" [minuteStep]="60"
+                        [showSeconds]="false" class="form-control border p-2 rounded"></timepicker>
                 </div>
 
                 <!-- Footer -->

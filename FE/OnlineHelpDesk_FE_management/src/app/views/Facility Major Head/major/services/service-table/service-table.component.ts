@@ -16,6 +16,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { RatingModule } from 'primeng/rating';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileUpload } from 'primeng/fileupload';
@@ -36,6 +37,7 @@ import { errorAlert, successAlert } from '../../../../../core/utils/alert.util';
     TagModule,
     ConfirmDialogModule,
     ToastModule,
+    TimepickerModule,
     ButtonModule,
     Dialog,
     InputTextModule,
@@ -127,11 +129,6 @@ export class ServiceTableComponent implements OnInit {
       ServiceTypeId: [null, Validators.required], // Loại dịch vụ
       Image: [''] // Hình ảnh (logo) dưới dạng Base64
     });
-    this.addServiceAvailableForm = this.fb.group({
-      DayOfWeek: [null, Validators.required],
-      StartRequestableTime: ['', Validators.required],
-      EndRequestableTime: ['', Validators.required]
-    });
     this.updateServiceForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(3)]], // Tên dịch vụ
       FacilityMajorId: [null, Validators.required], // ID Facility Major (Chữ 'm' cần viết thường theo JSON)
@@ -147,6 +144,11 @@ export class ServiceTableComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.addServiceAvailableForm = this.fb.group({
+      DayOfWeek: [null, Validators.required],
+      StartRequestableTime: [new Date(), Validators.required],
+      EndRequestableTime: [new Date(), Validators.required]
+    });
     // Lấy thông tin từ localStorage
     const authDataString = localStorage.getItem('auth');
 
@@ -273,7 +275,7 @@ export class ServiceTableComponent implements OnInit {
         const majorId = this.addServiceForm.get('FacilityMajorId')?.value;
         if (this.addServiceForm.valid) {
           this.loadingAdd = true; // Bắt đầu loading
-          this.serviceManagementService.addServiceToMajor(majorId, {...this.addServiceForm.value, IsInitRequestDescriptionRequired : !this.addServiceForm.value.IsInitRequestDescriptionRequired ? false : true})
+          this.serviceManagementService.addServiceToMajor(majorId, { ...this.addServiceForm.value, IsInitRequestDescriptionRequired: !this.addServiceForm.value.IsInitRequestDescriptionRequired ? false : true })
             .then((response) => {
               if (response.success) {
                 successAlert(response.message.content);
@@ -355,13 +357,33 @@ export class ServiceTableComponent implements OnInit {
         severity: 'success',
       },
       accept: () => {
+        function formatToHHmm(isoString: string): string {
+          const date = new Date(isoString);
+          const hours = date.getHours().toString().padStart(2, '0');
+          const minutes = date.getMinutes().toString().padStart(2, '0');
+          return `${hours}:${minutes}`;
+        }
         if (this.addServiceAvailableForm.valid) {
           const formData = this.addServiceAvailableForm.value;
+          const rawStart = new Date(formData.StartRequestableTime);
+          rawStart.setMinutes(0);
+          rawStart.setSeconds(0);
+
+          const rawEnd = new Date(formData.EndRequestableTime);
+          rawEnd.setMinutes(0);
+          rawEnd.setSeconds(0);
+
+          // Gán lại vào form
+          formData.StartRequestableTime = rawStart;
+          formData.EndRequestableTime = rawEnd;
+          const start = formatToHHmm(formData.StartRequestableTime); // "05:00"
+          const end = formatToHHmm(formData.EndRequestableTime);     // "10:00"
+
           const Schedule = {
             Availability: {
               DayOfWeek: formData.DayOfWeek,
-              StartRequestableTime: formData.StartRequestableTime,
-              EndRequestableTime: formData.EndRequestableTime,
+              StartRequestableTime: start,
+              EndRequestableTime: end,
             }
           };
           this.loading = true; // Bắt đầu loading khi gửi dữ liệu
