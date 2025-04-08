@@ -12,5 +12,5 @@ import { FacilityMajorSectionContentComponent } from './facility-major-section-c
   styleUrl: './facility-major.component.scss'
 })
 export class FacilityMajorComponent {
-
+  
 }

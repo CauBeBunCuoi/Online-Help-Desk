@@ -166,6 +166,7 @@ export class FacilityItemsComponent implements OnInit {
             successAlert(response.message.content);
             this.loadFacilityItem();
           } else {
+            this.loadFacilityItem();
             errorAlert(response.message.content);
           }
         });

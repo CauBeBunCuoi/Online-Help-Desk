@@ -87,14 +87,18 @@
               </textarea>
             </div>
             <div class="col-md-6">
+                @if(serviceRequest.ServiceRequest.TimeRequest) {
                 <label class="fw-semibold">Service Request Time Request:</label>
                 <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.TimeRequest ?
                     serviceRequest.ServiceRequest.TimeRequest : 'No value' }}</p>
+                }
             </div>
             <div class="col-md-6">
+                @if(serviceRequest.ServiceRequest.DateRequest) {
                 <label class="fw-semibold">Service Request Date Request:</label>
                 <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.DateRequest ?
                     serviceRequest.ServiceRequest.DateRequest : 'No value' }}</p>
+                }
             </div>
             @if(serviceRequest.ServiceRequest.CancelReason) {
             <div class="col-md-12">
@@ -108,11 +112,7 @@
         <hr>
         <div class="row mb-3">
             <h3>Service</h3>
-            <div class="col-md-6">
-                <label class="fw-semibold">Service ID:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ServiceId }}</p>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <label class="fw-semibold">Service Name:</label>
                 <p class="border rounded p-2 bg-light">{{ serviceRequest.Service.Name }}</p>
             </div>
@@ -120,11 +120,7 @@
         <hr>
         <div class="row mb-3">
             <h3>Major</h3>
-            <div class="col-md-6">
-                <label class="fw-semibold">Major ID:</label>
-                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Id }}</p>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <label class="fw-semibold">Major Name:</label>
                 <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Name }}</p>
             </div>
