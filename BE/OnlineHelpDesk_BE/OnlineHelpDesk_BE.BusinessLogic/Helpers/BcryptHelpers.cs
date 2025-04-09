@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using BCrypt.Net;
-using OnlineHelpDesk_BE.Common.Configurations.Bcrypt;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Bcrypt;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Bcrypt.interfaces;
 
 
 namespace OnlineHelpDesk_BE.BusinessLogic.Helpers

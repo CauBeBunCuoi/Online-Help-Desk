@@ -6,7 +6,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using OnlineHelpDesk_BE.Common.Configurations.Jwt;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Jwt;
+using System.Security.Cryptography.X509Certificates;
+using OnlineHelpDesk_BE.Common.AppConfigurations.Jwt.interfaces;
 
 namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
 {
@@ -15,14 +17,14 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
         private readonly IJwtConfig _jwtConfig;
 
         private readonly string _secretKey;
-        private readonly string _privateKeyKey;
-        private readonly string _publicKeyKey;
+        private readonly string _privateKey;
+        private readonly string _publicKey;
 
         public JwtHelpers(IJwtConfig _jwtConfig)
         {
             _secretKey = _jwtConfig.SecretKey;
-            _privateKeyKey = _jwtConfig.PrivateKey;
-            _publicKeyKey = _jwtConfig.PublicKey;
+            _privateKey = _jwtConfig.PrivateKey;
+            _publicKey = _jwtConfig.PublicKey;
             this._jwtConfig = _jwtConfig;
         }
 
@@ -60,9 +62,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
             
             try
             {
-                
                 var rsa = RSA.Create();
-                rsa.ImportFromPem(_privateKeyKey.ToCharArray());
+                rsa.ImportFromPem(_privateKey.ToCharArray());
 
                 // Sử dụng private key để ký token
                 var signingCredentials = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
@@ -109,10 +110,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Helpers
         // Giải mã JWT sử dụng Public Key
         public ClaimsPrincipal DecodeToken_TwoPublicPrivateKey(string token)
         {
+
             try
             {
-                var publicKey = File.ReadAllText(_publicKeyKey);
-                Console.WriteLine("publicKey: " + publicKey);
+                var publicKey = _publicKey;
                 var rsa = RSA.Create();
                 rsa.ImportFromPem(publicKey);
 

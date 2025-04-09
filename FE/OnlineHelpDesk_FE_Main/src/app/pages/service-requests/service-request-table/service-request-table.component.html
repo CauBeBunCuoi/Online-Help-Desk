@@ -1,0 +1,158 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-confirmdialog />
+<div class="card">
+    <p-table #dt2 [value]="serviceRequests" dataKey="ServiceRequest.Id" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="ServiceRequest.CreatedAt"
+        [globalFilterFields]="['ServiceRequest.Id', 'Requester.FullName', 'ServiceRequest.RequestInitDescription', 'Major.Name', 'RequestStatus.Name']"
+        [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+
+        <!-- Thanh Search chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-end">
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                        placeholder="Search yêu cầu dịch vụ" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="ServiceRequest.Id">ID</th>
+                <th pSortableColumn="Requester.FullName">Requester</th>
+                <th pSortableColumn="Major.Name">Major</th>
+                <th pSortableColumn="RequestStatus.Name">Status</th>
+                <th pSortableColumn="ServiceRequest.CreatedAt">Created At</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-request>
+            <tr>
+                <td>{{ request.ServiceRequest.Id }}</td>
+                <td>{{ request.Requester.FullName }}</td>
+                <td>{{ request.Major.Name }}</td>
+                <td>
+                    <p-tag [value]="getStatusName(request.RequestStatus.Id)"
+                        [severity]="getStatusSeverity(request.RequestStatus.Id)">
+                    </p-tag>
+                </td>
+                <td>{{ request.ServiceRequest.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                    <p-button (click)="showDetailDialog(request.ServiceRequest.Id)" label="Detail" />
+
+                    <p-button *ngIf="request.RequestStatus.Id < 6" (click)="showDialogUpdate(request.ServiceRequest.Id)"
+                        label="Cancel" class="ms-2" severity="danger" [outlined]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<!--  -->
+<p-dialog header="Detail for request details" [modal]="true" [(visible)]="detail" [style]="{ width: '50rem' }"
+    [closable]="false">
+    @if(loadingDetail) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div *ngIf="serviceRequest" class="container">
+        <div class="row mb-3">
+            <h3>Service Request</h3>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.Id }}</p>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request Request Init Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.RequestInitDescription">
+              </textarea>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-semibold">Service Request Request Result Description:</label>
+                <textarea class="form-control bg-light border rounded" rows="4" readonly
+                    [value]="serviceRequest.ServiceRequest.RequestResultDescription">
+              </textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Request Time Request:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.TimeRequest ?
+                    serviceRequest.ServiceRequest.TimeRequest : 'No value' }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Request Date Request:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.DateRequest ?
+                    serviceRequest.ServiceRequest.DateRequest : 'No value' }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <h3>Service</h3>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.ServiceRequest.ServiceId }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Service Name:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Service.Name }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="row mb-3">
+            <h3>Major</h3>
+            <div class="col-md-6">
+                <label class="fw-semibold">Major ID:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Id }}</p>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-semibold">Major Name:</label>
+                <p class="border rounded p-2 bg-light">{{ serviceRequest.Major.Name }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Close" severity="secondary" (click)="hideDetailDialog()"></p-button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Service Request" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }"
+    [closable]="false">
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <form [formGroup]="updateServiceRequestForm">
+        <!-- Action -->
+        <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label fw-semibold">Action</label>
+            <div class="col-sm-8">
+                <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
+                <div class="col-sm-8">
+                    <textarea pInputTextarea id="CancelReason" class="form-control"
+                        formControlName="CancelReason"></textarea>
+                </div>
+            </div>
+        </div>
+        <!-- 📌 Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateServiceRequest($event)"
+                [disabled]="updateServiceRequestForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

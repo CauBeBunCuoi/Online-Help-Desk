@@ -1,0 +1,99 @@
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">List of featured majors</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if(loadingMajors) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (major of facilitiesMajorTop; track major) {
+            <div class="col-md-4 col-sm-6 mb-3">
+                <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
+                    <p-card class="mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.Major.ImageUrl" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.Major.Name }}</h6>
+                            </div>
+                        </div>
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.Major.MainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+    
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">List of majors</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if(isLoading) {
+                <div class="text-center my-5">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+                }
+            @for (major of facilitiesMajor; track major) {
+            <div class="col-md-4 col-sm-6 mb-3">
+                <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
+                    <p-card class="mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.Major.ImageUrl" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.Major.Name }}</h6>
+                            </div>
+                        </div>
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.Major.MainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="container rating mt-3">
+    <div class="title text-center">
+        <span>
+            <h3>Top feedback</h3>
+        </span>
+    </div>
+
+    <p-carousel [value]="feedbacks" [numVisible]="1" [numScroll]="1">
+        <ng-template pTemplate="item" let-feedback>
+            <p-card class="mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Avatar -->
+                    <p-avatar [image]="feedback.Account.ImageUrl" shape="circle" styleClass="bg-primary text-white">
+                    </p-avatar>
+                    <div>
+                        <h6 class="mb-0">{{ feedback.Account.FullName }}</h6>
+                        <small class="text-muted">{{ feedback.Feedback.CreatedAt }}</small>
+                    </div>
+                </div>
+
+                <!-- Rating -->
+                <p-rating [(ngModel)]="feedback.Feedback.Rate" [readonly]="true" class="mt-2"></p-rating>
+
+                <!-- Nội dung feedback -->
+                <p class="mt-2">
+                    {{ feedback.Feedback.Content }}
+                </p>
+            </p-card>
+        </ng-template>
+    </p-carousel>
+</section>

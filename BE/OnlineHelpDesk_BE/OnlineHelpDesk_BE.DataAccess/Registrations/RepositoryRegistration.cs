@@ -17,7 +17,17 @@ namespace OnlineHelpDesk_BE.DataAccess.Registrations
         }
 
         public static IServiceCollection AddDbRepository (this IServiceCollection services) {
-           
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IFacilityRepository, FacilityRepository>();
+            services.AddScoped<IFacilityMajorRepository, FacilityMajorRepository>();    
+            services.AddScoped<IServiceRepository, ServiceRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IFacilityItemAssignmentRepository, FacilityItemAssignmentRepository>();
+            services.AddScoped<IAssigneeFacilityMajorAssignmentRepository, AssigneeFacilityMajorAssignmentRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IServiceAvailabilityRepository, ServiceAvailabilityRepository>();
+            services.AddScoped<ITaskRequestRepository, TaskRequestRepository>();
+            services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
             return services;
         }
 

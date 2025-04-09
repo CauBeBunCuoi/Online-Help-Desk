@@ -1,0 +1,13 @@
+<app-facility-major-detail-section-header [image]="facilityMajor.Major?.BackgroundImageUrl"
+    [logo]="facilityMajor.Major?.ImageUrl" [name]="facilityMajor.Major?.Name">
+</app-facility-major-detail-section-header>
+@if(loading) {
+    <div class="text-center my-5">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+<app-facility-major-detail-section-content [mainDescription]="facilityMajor.Major?.MainDescription"
+    [workShifstDescription]="facilityMajor.Major?.WorkShifstDescription" [isOpen]="facilityMajor.Major?.IsOpen"
+    [closeScheduleDate]="facilityMajor.Major?.CloseScheduleDate" [openScheduleDate]="facilityMajor.Major?.OpenScheduleDate"
+    [facilityMajorTypeId]="facilityMajor.Major?.FacilityMajorTypeId" [isDeactivated]="facilityMajor.Major?.IsDeactivated">
+</app-facility-major-detail-section-content>

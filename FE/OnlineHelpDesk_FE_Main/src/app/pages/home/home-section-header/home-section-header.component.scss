@@ -1,0 +1,28 @@
+.section-header {
+    height: 200px;
+    background-image: url(https://cdn-new.topcv.vn/unsafe/https://static.topcv.vn/v4/image/welcome/section-header/header-bg.png);
+
+    .header-content {
+
+        .header-content__title {
+            .title {
+                color: #009643;
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 28px;
+                margin: 0 auto 6px;
+                width: 97%;
+            }
+
+            .description {
+                color: #fff;
+                font-size: 12px;
+                font-weight: 400;
+                letter-spacing: .12px;
+                line-height: 16px;
+                text-align: center;
+            }
+        }
+
+    }
+}

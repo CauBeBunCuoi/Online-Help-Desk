@@ -1,0 +1,31 @@
+<section class="major-content">
+    <div class="major-content__header">
+        <h1 class="title">List of services</h1>
+    </div>
+    @if(isLoading) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <div class="container">
+        <div class="row">
+            @for(service of services; track service) {
+            <div class="col-md-4 col-sm-6 mb-3">
+                <a [routerLink]="['/service-major-detail', service.Service.Id]" class="text-decoration-none mb-3">
+                    <div class="shadow-sm mb-3 p-3" style="background-color: white;">
+                        <div class="d-flex align-items-center">
+                            <img [src]="service.Service.ImageUrl" class="img-thumbnail me-3"
+                                style="width: 130px; height: 130px; object-fit: contain;" />
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1 fw-bold text-dark">{{
+                                    service.Service.Name }}</h5>
+                                <p class="mb-0 text-muted">{{ service.Major.Name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>

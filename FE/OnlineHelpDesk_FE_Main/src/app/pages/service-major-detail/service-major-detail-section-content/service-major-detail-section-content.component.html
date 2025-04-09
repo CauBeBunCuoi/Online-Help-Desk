@@ -1,0 +1,214 @@
+<p-toast></p-toast>
+<p-confirmdialog />
+
+@if(isLoading) {
+<div class="spinner-overlay">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<section class="service-major-detail-content my-3">
+  <div class="container">
+    <div class="row">
+      <!-- Giới thiệu Service -->
+      <div class="col-md-8 mb-3">
+        <div class="section-introduce">
+          <h3 class="title rounded-top">Giới thiệu Service</h3>
+          <div class="content p-3">
+            <!-- Mô tả dịch vụ -->
+            <div class="description mb-3" *ngIf="service?.Service?.MainDescription">
+              <p>{{ service?.Service?.MainDescription }}</p>
+            </div>
+
+            <!-- Mô tả yêu cầu kiểm thử -->
+            <div class="description mb-3" *ngIf="service?.Service?.RequestInitHintDescription">
+              <strong>{{ service?.Service?.RequestInitHintDescription }}</strong>
+            </div>
+
+            <!-- Ca làm việc -->
+            <div class="description mb-3" *ngIf="service?.Service?.WorkShiftsDescription">
+              <strong>Ca làm việc:</strong> {{ service?.Service?.WorkShiftsDescription }}
+            </div>
+
+            <!-- Trạng thái mở -->
+            <div class="description mb-3">
+              <strong>Trạng thái:</strong>
+              <span [ngClass]="{'text-success': service?.Service?.IsOpen, 'text-danger': !service?.Service?.IsOpen}">
+                {{ service?.Service?.IsOpen ? 'Mở' : 'Đóng' }}
+              </span>
+            </div>
+
+            <!-- Ngày mở -->
+            <div class="description mb-3" *ngIf="service?.Service?.OpenScheduleDate">
+              <strong>Ngày mở:</strong> {{ service?.Service?.OpenScheduleDate }}
+            </div>
+
+            <!-- Ngày đóng -->
+            <div class="description mb-3" *ngIf="service?.Service?.CloseScheduleDate">
+              <strong>Ngày đóng:</strong> {{ service?.Service?.CloseScheduleDate }}
+            </div>
+
+            <!-- Nút đặt ngay -->
+            <button type="button" class="btn btn-success" (click)="showDialogServiceAvailable()">Đặt
+              ngay</button>
+          </div>
+        </div>
+      </div>
+      <!-- Thông tin Lĩnh vực -->
+      <div class="col-md-4 mb-3">
+        <div class="section-introduce">
+          <h3 class="title rounded-top">Thông tin Lĩnh vực</h3>
+          @if(isLoading) {
+          <div class="spinner-overlay">
+            <p-progressSpinner></p-progressSpinner>
+          </div>
+          }
+          <div class="content">
+            <div class="description">
+              <div class="company-card p-3 border rounded shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                  <!-- Hình ảnh của lĩnh vực -->
+                  <img [src]="service?.Major?.ImageUrl" width="80px" height="80px" alt="Company Logo"
+                    class="company-logo me-3 shadow-sm" />
+
+                  <!-- Tên lĩnh vực -->
+                  <div class="fw-bold fs-4 text-primary">{{ service?.Major?.Name }}</div>
+                </div>
+                <div class="text-muted small">
+                  <!-- Chỉ hiển thị nếu có thông tin mô tả lĩnh vực -->
+                  <div *ngIf="service?.Major?.MainDescription" class="mb-2">
+                    <i class="pi pi-briefcase text-success"></i> <strong>Lĩnh vực:</strong> {{
+                    service?.Major?.MainDescription }}
+                  </div>
+
+                  <!-- Chỉ hiển thị nếu có thông tin về ca làm việc -->
+                  <div *ngIf="service?.Major?.WorkShiftsDescription" class="mb-2">
+                    <i class="pi pi-clock text-warning"></i> <strong>Ca làm việc:</strong> {{
+                    service?.Major?.WorkShiftsDescription }}
+                  </div>
+
+                  <!-- Chỉ hiển thị nếu có thông tin về địa điểm -->
+                  <div *ngIf="service?.Major?.FacilityId" class="mb-2">
+                    <i class="pi pi-map-marker text-info"></i> <strong>Địa điểm:</strong> {{ service?.Major?.FacilityId
+                    }}
+                  </div>
+                </div>
+                <!-- Liên kết đến trang chi tiết của lĩnh vực -->
+                <a [routerLink]="['/facility-major-detail', service?.Major?.Id]"
+                  class="text-success mt-3 d-inline-block">
+                  <i class="pi pi-external-link"></i> Xem trang lĩnh vực
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-dialog header="Add Service Request" [modal]="true" [(visible)]="addServiceAvailable" [style]="{ width: '40rem' }"
+    [closable]="false">
+    <span class="text-muted d-block mb-3">Add Service Request Information</span>
+
+    <form [formGroup]="addServiceRequestForm">
+
+      <!-- Description: Hiển thị cho tất cả các serviceType -->
+      <div class="mb-3 row">
+        <label for="RequestInitDescription" class="col-sm-4 col-form-label fw-semibold">Description</label>
+        <div class="col-sm-8">
+          <textarea id="RequestInitDescription" class="form-control"
+            formControlName="RequestInitDescription"></textarea>
+          <small
+            *ngIf="addServiceRequestForm.controls['RequestInitDescription'].invalid && addServiceRequestForm.controls['RequestInitDescription'].touched"
+            class="text-danger">
+            Description is required.
+          </small>
+        </div>
+      </div>
+
+      <!-- Nếu serviceType == 1: Hiển thị Date & Time Request -->
+      <ng-container *ngIf="serviceType === 2">
+        <!-- Date Request -->
+        <div class="mb-3 row">
+          <label for="DateRequest" class="col-sm-4 col-form-label fw-semibold">Date Request</label>
+          <div class="col-sm-8">
+            <p-select id="DateRequest" [options]="serviceSchedules" optionLabel="Date" optionValue="Date"
+              formControlName="DateRequest" placeholder="Select Date" appendTo="body" (onChange)="onDayChange()">
+            </p-select>
+            <small
+              *ngIf="addServiceRequestForm.controls['DateRequest'].invalid && addServiceRequestForm.controls['DateRequest'].touched"
+              class="text-danger">
+              Date is required.
+            </small>
+          </div>
+        </div>
+
+        <!-- Time Request -->
+        <div class="mb-3 row">
+          <label for="TimeRequest" class="col-sm-4 col-form-label fw-semibold">Time Request</label>
+          <div class="col-sm-8">
+            <p-select id="TimeRequest" [options]="availableTimesObjects" optionLabel="Time" optionValue="Time"
+              formControlName="TimeRequest" placeholder="Select Time" appendTo="body">
+            </p-select>
+            <small
+              *ngIf="addServiceRequestForm.controls['TimeRequest'].invalid && addServiceRequestForm.controls['TimeRequest'].touched"
+              class="text-danger">
+              Time is required.
+            </small>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Nếu serviceType == 2: Chỉ hiển thị Description (đã có ở trên) -->
+      <ng-container *ngIf="serviceType === 1">
+        <!-- Không có trường Date/Time -->
+      </ng-container>
+
+      <!-- Nếu serviceType == 3: Hiển thị Description và các trường bổ sung -->
+      <ng-container *ngIf="serviceType === 3">
+        <!-- Fields: Name, Email, Phone -->
+        <div class="mb-3 row">
+          <label for="Name" class="col-sm-4 col-form-label fw-semibold">Name</label>
+          <div class="col-sm-8">
+            <input pInputText id="Name" class="form-control" formControlName="Name" placeholder="Enter your name" />
+            <small
+              *ngIf="addServiceRequestForm.controls['Name'].invalid && addServiceRequestForm.controls['Name'].touched"
+              class="text-danger">
+              Name is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="Email" class="col-sm-4 col-form-label fw-semibold">Email</label>
+          <div class="col-sm-8">
+            <input pInputText id="Email" class="form-control" formControlName="Email" placeholder="Enter your email" />
+            <small
+              *ngIf="addServiceRequestForm.controls['Email'].invalid && addServiceRequestForm.controls['Email'].touched"
+              class="text-danger">
+              Email is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label for="Phone" class="col-sm-4 col-form-label fw-semibold">Phone</label>
+          <div class="col-sm-8">
+            <input pInputText id="Phone" class="form-control" formControlName="Phone" placeholder="Enter your phone" />
+            <small
+              *ngIf="addServiceRequestForm.controls['Phone'].invalid && addServiceRequestForm.controls['Phone'].touched"
+              class="text-danger">
+              Phone is required.
+            </small>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Footer -->
+      <div class="d-flex justify-content-end gap-2">
+        <p-button label="Cancel" severity="secondary" (click)="hideDialogAdd()" class="me-2"></p-button>
+        <p-button label="Submit" (click)="addServiceRequest($event)" [disabled]="addServiceRequestForm.invalid"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+
+</section>

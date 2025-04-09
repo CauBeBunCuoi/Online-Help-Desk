@@ -1,0 +1,128 @@
+@if(loading) {
+<div class="spinner-overlay">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+}
+<p-confirmdialog />
+<div class="card">
+    <p-table #dt2 [value]="taskRequests" dataKey="TaskRequest.Id" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" sortField="TaskRequest.CreatedAt"
+        [globalFilterFields]="['TaskRequest.Id', 'TaskRequest.Description', 'Major.Name', 'RequestStatus.Name']"
+        [sortOrder]="-1" [tableStyle]="{ 'min-width': '60rem' }">
+        <!-- Thanh Search chung -->
+        <ng-template #caption>
+            <div class="d-flex justify-content-end">
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt2)"
+                        placeholder="Search tài khoản" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="TaskRequest.Id">ID</th>
+                <th pSortableColumn="TaskRequest.Description">Description</th>
+                <th pSortableColumn="Major.Name">Major</th>
+                <th pSortableColumn="RequestStatus.Name">Status</th>
+                <th pSortableColumn="TaskRequest.CreatedAt">Created At</th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-task>
+            <tr>
+                <td>{{ task.TaskRequest.Id }}</td>
+                <td>{{ task.TaskRequest.Description }}</td>
+                <td>{{ task.Major.Name }}</td>
+                <td>
+                    <p-tag [value]="task.RequestStatus.Name"
+                        [severity]="task.RequestStatus.Name === 'Pending' ? 'warn' : 'success'"></p-tag>
+                </td>
+                <td>{{ task.TaskRequest.CreatedAt | date: 'dd/MM/yyyy' }}</td>
+                <td>
+                    <p-button (click)="showDialogUpdate(task.TaskRequest.Id)" label="Update" class="ms-2" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Dialog Update cập nhật -->
+<p-dialog header="Update Task" [modal]="true" [(visible)]="update" [style]="{ width: '40rem' }" [closable]="false">
+    <span class="text-muted d-block mb-3">Update information</span>
+    @if(loadingUpdate) {
+    <div class="spinner-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <form [formGroup]="updateTaskRequestForm">
+        <!-- Description -->
+        <div class="mb-3 row">
+            <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
+            <!-- <div class="col-sm-8">
+                <input pInputText id="Description" class="form-control" formControlName="Description" />
+                @if (updateTaskRequestForm.controls['Description'].invalid &&
+                updateTaskRequestForm.controls['Description'].touched) {
+                <small class="text-danger">
+                    Description is required (Min 3 chars).
+                </small>
+                }
+            </div> -->
+            <div class="col-sm-8">
+
+                <label for="Description" class="col-sm-4 col-form-label fw-semibold">Description</label>
+                <!-- <div class="col-sm-8">
+                    <textarea pInputTextarea id="Description" class="form-control"
+                        formControlName="Description"></textarea>
+                </div> -->
+                <div class="col-sm-8">
+                    <textarea pInputTextarea id="Description" class="form-control"
+                        formControlName="Description"></textarea>
+                </div>
+                @if (updateTaskRequestForm.controls['Description'].invalid &&
+                updateTaskRequestForm.controls['Description'].touched) {
+                <small class="text-danger">
+                    Description is required (Min 3 chars).
+                </small>
+                }
+            </div>
+
+        </div>
+        <!-- MajorId -->
+        <div class="mb-3 row">
+            <label for="MajorId" class="col-sm-4 col-form-label fw-semibold">Major</label>
+            <div class="col-sm-8">
+                <p-select [options]="majorOptions" formControlName="MajorId" optionLabel="name" optionValue="id"
+                    placeholder="Select a Major" [showClear]="true" class="w-100">
+                </p-select>
+            </div>
+        </div>
+        <!-- Action -->
+        <div class="mb-3 row">
+            <label class="col-sm-4 col-form-label fw-semibold">Action</label>
+            <div class="col-sm-8">
+                <p-select [options]="actions" formControlName="Action" optionLabel="name" optionValue="value"
+                    placeholder="Select a action" [showClear]="true" appendTo="body" class="w-100">
+                </p-select>
+                @if(updateTaskRequestForm.get('Action')?.value === 'Cancelled') {
+                <label for="CancelReason" class="col-sm-4 col-form-label fw-semibold">Cancel Reason</label>
+                <div class="col-sm-8">
+                    <textarea pInputTextarea id="CancelReason" class="form-control"
+                        formControlName="CancelReason"></textarea>
+                </div>
+                }
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="d-flex justify-content-end gap-2">
+            <p-button label="Cancel" severity="secondary" (click)="hideDialogUpdate()" class="me-2" />
+            <p-button label="Update" (click)="updateTaskRequest($event)" [disabled]="updateTaskRequestForm.invalid" />
+        </div>
+    </form>
+</p-dialog>

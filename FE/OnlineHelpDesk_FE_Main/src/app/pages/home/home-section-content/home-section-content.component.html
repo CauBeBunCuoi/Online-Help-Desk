@@ -1,0 +1,170 @@
+<section class="user-manual-banner mb-3">
+    <div class="container">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                @if (loadingMajors) {
+                <div class="text-center my-5">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+                }
+                @for (major of facilitiesMajor; track $index) {
+                <button type="button" data-bs-target="#carouselExampleCaptions" [attr.data-bs-slide-to]="$index"
+                    [class.active]="$index === 0" [attr.aria-label]="'Slide ' + ($index + 1)">
+                </button>
+                }
+            </div>
+
+            <!-- Carousel Items -->
+            <div class="carousel-inner">
+                @for (major of facilitiesMajor; track $index) {
+                <div class="carousel-item" [class.active]="$index === 0">
+                    <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
+                        <!-- Hình ảnh -->
+                        <img [src]="major.Major.BackgroundImageUrl" class="d-block w-100"
+                            style="height: 300px; object-fit: cover; object-position: center;"
+                            alt="{{ major.Major.Name }}">
+                        <!-- Chú thích -->
+                        <div class="carousel-caption d-none d-md-block text-dark">
+                            <div class="bg-light w-80 rounded-pill">
+                                <h5>{{ major.Major.Name }}</h5>
+                                <p>{{ major.Major.MainDescription }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                }
+            </div>
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Lĩnh vực nổi bật -->
+<section class="container major-content">
+    <div class="major-content__header mb-3">
+        <h1 class="title text-center">List of featured majors</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            @if (loadingMajors) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (major of facilitiesMajor; track major) {
+            <div class="col-md-4 col-sm-6 mt-3">
+                <a [routerLink]="['/facility-major-detail', major.Major.Id]" class="text-decoration-none">
+                    <p-card class="mb-3 ">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Logo Công Ty -->
+                            <p-avatar shape="square" [image]="major.Major.ImageUrl" size="xlarge"></p-avatar>
+                            <div>
+                                <h6 class="mb-0">{{ major.Major.Name }}</h6>
+                            </div>
+                        </div>
+                        <!-- Mô tả -->
+                        <p class="text-dark">
+                            {{ major.Major.MainDescription }}
+                        </p>
+                    </p-card>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Service Random -->
+<section class="container service-section mt-3">
+    <!-- 🔥 Carousel 2: Services -->
+    <div id="carouselServices" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @if (loadingServices) {
+            <div class="text-center my-5">
+                <p-progressSpinner></p-progressSpinner>
+            </div>
+            }
+            @for (service of services; track $index) {
+            <button type="button" data-bs-target="#carouselServices" [attr.data-bs-slide-to]="$index"
+                [class.active]="$index === 0" [attr.aria-label]="'Service ' + ($index + 1)">
+            </button>
+            }
+        </div>
+
+        <div class="carousel-inner">
+            @for (service of services; track $index) {
+            <a [routerLink]="['/service-major', service.Service.Id]" class="text-decoration-none">
+                <div class="carousel-item" [class.active]="$index === 0">
+                    <img [src]="service.Major.BackgroundImageUrl" class="d-block w-100"
+                        style="height: 300px; object-fit: cover; object-position: center;"
+                        alt="{{ service.Service.Name }}">
+                    <div class="carousel-caption d-none d-md-block text-dark">
+                        <div class="bg-light w-80 rounded-pill">
+                            <h5>{{ service.Service.Name }}</h5>
+                            <p>{{ service.Service.MainDescription }}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselServices" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselServices" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<section class="container rating mt-3">
+    <div class="title text-center">
+        <span>
+            <h3>Top feedback</h3>
+        </span>
+    </div>
+    @if (loadingFeedbacks) {
+    <div class="text-center my-5">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+    }
+    <p-carousel [value]="feedbacks" [numVisible]="1" [numScroll]="1">
+        <ng-template pTemplate="item" let-feedback>
+            <p-card class="mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Avatar -->
+                    <p-avatar [image]="feedback.Account.ImageUrl" shape="circle" styleClass="bg-primary text-white">
+                    </p-avatar>
+                    <div>
+                        <h6 class="mb-0">{{ feedback.Account.FullName }}</h6>
+                        <small class="text-muted">{{ feedback.Feedback.CreatedAt }}</small>
+                    </div>
+                </div>
+
+                <!-- Rating -->
+                <p-rating [(ngModel)]="feedback.Feedback.Rate" [readonly]="true" class="mt-2"></p-rating>
+
+                <!-- Nội dung feedback -->
+                <p class="mt-2">
+                    {{ feedback.Feedback.Content }}
+                </p>
+            </p-card>
+        </ng-template>
+    </p-carousel>
+</section>

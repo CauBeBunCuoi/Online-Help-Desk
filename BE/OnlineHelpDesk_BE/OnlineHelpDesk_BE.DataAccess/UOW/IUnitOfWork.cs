@@ -4,8 +4,18 @@ using OnlineHelpDesk_BE.DataAccess.Repositories.interfaces;
 namespace OnlineHelpDesk_BE.DataAccess.UOW;
 public interface IUnitOfWork
 {
-    //IAccountRepository Accounts { get; }
+    IAccountRepository AccountRepository { get; }
+    IFacilityRepository FacilityRepository  { get; }
+    IFacilityMajorRepository FacilityMajorRepository  { get; }
+    IServiceRepository ServiceRepository  { get; }
+    IFeedbackRepository FeedbackRepository  { get; }
+    IFacilityItemAssignmentRepository FacilityItemAssignmentRepository  { get; }
+    IAssigneeFacilityMajorAssignmentRepository AssigneeFacilityMajorAssignmentRepository  { get; }
+    IReportRepository ReportRepository  { get; }
+    IServiceAvailabilityRepository ServiceAvailabilityRepository  { get; }
+    ITaskRequestRepository TaskRequestRepository  { get; }
+    IServiceRequestRepository ServiceRequestRepository  { get; }
 
-    //ITransactionDetailRepository TransactionDetails { get; }
-    //int Complete();
+
+    int Complete();
 }
