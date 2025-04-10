@@ -109,10 +109,13 @@ export class StaffsComponent implements OnInit {
 
   loadRoles() {
     this.loading = true;
-    this.authService.getRoles().then(rolesData => {
-      this.roleTypes = rolesData.data.Roles;
-    })
-      .catch(error => console.error('Lỗi khi load dữ liệu:', error))
+    this.authService.getRoles()
+      .then(rolesData => {
+        this.roleTypes = (rolesData.data.Roles || []).filter((role: any) =>
+          role.Id === 2 || role.Id === 3
+        );
+      })
+      .catch(error => console.error('Failed to load data:', error))
       .finally(() => (this.loading = false));
   }
 
