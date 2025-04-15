@@ -552,8 +552,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                                 {
                                     serviceRequest.RequestStatusId = 9;
                                     serviceRequest.IsCancelAutomatically = true;
-                                    serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ tạm thời đóng";
-                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                    // serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ tạm thời đóng";
+                                    // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                    serviceRequest.CancelReason = "Cancelled because the service is temporarily closed";
+                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] The service will be temporarily closed at the request time";
                                     await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                 }
                             }
@@ -567,8 +569,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                                 {
                                     serviceRequest.RequestStatusId = 9;
                                     serviceRequest.IsCancelAutomatically = true;
-                                    serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ tạm thời đóng";
-                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                    // serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ tạm thời đóng";
+                                    // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                    serviceRequest.CancelReason = "Cancelled because the service is temporarily closed";
+                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] The service will be temporarily closed at the request time";
                                     await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                 }
                             }
@@ -633,8 +637,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         {
                             serviceRequest.RequestStatusId = 9;
                             serviceRequest.IsCancelAutomatically = true;
-                            serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ không còn tồn tại";
-                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ đã bị xoá";
+                            // serviceRequest.CancelReason = "Huỷ vì lí do dịch vụ không còn tồn tại";
+                            // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Dịch vụ đã bị xoá";
+                            serviceRequest.CancelReason = "Cancelled because the service is not exist anymore";
+                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] The service has been deactivated";
                             await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                         }
                     }

@@ -192,48 +192,60 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             { // Pending
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được duyệt";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được duyệt";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not approved";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 2)
                             { // Assigned
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa nhận được phản hồi từ assignee";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa nhận được phản hồi từ assignee";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not responded by assignee";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 3)
                             { // RejectedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi assignee và không được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi assignee và không được duyệt lại";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is rejected by assignee and not approved again";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 4)
                             { // RejectedByAssigneeDeactivation
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi vì lí do assignee bị vô hiệu hóa và không được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi vì lí do assignee bị vô hiệu hóa và không được duyệt lại";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is rejected by assignee deactivation and not approved again";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 5)
                             {  // AcceptedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not completed by assignee in time";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 6)
                             {  // CompletedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định nhưng chưa được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định nhưng chưa được duyệt lại";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not completed by assignee in time but not approved again";
                                 IsCancelAutomatically = true;
                             }
 
@@ -281,48 +293,60 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.RequestServices
                             { // Pending
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được duyệt";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được duyệt";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not approved";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 2)
                             { // Assigned
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa nhận được phản hồi từ assignee";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa nhận được phản hồi từ assignee";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not responded by assignee";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 3)
                             { // RejectedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi assignee và không được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi assignee và không được duyệt lại";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is rejected by assignee and not approved again";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 4)
                             { // RejectedByAssigneeDeactivation
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi vì lí do assignee bị vô hiệu hóa và không được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu đã bị từ chối bởi vì lí do assignee bị vô hiệu hóa và không được duyệt lại";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is rejected by assignee deactivation and not approved again";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 5)
                             {  // AcceptedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định";
+                                request.CancelReason = "Request is not processed";
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not completed by assignee in time";
                                 IsCancelAutomatically = true;
                             }
                             else if (request.RequestStatusId == 6)
                             {  // CompletedByAssignee
                                 request.RequestStatusId = 9;
                                 request.IsCancelAutomatically = true;
-                                request.CancelReason = "Yêu cầu không được xử lí";
-                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định nhưng chưa được duyệt lại";
+                                // request.CancelReason = "Yêu cầu không được xử lí";
+                                // request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Yêu cầu chưa được assignee xử lí xong trong thời gian quy định nhưng chưa được duyệt lại";
+                                request.CancelReason = "Request is not processed";  
+                                request.ProgressNote = request.ProgressNote + "\n\n-[*CANCELLED AUTO*] Request is not completed by assignee in time but not approved again";
                                 IsCancelAutomatically = true;
                             }
 

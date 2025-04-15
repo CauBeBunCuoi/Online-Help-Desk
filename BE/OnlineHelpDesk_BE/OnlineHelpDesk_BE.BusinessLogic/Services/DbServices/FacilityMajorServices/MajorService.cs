@@ -246,7 +246,7 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
 
             temp_result = temp_result.OrderByDescending(m => m.ServiceRequestCount).Take(6).ToList();
             var result = new List<object>();
-            foreach(var major in temp_result)
+            foreach (var major in temp_result)
             {
                 var majorType = major.MajorType;
                 var facility = major.Facility;
@@ -550,6 +550,70 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                 // throw new HttpRequestException("Major không tồn tại");
                 throw new HttpRequestException("Major is not exist, id: " + majorId);
             }
+
+            //             [
+            //     {
+            //       "Item": {
+            //         "Id": 0,
+            //         "Name": "string",
+            //         "InUseCount": 0,
+            //         "Count": 0,
+            //         "ImageUrl": "string",
+            //         "CreatedAt": "string",
+            //         "UpdatedAt": "string"
+            //       },
+            //       "FacilityItemAssignment": {
+            //         "FacilityItemId": 0,
+            //         "FacilityMajorId": 0,
+            //         "ItemCount": 0,
+            //         "Created": "string"
+            //       }
+            //     }
+            //   ]
+
+            // var items = new List<object>();
+            // foreach (var fia in major.FacilityItemAssignments)
+            // {
+            //     int inUseCount = await _unitOfWork.FacilityItemAssignmentRepository.GetInUseItemCount(facilityItem.Id);
+            //     var item = new
+            //     {
+            //         Id = fia.FacilityItem.Id,
+            //         Name = fia.FacilityItem.Name,
+            //         InUseCount = fia.FacilityItem.Count - fia.ItemCount,
+            //         Count = fia.FacilityItem.Count,
+            //         ImageUrl = await GenerateImageUrl(_filePathConfig.ITEM_IMAGE_PATH, fia.FacilityItem.Id.ToString(), "main"),
+            //         CreatedAt = fia.FacilityItem.CreatedAt,
+            //         UpdatedAt = fia.FacilityItem.UpdatedAt
+            //     };
+            //     var facilityItemAssignment = new
+            //     {
+            //         FacilityItemId = fia.FacilityItemId,
+            //         FacilityMajorId = fia.FacilityMajorId,
+            //         ItemCount = fia.ItemCount,
+            //         Created = fia.CreatedAt
+            //     };
+            //     items.Add(new { Item = item, FacilityItemAssignment = facilityItemAssignment });
+            // }
+
+            var items = major.FacilityItemAssignments.Select(fia => new
+            {
+                Item = new
+                {
+                    Id = fia.FacilityItem.Id,
+                    Name = fia.FacilityItem.Name,
+                    Count = fia.FacilityItem.Count,
+                    ImageUrl = GenerateImageUrl(_filePathConfig.ITEM_IMAGE_PATH, fia.FacilityItem.Id.ToString(), "main"),
+                    CreatedAt = fia.FacilityItem.CreatedAt,
+                    UpdatedAt = fia.FacilityItem.UpdatedAt
+                },
+                FacilityItemAssignment = new
+                {
+                    FacilityItemId = fia.FacilityItemId,
+                    FacilityMajorId = fia.FacilityMajorId,
+                    ItemCount = fia.ItemCount,
+                    Created = fia.CreatedAt
+                }
+            }).ToList();
             string folderPath = _filePathConfig.MAJOR_IMAGE_PATH;
             var result = new
             {
@@ -582,7 +646,28 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                     ImageUrl = await GenerateImageUrl(_filePathConfig.FACILITY_IMAGE_PATH, major.Facility.Id.ToString(), "main"),
                     IsDeactivated = major.Facility.IsDeactivated,
                     CreatedAt = major.Facility.CreatedAt
-                }
+                },
+                Items = await Task.WhenAll(major.FacilityItemAssignments
+                .Select(async fia => new
+                {
+                    Item = new
+                    {
+                        Id = fia.FacilityItem.Id,
+                        Name = fia.FacilityItem.Name,
+                        Count = fia.FacilityItem.Count,
+                        ImageUrl = await GenerateImageUrl(_filePathConfig.ITEM_IMAGE_PATH, fia.FacilityItem.Id.ToString(), "main"),
+                        CreatedAt = fia.FacilityItem.CreatedAt,
+                        UpdatedAt = fia.FacilityItem.UpdatedAt
+                    },
+                    FacilityItemAssignment = new
+                    {
+                        FacilityItemId = fia.FacilityItemId,
+                        FacilityMajorId = fia.FacilityMajorId,
+                        ItemCount = fia.ItemCount,
+                        Created = fia.CreatedAt
+                    }
+                }).ToList())
+
             };
 
             return JObject.FromObject(result);
@@ -622,9 +707,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                                         {
                                             serviceRequest.RequestStatusId = 9;
                                             serviceRequest.IsCancelAutomatically = true;
-                                            serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
-                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
-
+                                            // serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
+                                            // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                            serviceRequest.CancelReason = "Cancelled because the major is temporarily closed";
+                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major will be temporarily closed at the time of request";
                                             await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                         }
                                     }
@@ -638,15 +724,19 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                                         {
                                             serviceRequest.RequestStatusId = 9;
                                             serviceRequest.IsCancelAutomatically = true;
-                                            serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
-                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                            // serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
+                                            // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                            serviceRequest.CancelReason = "Cancelled because the major is temporarily closed";
+                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major will be temporarily closed at the time of request";
                                             await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                         }
                                         {
                                             serviceRequest.RequestStatusId = 9;
                                             serviceRequest.IsCancelAutomatically = true;
-                                            serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
-                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                            // serviceRequest.CancelReason = "Huỷ vì lí do major tạm thời đóng";
+                                            // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major sẽ tạm thời đóng vào thời gian đặt của yêu cầu";
+                                            serviceRequest.CancelReason = "Cancelled because the major is temporarily closed";
+                                            serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major will be temporarily closed at the time of request";
                                             await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                         }
                                     }
@@ -716,8 +806,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                             {
                                 serviceRequest.RequestStatusId = 9;
                                 serviceRequest.IsCancelAutomatically = true;
-                                serviceRequest.CancelReason = "Huỷ vì lí do major không còn tồn tại";
-                                serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major đã bị deactivate";
+                                // serviceRequest.CancelReason = "Huỷ vì lí do major không còn tồn tại";
+                                // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major đã bị deactivate";
+                                serviceRequest.CancelReason = "Cancelled because the major is not exist anymore";
+                                serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Major has been deactivated";
 
                                 await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                             }
@@ -729,8 +821,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityMajorServi
                         if (taskRequest.RequestStatusId != 7 && taskRequest.RequestStatusId != 8 && taskRequest.RequestStatusId != 9)
                         {
                             taskRequest.RequestStatusId = 9;
-                            taskRequest.CancelReason = "[*CANCELLED AUTO*] Huỷ vì lí do major không còn tồn tại";
-
+                            // taskRequest.CancelReason = "[*CANCELLED AUTO*] Huỷ vì lí do major không còn tồn tại";
+                            taskRequest.CancelReason = "Cancelled because the major is not exist anymore";
                             await _taskRequestRepository.UpdateAsync(taskRequest.Id, taskRequest);
                         }
                     }

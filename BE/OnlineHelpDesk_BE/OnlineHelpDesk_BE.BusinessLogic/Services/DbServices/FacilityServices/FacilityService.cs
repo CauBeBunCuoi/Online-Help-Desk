@@ -262,8 +262,10 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
                                 {
                                     serviceRequest.RequestStatusId = 9;
                                     serviceRequest.IsCancelAutomatically = true;
-                                    serviceRequest.CancelReason = "Huỷ vì lí do major không còn tồn tại";
-                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Facility đã bị deactivate";
+                                    // serviceRequest.CancelReason = "Huỷ vì lí do major không còn tồn tại";
+                                    // serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Facility đã bị deactivate";
+                                    serviceRequest.CancelReason = "Cancelled because the major is not exist anymore";
+                                    serviceRequest.ProgressNote = serviceRequest.ProgressNote + "\n\n-[*CANCELLED AUTO*] Facility has been deactivated";
 
                                     await _serviceRequestRepository.UpdateAsync(serviceRequest.Id, serviceRequest);
                                 }
@@ -274,8 +276,8 @@ namespace OnlineHelpDesk_BE.BusinessLogic.Services.DbServices.FacilityServices
                             if (taskRequest.RequestStatusId != 7 && taskRequest.RequestStatusId != 8 && taskRequest.RequestStatusId != 9)
                             {
                                 taskRequest.RequestStatusId = 9;
-                                taskRequest.CancelReason = "[*CANCELLED AUTO*] Huỷ vì lí do major không còn tồn tại";
-
+                                // taskRequest.CancelReason = "[*CANCELLED AUTO*] Huỷ vì lí do major không còn tồn tại";
+                                taskRequest.CancelReason = "Cancelled because the major is not exist anymore";
                                 await _taskRequestRepository.UpdateAsync(taskRequest.Id, taskRequest);
                             }
                         }

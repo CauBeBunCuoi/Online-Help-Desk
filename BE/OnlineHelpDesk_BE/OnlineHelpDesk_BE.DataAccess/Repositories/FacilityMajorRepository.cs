@@ -21,6 +21,8 @@ namespace OnlineHelpDesk_BE.DataAccess.Repositories
             .Include(fm => fm.Services)
             .ThenInclude(s => s.ServiceRequests)
             .Include(fm => fm.TaskRequests)
+            .Include(fm => fm.FacilityItemAssignments)
+            .ThenInclude(fia => fia.FacilityItem)
             .FirstOrDefaultAsync(fm => fm.Id == id);
         }
 
