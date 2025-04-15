@@ -1,2 +1,9 @@
 .vs/
 OnlineHelpDesk_BE.API/bin/
+OnlineHelpDesk_BE.API/obj/
+OnlineHelpDesk_BE.BusinessLogic/bin/
+OnlineHelpDesk_BE.BusinessLogic/obj/
+OnlineHelpDesk_BE.DataAccess/bin/
+OnlineHelpDesk_BE.DataAccess/obj/
+OnlineHelpDesk_BE.Common/bin/
+OnlineHelpDesk_BE.Common/obj/
