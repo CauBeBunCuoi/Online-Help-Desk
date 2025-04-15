@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\OnlineHelpDesk_BE.API.props" />
-</Project>
